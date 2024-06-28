@@ -1,0 +1,137 @@
+<h3 class="text-center">Signos Vitales</h3>
+
+<h5><%= @descriptipoclientes %></h5>
+<% if @zona.to_i>0 && @suc.to_i==0 %>
+  <h5>Zona: <%= @zona + "-" + @nomzona[0]['NomZona'] %></h5>
+<% end %>
+
+<% if @zona.to_i>0 && @suc.to_i>0 %>
+  <h5>Sucursal: <%= @suc + "-" + @nomsuc[0]['Nombre'] %></h5>
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <% if @signosvitalesgraf.count > 0 %>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+        </div>
+        <div class="panel-body">
+          <%= despliega_grafica2("lineas",{ series: @series, categorias: @categorias, titulo: @nomCia, subtitulo: @tituloGrafica, ytitulo: @ytituloGrafica, tultip: @tultip }) %>
+        </div>
+      </div>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Año">Año</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% @signosvitalesgraf.each do |m| %>
+            <tr>
+              <td><%= m['Año'] %></td>
+              <% if @signovit.to_i == 2 %>
+                <td><%= number_to_currency(m['Enero'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Febrero'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Marzo'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Abril'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Mayo'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Junio'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Julio'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Agosto'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Septiembre'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Octubre'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Noviembre'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(m['Diciembre'], :locale => :mx, :precision => 2) %></td>
+              <% else %>
+                <td><%= number_with_delimiter(m['Enero'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Febrero'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Marzo'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Abril'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Mayo'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Junio'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Julio'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Agosto'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Septiembre'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Octubre'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Noviembre'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_with_delimiter(m['Diciembre'], :locale => :mx, :precision => 2) %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br />
+
+    <% else %>
+
+      Sin Datos.
+
+    <% end %>
+
+  <% end %>
+
+</div>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

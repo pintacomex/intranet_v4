@@ -1,0 +1,82 @@
+<% if @sistemawp.to_i == 0 %>
+    <h1  class="text-center">Cotizaciones</h1>
+    <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+  	<h3 class="text-center"><%= @titulomov %></h3>
+<% else %>
+    <h1  class="text-center">Cotizaciones</h1>
+    <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+  	<h3 class="text-center"><%= @titulomov %></h3>
+<% end %>
+<br>
+
+<div class="loader-form">
+  <form class="form" role="form">
+    <div class="form-group">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Buscar Vendedor</h3>
+        </div>
+        <div class="panel-body">
+				  <div class="control-group">
+    				<label class="control-label col-xs-12 col-sm-3 col-md-4 col-lg-4" for="inputPassword">Nombre ó Id del Vendedor</label>
+						<div class="controls">
+  						<%= hidden_field_tag 'vendedor', params[:vendedor] %>
+  						<%= hidden_field_tag 'movnvo', params[:movnvo] %>
+			      	<input id="q" name="q" type="text" class="input col-xs-12 col-sm-9 col-md-8 col-lg-8" maxlenght="50" value="<%= params[:q] if params.has_key?(:q) %>" autofocus placeholder="Nombre ó Id del Vendedor">
+		      	</div>
+				  </div>
+					<div class="clearfix"></div>
+			    <div class="form-actions">
+					  <a id="margenvh10" class="btn pull-left btn-info btn-sm" href="/pdv" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+			      <button class="btn pull-right btn-info btn-ttcs btn-sm go-to-filter"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+			    </div>
+					<br>
+        </div>
+      </div>
+    </div>
+ </form>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Seleccionar Vendedor</h3>
+      </div>
+      <div class="panel-body fixed-panel">
+        <% if @vendedores && @vendedores.count > 0 %>
+
+          <div class="row">
+						<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped">
+						  <thead>
+						    <tr>
+					        <th><a href="#" data-toggle="tooltip" title="IdCliente">IdVend</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Nombre">Nombre</a></th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <% @vendedores.each do |m| %>
+						      <tr>
+					          <td><a href="/pdv_selprod?vendedor=<%= m['IdVend'] %>&movnvo=<%=@movnvo%>"><%=m['IdVend'] %></a></td>
+					          <td><%= m['Nombre'] %></td>
+						      </tr>
+						    <% end %>
+						  </tbody>
+						</table>
+
+						<script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+						<script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+						<%= javascript_include_tag "/dt_v3" %>
+
+          </div>
+        <% else %>
+          <p align=center class="titulo2">Sin Vendedores</p>
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

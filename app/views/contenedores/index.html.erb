@@ -1,0 +1,170 @@
+<div class="pull-right text-right">
+  <small>
+    <% if current_user.has_role? :admin %>
+      <a href="/contenedores_mails/" class="btn btn-primary btn-xs">Administrar Emails</a>
+    <% end %>
+  </small>
+</div>
+
+<div class="col-md-12">
+  <h3 class="text-center">Estado de Contenedores</h3>
+
+  <div class="pull-right text-right">
+    <small>
+      <% if @ver_todos %>
+        <a href="/contenedores" class="btn btn-primary btn-xs">Ver pendientes</a>
+      <% else %>
+        <a href="/contenedores?ver_todos=1" class="btn btn-primary btn-xs">Ver todos</a>
+      <% end %>
+    </small>
+  </div>
+
+  <br>
+  <br>
+
+  <% if @contenedores.count > 0 %>
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+        <thead>
+          <tr>
+            <th style="text-align:center">Ref. Contenedor</th>
+            <th style="text-align:center">Fecha</th>
+            <th colspan="32" style="text-align:center">Actividad</th>
+          </tr>
+        </thead>
+        <tbody >
+
+        <tr>
+          <td></td>
+          <td></td>
+          <% (1..32).each do |i| %>
+            <td>
+              <strong>
+                <%= i %>
+              </strong>
+            </td>
+          <% end %>
+        </tr>
+
+        <% @contenedores.each do |item| %>
+          <% mexPnm = item['RefContenedor'].to_s.start_with?("PNM") ? "Pnm" : "Mex" %>
+          <% semaforo = @semaforos.select{ |i| i['NumContenedor'] == item['NumContenedor'] }.first rescue nil %>
+          <% if semaforo %>
+            <tr>
+              <td>
+                <strong><a href="/contenedores_contenedor?ct=<%= item['NumContenedor'] %>"><%= item['RefContenedor'] %></a></strong>
+              </td>
+
+              <% i = 0 %>
+              <% ultimoDias = 1 %>
+              <% primera_tarea = true %>
+              <% @tareas.each do |tarea| %>
+                <% if tarea["dias#{mexPnm}"].to_i > 0 %>
+                  <% i = i + 1 %>
+                  <% while i < tarea["IdTarea"].to_i %>
+                    <td>
+                      <span style="color:#D3D3D3" class="glyphicon glyphicon-minus"></span>
+                    </td>
+                    <% i = i + 1 %>
+                  <% end %>
+                  <% val = semaforo[tarea['tarea']] %>
+                  <% valFec = Date.parse(semaforo["#{tarea['tarea']}Fec"].to_s) rescue "Sin Fecha" %>
+                  <% valFecLim = Date.parse(semaforo["#{tarea['tarea']}Fec"].to_s) + ultimoDias rescue "Sin Fecha" %>
+                  <% tareaDetonadoraVal = semaforo[tarea['tareaDetonadora']] %>
+                  <% tareaDetonadoraValFec = Date.parse(semaforo["#{tarea['tareaDetonadora']}Fec"].to_s) rescue "Sin Fecha" %>
+                  <% tareaDetonadoraValFecLim = Date.parse(semaforo["#{tarea['tareaDetonadora']}Fec"].to_s) + ultimoDias rescue "Sin Fecha" %>
+                  <% diasFaltantes = tareaDetonadoraValFecLim - Date.today rescue -1%>
+                  <% diasVencido = Date.today - tareaDetonadoraValFecLim rescue -1%>
+                  <% ultimoDias = tarea["dias#{mexPnm}"].to_i %>
+                  <% status_checar_si_aplica = @tareasHash[tarea['tarea']]['StatusChecarSiAplica'] %>
+                  <% status_checar_si_aplica_val = -1 %>
+                  <% if status_checar_si_aplica.to_s != '' %>
+                    <% status_checar_si_aplica_val = semaforo[status_checar_si_aplica] %>
+                  <% end %>
+                  <% if primera_tarea %>
+                    <td>
+                      <strong>
+                        <%= valFec %>
+                      </strong>
+                    </td>
+                    <% primera_tarea = false %>
+                  <% end %>
+                  <%# hay un nuevo campo StatusChecarSiAplica que si trae adentro el nombre de un campo, si ese campo esta en cero 0, entonces la tarea se marca como que no aplica. Si StatusChecarSiAplica viene vacio -1 o el campo contenido trae 1, todo sigue igual %>
+                  <td>
+                    <a href="#" style="color: inherit;" data-toggle="tooltip" title="<%= tarea['Tooltip'] %> - debug:<%= status_checar_si_aplica %>;aplicaval:<%= status_checar_si_aplica_val %>" %>
+                      <% if status_checar_si_aplica_val == 0 %>
+                        <span style="color:#D3D3D3" class="glyphicon glyphicon-minus"></span>
+                      <% elsif val == 1 %>
+                        <span class="glyphicon glyphicon-ok"></span>
+                      <% elsif val == 0 and tareaDetonadoraVal == 1 and diasVencido <= 0 # valFecLim != "Sin Fecha" and valFecLim >= Date.today %>
+                        <span style="color:#483D8B" class="glyphicon glyphicon-eye-open"></span>
+                      <% elsif val == 0 and tareaDetonadoraVal == 1 and (valFecLim == "Sin Fecha") or (valFecLim != "Sin Fecha" and valFecLim < Date.today) %>
+                        <span style="color:red" class="glyphicon glyphicon-remove"></span>
+                      <% else %>
+                        <span style="color:#D3D3D3" class="glyphicon glyphicon-unchecked"></span>
+                      <% end %>
+                    </a>
+                  </td>
+                <% end %>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+
+  <% else %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr>
+          <td>Sin Datos</td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<%= render 'leyenda' %>
+
+<br />
+</div>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+

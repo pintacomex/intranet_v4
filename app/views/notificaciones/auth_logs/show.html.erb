@@ -1,0 +1,64 @@
+<br><br>
+<%= render(partial: '/notificaciones/navpills') %>
+<br><br>
+<div class="container">
+	<br><br><br>
+	<div class="text-right col-md-12 col-sm-12 center-block inner-top-sm card ">
+
+		<h1 class="text-center">Detalle de Autorización</h1>
+		<hr>
+		<p>
+		  <strong>Empresa:</strong>
+		  <%= @auth.empresa %>
+		</p>
+
+		<p>
+		  <strong>Sucursal:</strong>
+		  <%= @auth.sucursal %>
+		</p>
+
+		<p>
+		  <strong>PC:</strong>
+		  <%= @auth.pc %>
+		</p>
+
+		<p>
+		  <strong>Número de Autorización:</strong>
+		  <%= @auth.numAuth %>
+		</p>
+
+		<p>
+		  <strong>Nivel:</strong>
+		  <%= @auth.nivel %>
+		</p>
+
+		<p>
+		  <strong>Descripción:</strong>
+		  <%= @auth.descripcion %>
+		</p>
+
+		<p>
+		  <strong>Respuesta:</strong>
+		  <%= @auth.respuesta %>
+		</p>
+
+		<p>
+		  <strong>Status:</strong>
+		  <%= @auth.status %>
+		</p>
+
+		<p>
+		  <strong>PdvPrueba:</strong>
+		  <%= @auth.pdvPrueba == 0 ? "No" : "Sí" %>
+		</p>
+
+		<p>
+		  <strong>Fecha y Hora:</strong>
+		  <%= @auth.fechaHora %>
+		</p>
+
+		<%= link_to 'Regresar', "/notificaciones/auth_logs" %>
+
+	</div>
+
+</div>

@@ -1,0 +1,72 @@
+
+<%= render(partial: '/notificaciones/navpills') %>
+<br><br><br>
+<h1 class="text-center">Autorizaciones Solicitadas</h1>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+	<div class="input-group col-md-5">
+    <input id="filtrar" type="text" class="form-control" placeholder="Buscar...">
+  </div>
+  <br><br>
+
+    <div class="pull-right">
+      <%= paginate @auths %>
+    </div>
+
+	<br>
+	<br>
+	<br>
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+
+	  <thead>
+	    <tr>
+	      <th>Emp-Suc</th>
+	      <th>Nivel</th>
+	      <th>Descripción</th>
+	      <th>Respuesta</th>
+	      <th>Status</th>
+	      <th>Fecha y Hora</th>
+	    </tr>
+	  </thead>
+
+	  <tbody class="buscar">
+	    <% @auths.each do |i| %>
+	      <tr>
+	        <td><%= link_to "#{i.empresa}-#{i.sucursal}", "/notificaciones/autorizaciones/#{i.id}" %></td>
+	        <td><%= i.nivel %></td>
+	        <td><%= i.descripcion.truncate(35) %></td>
+	        <td><%= i.respuesta.truncate(35) %></td>
+	        <td><%= getStatus(i.status) %></td>
+	        <td><%= i.created_at.to_s[0..18] %></td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+	</table>
+
+    <div class="pull-right">
+      <p><%= paginate @auths %></br></p>
+    </div>
+
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+
+            (function ($) {
+
+                $('#filtrar').keyup(function () {
+
+                    var rex = new RegExp($(this).val(), 'i');
+                    $('.buscar tr').hide();
+                    $('.buscar tr').filter(function () {
+                        return rex.test($(this).text());
+                    }).show();
+
+                })
+
+            }(jQuery));
+
+        });
+</script>

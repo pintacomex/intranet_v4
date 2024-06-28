@@ -1,0 +1,332 @@
+<h1 class="text-center">Antigüedad de Saldos de Factura a Detalle</h1>
+<% if @antsaldos && @antsaldos.count > 0 %>
+  <p>Zona: <%= @antsaldos[0]['ZonaAsig'] %> - Sucursal: <%= @antsaldos[0]['Sucursal'] %> - <%= @antsaldos[0]['NombreSuc'] %> - Cliente: <%= @antsaldos[0]['Idcliente'] %> - <%= @antsaldos[0]['NombreCli'] %>  <%= "al #{@ultimaAct.to_s}" if @ultimaAct %>
+  <% if @antsaldos[0]['Sucursal'] != @antsaldos[0]['SucOrigen'] %>
+    <br>Sucursal en la que se originó la venta: <%= @antsaldos[0]['SucOrigen'] %> - <%= @dbComun.connection.select_all("SELECT * FROM sucursal WHERE Num_suc = #{@antsaldos[0]['SucOrigen']} LIMIT 1")[0]['Nombre'] rescue 'Sin Nombre' %>
+  <% end %>
+  </p>
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <% if @antsaldos && @antsaldos.count > 0 %>
+
+    <small>
+      <%= link_to "Regresar", "/ant_saldos_cliente?suc=#{@antsaldos[0]['Sucursal']}&idc=#{@antsaldos[0]['Idcliente']}" %>
+    </small>
+
+    <br />
+    <div class="input-group col-md-5">
+      <input id="filtrar" type="text" class="form-control" placeholder="Buscar...">
+    </div>
+    <br><br>
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Id del Cliente">Id</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre del Cliente">Cliente</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Estimada de Pago">Est Pago</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Importe de Ventas">Ventas</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Importe de Pagos">Pagos</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Ventas dentro del Plazo">En Plazo</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Ventas vencidas de 1-30 Días">1-30</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Ventas vencidas de 31-60 Días">31-60</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Ventas vencidas de 61-90 Días">61-90</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Ventas vencidas por más de 91 Días">91+</a></th>
+        </tr>
+      </thead>
+
+      <tbody class="buscar">
+        <% @antsaldos.each do |m| %>
+          <tr>
+            <td><%= m['Idcliente'] %></td>
+            <td><%= m['NombreCli'] %></td>
+            <td><%= fix_show_date(m['FechaFac']) %></td>
+            <td><%= fix_show_date( ( m['faFechaAcl'].to_s.length > 0 ? m['faFechaAcl'] : m['FechaEstPago'] ) ) %></td>
+            <td><%= m['ControlFac'] %></td>
+            <td><%= m['Ventas'] > 0 ? number_to_currency(m['Ventas'], :locale => :mx, :precision => 2) : "" %></td>
+            <td><%= m['Pagos'] > 0 ? number_to_currency(m['Pagos'], :locale => :mx, :precision => 2) : "" %></td>
+            <td><%= m['Ventas0_30'] > 0 ? raw("<span class='label label-default'>") + number_to_currency(m['Ventas0_30'], :locale => :mx, :precision => 2) + raw("</span>") : "" %></td>
+            <td><%= m['Ventas31_60'] > 0 ? raw("<span class='label label-success'>") + number_to_currency(m['Ventas31_60'], :locale => :mx, :precision => 2) + raw("</span>") : "" %></td>
+            <td><%= m['Ventas61_90'] > 0 ? raw("<span class='label label-warning'>") + number_to_currency(m['Ventas61_90'], :locale => :mx, :precision => 2) + raw("</span>") : "" %></td>
+            <td><%= m['Ventas91_120'] > 0 ? raw("<span class='label label-info'>") + number_to_currency(m['Ventas91_120'], :locale => :mx, :precision => 2) + raw("</span>") : "" %></td>
+            <td><%= m['Ventas121_'] > 0 ? raw("<span class='label label-danger'>") + number_to_currency(m['Ventas121_'], :locale => :mx, :precision => 2) + raw("</span>") : "" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br />
+    <%#= link_to "Descargar para Excel", "/ant_saldos_sucursal.csv?suc=#{@antsaldos[0]['Sucursal']}" %>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title text-center">Movimientos</h3>
+      </div>
+      <div class="panel-body">
+        <p>Movimientos asociados a la venta</p>
+      </div>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="">
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">Nummov</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Tipo Subtipo">Tipo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Importe Total">Total</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Importe Ventas">Ventas</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Importe Pagos">Pagos</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @hcred.each do |m| %>
+            <tr>
+              <td><%= fix_show_date(m['Fecha']) %></td>
+              <td><%= m['Nummov'] %></td>
+              <td><%= m['Controlfac'] %></td>
+              <td><%= m['Tipo_subt'] %> - <%= m['NomTipoSubTipo'] %></td>
+              <td><%= m['Total'] > 0 ? number_to_currency(m['Total'], :locale => :mx, :precision => 2) : "" %></td>
+              <td><%= m['Ventas'] > 0 ? number_to_currency(m['Ventas'], :locale => :mx, :precision => 2) : "" %></td>
+              <td><%= m['Pagos'] > 0 ? number_to_currency(m['Pagos'], :locale => :mx, :precision => 2) : "" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div class="panel-body text-right">
+        <p>Movimientos asociados a la venta en PDV</p>
+      </div>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" >
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">Nummov</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Tipo Subtipo">Tipo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Importe Total">Total</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @hmov.each do |m| %>
+            <tr>
+              <td><%= fix_show_date(m['Fecha']) %></td>
+              <td><%= m['Nummov'] %></td>
+              <td><%= m['Controlfac'] %></td>
+              <td><%= m['Tipo_subt'] %> - <%= m['NomTipoSubTipo'] %></td>
+              <td><%= m['Total'] > 0 ? number_to_currency(m['Total'], :locale => :mx, :precision => 2) : "" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-6 col-sm-6">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center">Comentarios</h3>
+        </div>
+        <div class="panel-body text-right">
+          <div id="message-history">
+            <% @chat_comments.each do |comment| %>
+              <div class="message">
+                  <% if !comment['userName'].nil? %>
+                    <a href="mailto:<%= comment['userEmail'] %>" class="message_username"><%= comment['userName'].to_s.gsub(" - ", " ") %></a>
+                  <% end %>
+                  <span class="message_timestamp"><%= comment['FechaHora'].to_s(:db)[0..19] %></span>
+                  <span class="message_content"><%= comment['Comentario'] %></span>
+              </div>                
+            <% end %>
+          </div>
+          <form class="form-horizontal">
+            <%= hidden_field_tag 'suc_origen', @suc_origen %>
+            <%= hidden_field_tag 'control_fac', @control_fac %>
+
+            <div class="form-group">
+              <div class="col-md-6 col-sm-6">
+                <br>
+                <%= text_area_tag 'nuevo_comentario', nil, size: "50x3", class: "form-control", placeholder: "Nuevo Comentario" %>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-info">Agregar Comentario</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-6 col-sm-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center">Fecha de Aclaración</h3>
+        </div>
+        <div class="panel-body">
+          <center>
+
+            <% if @antsaldos[0]['faFechaAcl'] %>
+              <h4>Fecha Límite de Aclaración: <%= @antsaldos[0]['faFechaAcl'] %></h4>
+              <p><%= @antsaldos[0]['faComentario'].to_s.length > 0 ? "Nota: #{@antsaldos[0]['faComentario']}" : "Sin Nota." %></p>
+              <small>
+                <b>Por: <a href="mailto:<%= @antsaldos[0]['userEmail'] %>"><%= @antsaldos[0]['userName'] %></a> (<%= @antsaldos[0]['faFechaHora'].to_s(:db)[0..9] %>)</b>
+              </small><br><br>
+              <% if @puede_editar_fecha_acl %>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                  Editar
+                </button>
+                <a href="/ant_saldos_detalle?suc_origen=<%= @suc_origen %>&control_fac=<%= @control_fac %>&borrar_fecha_acl=1" class="btn btn-danger btn-sm">Borrar</a>
+              <% end %>
+            <% else %>
+              <h4>Sin Fecha Límite de Aclaración Asignada</h4>
+              <% if @puede_editar_fecha_acl %>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                  Agregar Fecha Límite de Aclaración
+                </button>
+              <% end %>
+            <% end %>
+
+          </center>
+        </div>
+      </div>
+    </div>
+
+    <% if @puede_editar_fecha_acl %>
+
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Editar Fecha Límite de Aclaración</h4>
+            </div>
+
+            <form class="form-horizontal">
+              <div class="modal-body">
+                <div class="ref-group">
+
+                  <%= hidden_field_tag 'suc_origen', @suc_origen %>
+                  <%= hidden_field_tag 'control_fac', @control_fac %>
+
+                  <div class="form-group">
+                    <label class="col-sm-4 control-label">Nueva Fecha Límite de Aclaración</label>
+                    <div class="col-md-6 col-sm-6">
+
+                      <!-- <div id="datepicker" data-date="12/03/2012"></div> -->
+                      <div id="datepicker" data-date="<%= @antsaldos[0]['faFechaAcl'] ? @antsaldos[0]['faFechaAcl'].strftime("%m/%d/%Y") : (Date.today + 30.day).strftime("%m/%d/%Y") %>"></div>
+                      <input type="hidden" id="fecha_acl" name="fecha_acl" />
+
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-sm-4 control-label">Nota</label>
+                    <div class="col-md-6 col-sm-6">
+                      <%= text_area_tag 'comentario', @antsaldos[0]['faComentario'] ? @antsaldos[0]['faComentario'] : "", size: "25x3", class: "form-control", placeholder: "Agregar nota" %>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+    
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+  
+
+      <script>
+        $(document).ready(function() {
+          (function ($) {
+
+            $('#filtrar').keyup(function () {
+
+                var rex = new RegExp($(this).val(), 'i');
+                $('.buscar tr').hide();
+                $('.buscar tr').filter(function () {
+                    return rex.test($(this).text());
+                }).show();
+
+            })
+
+        }(jQuery));
+
+          $('#datepicker').datepicker();
+          $("#fecha_acl").val(
+            $("#datepicker").datepicker('getFormattedDate')
+          ) 
+          $("#datepicker").on("changeDate", function(event) {
+              $("#fecha_acl").val(
+                  $("#datepicker").datepicker('getFormattedDate')
+               )
+          });
+        });
+      </script>
+    <% end %>
+
+  <% else %>
+
+    Sin Datos.
+
+  <% end %>
+
+</div>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+
+</style>

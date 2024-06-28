@@ -1,0 +1,131 @@
+<h1 class="text-center">Antigüedad de Saldos de Facturas Vencidas</h1>
+<h6>Días Vencidas: <%= @dias %> - <%= Date.today - @dias.days %></h6>
+
+
+<% if @antsaldos && @antsaldos.count > 0 %>
+
+  <div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+    <small><%= link_to "Regresar", "/ant_saldos" %></small>
+    <br />
+
+    <div class="pull-right text-right">
+      <small>
+        <%= form_tag "/ant_saldos_vencidas", method: :get do %>
+          <%= hidden_field_tag 'sin_aclarar', @ver_sin_aclarar %>
+           Días Vencidas 
+           <%= select_tag 'dias', options_for_select((0..365).step(5), @dias.to_i) %>
+           <%= submit_tag 'Ir', class: "btn btn-xs btn-primary" %>
+        <% end %>
+        <% if @ver_sin_aclarar %>
+          <a href="/ant_saldos_vencidas/?dias=<%= @dias %>">Ver todas</a> |
+          Ver sin Aclarar
+        <% else %>
+          Ver todas |
+          <a href="/ant_saldos_vencidas/?dias=<%= @dias %>&sin_aclarar=1">Ver sin Aclarar</a>
+        <% end %>
+      </small>
+      <br/>
+      
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Zona y Numero de la Sucursal">Zona-Suc</a></th>          
+          <th><a href="#" data-toggle="tooltip" title="Id del Cliente">Id</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre del Cliente">Cliente</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Importe de Venta">Venta</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Saldo por Pagar">Saldo</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Estimada de Pago o Fecha de Aclaración">FechaEst</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Última Factura Emitida">UltFac</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Último Comentario">UltComent</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Días de vencidas">Días</a></th>
+        </tr>
+      </thead>
+<!-- (cliente, fecha, control, importe, Fechaest de pago, fecha ult. fac. emitida, ult comentario si hay) -->
+      <tbody>
+        <% @antsaldos.each do |m| %>
+          <tr>
+            <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= "#{m['ZonaAsig']}-#{m['Sucursal'].to_s.rjust(3,'0')}" %><%= m['FechaAcl'] ? raw(" <span class='glyphicon glyphicon-calendar' aria-hidden='true'> </span>") : "" %><%= m['ascFechaHora'] ? raw(" <span class='glyphicon glyphicon-comment' aria-hidden='true'> </span>") : "" %></a></td>
+            <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['Idcliente'] %></a></td>
+            <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%= m['NombreCli'].to_s %>'><%= m['NombreCli'].to_s.truncate(30) %></a></td>
+            <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= fix_show_date(m['FechaFac']) %></a></td>
+            <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['ControlFac'] %></a></td>
+            <td><%= m['Ventas'] > 0 ? number_to_currency(m['Ventas'], :locale => :mx, :precision => 2) : "" %></td>
+            <td><%= number_to_currency(m['Ventas'] - m['Pagos'], :locale => :mx, :precision => 2) %></td>
+            <td><%= fix_show_date( ( m['FechaAcl'].to_s.length > 0 ? m['FechaAcl'] : m['FechaEstPago'] ) ) %></td>
+            <td><%= fix_show_date( m['ultFactura'].to_s ) %></td>
+            <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['ultComentario']}"%>'><%= m['ultComentario'].truncate(15) %></a></td>
+            <td><%= m['dias'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br />
+    <%#= link_to "Descargar para Excel", "/ant_saldos_sucursal.csv?suc=#{@antsaldos[0]['Sucursal']}" %>
+    
+    <%= link_to "Descargar para Excel", "/ant_saldos_vencidas.csv?dias=#{@dias}&sin_aclarar=#{@ver_sin_aclarar ? 1 : 0}" %>
+
+
+  <% else %>
+
+    Sin Datos.
+
+  <% end %>
+
+</div>
+
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

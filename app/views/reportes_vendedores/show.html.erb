@@ -1,0 +1,276 @@
+<h1 class="text-center">Reporte de ventas de <%= @name_vend['Nombre'] %></h1>
+<hr><br><br>
+<%= link_to "Descargar PDF", root_path << "print_pdf_vend/#{@name_vend['IdVendedor']}/#{@month}.pdf", class: "btn btn-primary" %>
+<br><br>
+<div class="container">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Nombre Campo</th>
+        <th scope="col">Valor</th>
+        <th scope="col">Nombre Campo</th>
+        <th scope="col">Valor</th>
+        <th scope="col">Nombre Campo</th>
+        <th scope="col">Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Sucursal</b></td>
+        <td><%= @vendedor['Sucursal'] %></td>
+        <td><b>Mes</b></td>
+        <td><%= @vendedor['Mes'] %></td>
+        <td><b>Idvendedor</b></td>
+        <td><%= @vendedor['Idvendedor'] %></td>
+      </tr>
+      <tr>
+        <td><b>ultFechaProcesada</b></td>
+        <td><%= @vendedor['ultFechaProcesada'] %></td>
+        <td><b>Dias</b></td>
+        <td><%= @vendedor['Dias'] %></td>
+        <td><b>Tickets</b></td>
+        <td><%= @vendedor['Tickets'] %></td>
+      </tr>
+      <tr>
+        <td><b>Piezas</b></td>
+        <td><%= @vendedor['Piezas'] %></td>
+        <td><b>Renglones</b></td>
+        <td><%= @vendedor['Renglones'] %></td>
+        <td><b>RenglonesRegalo</b></td>
+        <td><%= @vendedor['RenglonesRegalo'] %></td>
+      </tr>
+      <tr>
+        <td><b>TicketsContado</b></td>
+        <td><%= @vendedor['TicketsContado'] %></td>
+        <td><b>PiezasContado</b></td>
+        <td><%= @vendedor['PiezasContado'] %></td>
+        <td><b>RenglonesContado</b></td>
+        <td><%= @vendedor['RenglonesContado'] %></td>
+      </tr>
+      <tr>
+        <td><b>RenglonesRegaloContado</b></td>
+        <td><%= @vendedor['RenglonesRegaloContado'] %></td>
+        <td><b>TicketsCredito</b></td>
+        <td><%= @vendedor['TicketsCredito'] %></td>
+        <td><b>PiezasCredito</b></td>
+        <td><%= @vendedor['PiezasCredito'] %></td>
+      </tr>
+      <tr>
+        <td><b>RenglonesCredito</b></td>
+        <td><%= @vendedor['RenglonesCredito'] %></td>
+        <td><b>RenglonesRegaloCredito</b></td>
+        <td><%= @vendedor['RenglonesRegaloCredito'] %></td>
+        <td><b>VentaBruta</b></td>
+        <td><%= number_to_currency(@vendedor['VentaBruta'], :locale => :mx, :precision => 2)  %></td>
+      </tr>
+      <tr>
+        <td><b>Descuento</b></td>
+        <td><%= number_to_currency(@vendedor['Descuento'], :locale => :mx, :precision => 2)  %></td>
+        <td><b>VentaNeta</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNeta'], :locale => :mx, :precision => 2)  %></td>
+        <td><b>CostoDeVenta</b></td>
+        <td><%= number_to_currency(@vendedor['CostoDeVenta'], :locale => :mx, :precision => 2)  %></td>
+      </tr>
+      <tr>
+        <td><b>VentaBrutaContado</b></td>
+        <td><%= number_to_currency(@vendedor['VentaBrutaContado'], :locale => :mx, :precision => 2)  %></td>
+        <td><b>DescuentoContado</b></td>
+        <td><%= number_to_currency(@vendedor['DescuentoContado'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaNetaContado</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaContado'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>CostoDeVentaContado</b></td>
+        <td><%= number_to_currency(@vendedor['CostoDeVentaContado'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaBrutaCredito</b></td>
+        <td><%= number_to_currency(@vendedor['VentaBrutaCredito'], :locale => :mx, :precision => 2) %></td>
+        <td><b>DescuentoCredito</b></td>
+        <td><%= number_to_currency(@vendedor['DescuentoCredito'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>VentaNetaCredito</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaCredito'], :locale => :mx, :precision => 2) %></td>
+        <td><b>CostoDeVentaCredito</b></td>
+        <td><%= number_to_currency(@vendedor['CostoDeVentaCredito'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaNetaRegalos</b></td>
+        <td><%=number_to_currency(@vendedor['VentaNetaRegalos'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>VentaNetaPromocion</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaPromocion'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaNetaManual</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaManual'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaNetaClientehastaDF</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaClientehastaDF'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>VentaNetaClienteMayoreo</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaClienteMayoreo'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaNetaConvenio</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaConvenio'], :locale => :mx, :precision => 2) %></td>
+        <td><b>VentaNetaEmpleadoaCosto</b></td>
+        <td><%= number_to_currency(@vendedor['VentaNetaEmpleadoaCosto'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>DescRegalos</b></td>
+        <td><%= number_to_currency(@vendedor['DescRegalos'], :locale => :mx, :precision => 2) %></td>
+        <td><b>DescPromocion</b></td>
+        <td><%= number_to_currency(@vendedor['DescPromocion'], :locale => :mx, :precision => 2) %></td>
+        <td><b>DescManual</b></td>
+        <td><%= number_to_currency(@vendedor['DescManual'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>DescClientehastaDF</b></td>
+        <td><%= number_to_currency(@vendedor['DescClientehastaDF'], :locale => :mx, :precision => 2) %></td>
+        <td><b>DescClienteMayoreo</b></td>
+        <td><%= number_to_currency(@vendedor['DescClienteMayoreo'], :locale => :mx, :precision => 2) %></td>
+        <td><b>DescConvenio</b></td>
+        <td><%= number_to_currency(@vendedor['DescConvenio'], :locale => :mx, :precision => 2) %></td>
+      </tr>
+      <tr>
+        <td><b>DescEmpleadoaCosto</b></td>
+        <td><%= number_to_currency(@vendedor['DescEmpleadoaCosto'], :locale => :mx, :precision => 2) %></td>
+        <td><b>Replicado</b></td>
+        <td><%= @vendedor['Replicado'] %></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+    <h3 class="text-center">Incidencias</h3>
+    <br>
+    <table class="table table-responsive"  id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Del</th>
+          <th scope="col">Al</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Excepcion</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">SucOrigen</th>
+          <th scope="col">DiasHabiles</th>
+          <th scope="col">DiasTranscurridos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendexcepsvend.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller['Del'] %></td>
+            <td><%= seller['Al'] %></td>
+            <td><%= seller['Nombre'] %></td>
+            <td><%= seller['Excepcion'] %></td>
+            <td><%= seller['Sucursal'] %></td>
+            <td><%= seller['SucOrigen'] %></td>
+            <td><%= seller['DiasHabiles'] %></td>
+            <td><%= seller['DiasTranscurridos'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h3 class="text-center">Ventas fechas con excepción</h3>
+    <br>
+    <table class="table table-responsive"  id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">SucOrigen</th>
+          <th scope="col">Del</th>
+          <th scope="col">Al</th>
+          <th scope="col">Fechas con venta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendedores_ventas.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller[:IdVendedor] %></td>
+            <td><%= seller[:Nombre] %></td>
+            <td><%= seller[:Sucursal] %></td>
+            <td><%= seller[:SucOrigen] %></td>
+            <td><%= "#{seller[:Del][0..3]}-#{seller[:Del][4..5]}-#{seller[:Del][6..7]}" %></td>
+            <td><%= "#{seller[:Al][0..3]}-#{seller[:Al][4..5]}-#{seller[:Al][6..7]}" %></td>
+            <td><%= seller[:Dias] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h3 class="text-center">Vendedores con menos del 20% de las ventas </h3>
+    <br>
+    <table class="table table-responsive" id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">Mes</th>
+          <th scope="col">Obj.Venta</th>
+          <th scope="col">Venta Neta</th>
+          <th scope="col">Porc.Venta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendedores_porcentaje_bajo.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller['Idvendedor'] %></td>
+            <td><%= "#{seller['Fecha'][0..3]}-#{seller['Fecha'][4..5]}-#{seller['Fecha'][-2..-1]}" %></td>
+            <td><%= seller['Nombre'] %></td>
+            <td><%= seller['Sucursal'] %></td>
+            <td><%= seller['Mes'] %></td>
+            <td><%= number_to_currency(seller['objetivoVenta'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(seller['VentaNeta'], :locale => :mx, :precision => 2) %></td>
+            <td><%= seller['porcentajeVenta'] rescue 0 %> %</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h3 class="text-center">Días de venta teoricos vs reales</h3>
+    <br>
+    <table class="table table-responsive" id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">Mes</th>
+          <th scope="col">UltFechaProcesada</th>
+          <th scope="col">Dias Operados</th>
+          <th scope="col">Dias con incidencias</th>
+          <th scope="col">Dias Por Transcurrir</th>
+          <th scope="col">Dias Habiles Suc</th>
+          <th scope="col">Dias de Diferencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendedores_diferencias.each_with_index do |seller, i| %>
+          <% if seller[:Diferencia].to_i != 0 %>
+            <tr>
+              <td><%= i+1 %></td>
+              <td><%= seller[:IdVendedor] %></td>
+              <td><%= seller[:Nombre] %></td>
+              <td><%= seller[:Sucursal] %></td>
+              <td><%= seller[:Mes] %></td>
+              <td><%= "#{seller[:ultFechaProcesada][0..3]}-#{seller[:ultFechaProcesada][4..5]}-#{seller[:ultFechaProcesada][-2..-1]}" %></td>
+              <td><%= seller[:Dias] %></td>
+              <td><%= seller[:DiasIncidencias] %></td>
+              <td><%= seller[:DiasPorTranscurrir].nil?  ? 0 : seller[:DiasPorTranscurrir]  %></td>
+              <td><%= seller[:DiasHabilesSuc] %></td>
+              <td><%= seller[:Diferencia] %></td>
+            </tr>
+          <% end %>  
+        <% end %>
+      </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,65 @@
+<%= form_tag("/todos_create", html: { class: 'form-horizontal' }) do %>
+
+  <div class="form-inputs loader-form">
+
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Tipo de To-Do</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'tipo', options_for_select(@tipos), autofocus: true, class: 'form-control' %>
+        <p class="help-block">Selecciona el Tipo del To-Do</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Involucrados</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'involucrados', options_for_select(@involucrados), class: 'form-control', multiple: true, placeholder: "Selecciona Grupos, Usuarios o Sucursales...", data: { placeholder: "Selecciona Grupos, Usuarios o Sucursales..." } %>
+        <p class="help-block">Selecciona los Involucrados a los que va dirigido el To-Do</p>
+        <%= check_box_tag 'grupos_individuales' %>
+        <p class="help-block">Crear To-Dos individuales a cada integrante de los grupos seleccionados (sólo en caso de seleccionar un grupo)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Prioridad</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'prioridad', options_for_select(@prioridades), class: 'form-control' %>
+        <p class="help-block">Selecciona la Prioridad del To-Do</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Asunto</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'asunto', '', class: 'form-control', placeholder: "Asunto" %>
+        <p class="help-block">Ingresa el Asunto del To-Do</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Descripción</label>
+      <div class="col-md-7 text-right">
+        <%= text_area_tag 'texto', nil, size: "50x10", class: "form-control", placeholder: "Descripción" %>
+        <p class="help-block">Ingresa una Descripción Completa del To-Do</p>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-3">
+      <div class="form-actions loader-form text-center">
+        <%= submit_tag "Enviar", class: "btn btn-primary " %>
+      </div>
+      <br><br>
+    </div>
+
+  </div>
+
+<% end %>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
+
+<script type="text/javascript">
+  $('#involucrados').chosen();
+</script>

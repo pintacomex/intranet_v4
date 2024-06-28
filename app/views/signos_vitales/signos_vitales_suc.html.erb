@@ -1,0 +1,169 @@
+<h3 class="text-center">Signos Vitales</h3>
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <h5><%= @descriptipoclientes %></h5>
+    <h5><%= @nommes + " de " + params[:periodo].to_s.first(4) %></h5>
+    <h5>Zona: <%= @zona + "-" + @nomzona[0]['NomZona'] %></h5>
+    <% if @signosvitalessuc.count > 0 %>
+
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Numero de Sucursal">Sucursal</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Nombre de Sucursal">Nombre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Tickets/Dia">Tickets/Dia</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Ticket Promedio">Ticket Promedio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Artículos/Ticket">Articulos/Ticket</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Renglones/Ticket">Renglones/Ticket</a></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @signosvitalessuc.each do |m| %>
+            <tr>
+              <td><%= m['ColSucursal'] %></td>
+              <td><%= m['ColNombre'] %></td>
+              <td><%= link_to number_with_delimiter(m['ColTicketsDia'], :locale => :mx, :precision => 2), "/signos_vitales_graf?zona=#{@zona}&suc=#{m['ColSucursal']}&tipoclientes=#{@tipoclientes}&signovit=1&sin_navegador=1", :target => "_blank", :style=>'color:#FF6666', :class => "css_class" %></td>
+              <td><%= link_to number_to_currency(m['ColTicketPromedio'], :locale => :mx, :precision => 2), "/signos_vitales_graf?zona=#{@zona}&suc=#{m['ColSucursal']}&tipoclientes=#{@tipoclientes}&signovit=2&sin_navegador=1", :target => "_blank", :style=>'color:#009933', :class => "css_class" %></td>
+              <td><%= link_to number_with_delimiter(m['ColArticulosTicket'], :locale => :mx, :precision => 2), "/signos_vitales_graf?zona=#{@zona}&suc=#{m['ColSucursal']}&tipoclientes=#{@tipoclientes}&signovit=3&sin_navegador=1", :target => "_blank", :style=>'color:#999900', :class => "css_class" %></td>
+              <td><%= link_to number_with_delimiter(m['ColRenglonesTicket'], :locale => :mx, :precision => 2), "/signos_vitales_graf?zona=#{@zona}&suc=#{m['ColSucursal']}&tipoclientes=#{@tipoclientes}&signovit=4&sin_navegador=1", :target => "_blank", :style=>'color:#9966FF', :class => "css_class" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br>
+      <%= link_to "Descargar para Excel", signos_vitales_suc_path(zona: @zona, periodo: @anomes, tipoclientes: @tipoclientes, format: "csv") %>
+
+    <% else %>
+      <br>
+      Sin Datos.
+    <% end %>
+  <% end %>
+</div>
+
+
+<% if @zona.to_i>0 && @suc.to_i>0 %>
+  <div class="loader-form">
+    <form class="form" role="form">
+      <div class="form-group">
+
+        <% numanoact = DateTime.now.year %>
+        <% nummesact = DateTime.now.month %>
+        <% nommesact = '' %>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="panel panel-primary">
+          <div class="panel-heading">Seleccione</div>
+          <div class="panel-body">
+
+            <div class="control-group">
+              <label class="control-label col-md-2" for="inputPassword">Periodo:</label>
+              <div class="controls">
+                <select class="combobox" name="periodo" id="idperiodo">
+                  <% 60.times do |i| %>
+                    <% nommesact = case nummesact %>
+                      <% when  1 then 'Enero' %>
+                      <% when  2 then 'Febrero' %>
+                      <% when  3 then 'Marzo' %>
+                      <% when  4 then 'Abril' %>
+                      <% when  5 then 'Mayo' %>
+                      <% when  6 then 'Junio' %>
+                      <% when  7 then 'Julio' %>
+                      <% when  8 then 'Agosto' %>
+                      <% when  9 then 'Septiembre' %>
+                      <% when 10 then 'Octubre' %>
+                      <% when 11 then 'Noviembre' %>
+                      <% when 12 then 'Diciembre' %>
+                    <% end %>
+                    <option value="<%= numanoact*100 + nummesact %>"><%= nommesact + ' ' + numanoact.to_s %></option>
+                    <% nummesact = nummesact -1 %>
+                    <% if nummesact == 0 %>
+                      <% nummesact = 12 %>
+                      <% numanoact = numanoact -1 %>
+                    <% end %>
+                  <% end %>
+                </select>
+                <script>
+                  $('#idperiodo').val( <%= params[:periodo].to_s %> )
+                </script>
+              </div>
+            </div>
+
+            <br>
+            <div class="control-group">
+              <label class="control-label col-md-2" for="inputPassword">Tipo de Clientes:</label>
+              <div class="controls">
+                <select class="combobox" name="tipoclientes" id="idtipoclientes">
+                  <option value="0">Todos</option>
+                  <option value="1">Público en general</option>
+                  <option value="2">Clientes conocidos</option>
+                </select>
+                <script>
+                  $('#idtipoclientes').val( <%= params[:tipoclientes].to_s %> )
+                </script>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary go-to-filter">Consultar</button>
+      </div>
+    </form>
+  </div>
+<% end %>
+
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

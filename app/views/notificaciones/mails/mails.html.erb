@@ -1,0 +1,103 @@
+
+<%= render(partial: '/notificaciones/navpills') %>
+<br><br><br>
+<h1 class="text-center">Configuración de Usuarios a Notificar</h1>
+<br>
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <br>
+  <div class="input-group col-md-5">
+    <input id="filtrar" type="text" class="form-control" placeholder="Buscar...">
+  </div>
+  <br>
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+    <thead>
+      <tr>
+        <th><a href="#" data-toggle="tooltip" title="Tipo de Notificación">Tipo</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Usuario a Notificar">Usuario</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Empresa a Notificar">Empresa</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Zona a Notificar">Zona</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Sucursal a Notificar">Suc</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Niveles de Escritura (que pueden aprobar/desaprobar)">Escritura</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Niveles de Lectura (que sólo pueden ver las notificaciones)">Lectura</a></th>
+        <th><a href="#" data-toggle="tooltip" title="PDV de Prueba (Recibe Notificaciones del PDV de Prueba)">PdvP</a></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <% if @notificaciones_mails && @notificaciones_mails.count > 0 %>
+
+      <tbody>
+        <% @notificaciones_mails.each do |m| %>
+          <tr>
+            <td><%= m['nomTipoMail'] %></td>
+            <td><%= m['Email'] %></td>
+            <td><%= m['nomEmpresa'] %></td>
+            <td><%= m['nomZona'] %></td>
+            <td><%= m['nomSucursal'] %></td>
+            <td><%= m['NivelEscritura'] %></td>
+            <td><%= m['NivelLectura'] %></td>
+            <td><%= m['PdvPrueba'] == 0 ? "No" : "Sí" %></td>
+            <td>
+              <%= link_to 'Editar', notificaciones_mails_edit_path(m), class: "btn btn-info btn-xs" %>
+              <%= link_to 'Borrar', m, method: :delete, data: { confirm: 'Está seguro?' }, class: "btn btn-danger btn-xs" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+
+    <% end %>
+
+  </table>
+  <br />
+
+  <a href="/notificaciones/mails_new" class="btn btn-primary">Crear Nuevo Usuario a Notificar</a>
+</div>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

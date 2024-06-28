@@ -1,0 +1,83 @@
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="global">
+  <thead>
+    <tr>
+      <% if entidad == "Region" %>
+        <th><a href="#" data-toggle="tooltip" title="Región">Región</a></th>
+      <% else %>
+        <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+      <% end %>
+      <th><a href="#" data-toggle="tooltip" title="Venta Neta">Venta Neta</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Gerencia">Objetivo Gerencia</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Gerencia ($)">Diferencia</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Gerencia (%)">%</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Dirección">Objetivo Dirección</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Dirección ($)">Diferencia</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Dirección (%)">%</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Mercancía">Stock Mercancía</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Cxc">Stock Cxc</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Cxc Mes Anterior">Stock Cxc MesAnt</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia entre Stock Cxc Actual y Mes Anterior">Diferencia</a></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% datos.each do |m| %>
+      <tr>
+        <% if entidad == "Region" %>
+          <td><%= m['Region'] %></td>
+        <% else %>
+          <td><%= m['Ciudad'] %></td>
+        <% end %>
+        <td><P align=right><%= number_to_currency(m['VentaNeta'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['ObjetivoGerencia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['DifGerencia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['PorceGerencia'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['ObjetivoDireccion'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['DifDireccion'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['PorceDireccion'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['StockMercancia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['StockCxc'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['StockCxcMesAnt'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['DifStockCxc'], :locale => :mx, :unit => "", :precision => 2) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="globalobjt">
+  <thead>
+    <tr>
+      <th><a href="#" data-toggle="tooltip" title="Total">Total</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Neta">Venta Neta</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Gerencia">Objetivo Gerencia</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Gerencia ($)">Diferencia</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Gerencia (%)">%</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Dirección">Objetivo Dirección</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Dirección ($)">Diferencia</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia Venta Neta Vs. Objetivo Dirección (%)">%</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Mercancía">Stock Mercancía</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Cxc">Stock Cxc</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Cxc Mes Anterior">Stock Cxc MesAnt</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Diferencia entre Stock Cxc Actual y Mes Anterior">Diferencia</a></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% datost.each do |m| %>
+      <tr>
+        <td><P align=right><%= m['Total'] %></td>
+        <td><P align=right><%= number_to_currency(m['VentaNeta'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['ObjetivoGerencia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['DifGerencia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['PorceGerencia'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['ObjetivoDireccion'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['DifDireccion'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['PorceDireccion'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['StockMercancia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['StockCxc'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['StockCxcMesAnt'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['DifStockCxc'], :locale => :mx, :unit => "", :precision => 2) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

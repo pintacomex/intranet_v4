@@ -1,0 +1,578 @@
+<% if params.has_key?(:region) %>
+  <% if @tablaregion && @tablaregion.count > 0 %>
+    <% if @region.to_i == 0 %>
+      <% @nomRegion = "Empresa" %>
+    <% else %>
+      <% @tablaregion.each do |a| %>
+        <% @nomRegion = "Región " + a['Nombre'] if a['IdAgrupa'] == @region.to_i%>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @nivelopc == "ContriReg" || @nivelopc == "ContriCd" || @nivelopc == "ContriSuc" %>
+    <% tituloComp = " -- Contribución en Ventas" %>
+  <% else %>
+    <% if @nivelopc == "GlobalVsObj" %>
+      <% tituloComp = " -- Global Objetivos" %>
+    <% else %>
+      <% tituloComp = " -- Global Ventas Consolidado" %>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+<% @titulo = ". ( Analisis de Resultados -- " + @nomRegion + tituloComp + " )" if params.has_key?(:nivelopc) %>
+
+<h3>Cálculo de Objetivos <%= params[:anosel].to_s%> <medium><%= @titulo %></medium></h3>
+
+<% if !params.has_key?(:anosel) %>
+  <div class="loader-form">
+    <form class="form" role="form">
+      <div class="form-group">
+
+        
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Analisis de Resultados</h3>
+          </div>
+          <div class="panel-body">
+            <div class="control-group">
+              <label class="control-label col-md-2" id="labanosel" name="labanosel" align=right>Año:</label>
+              <div class="controls">
+                <select class="combobox" name="anosel" id="idanosel">
+                  <% @tablaanosel.each do |a| %>
+                    <option value="<%= a['Año'] %>"><%=h(a['Año']) %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+            <br>
+            <div class="control-group">
+              <label class="control-label col-md-2" id="labregion" name="labregion" align=right>Entidad:</label>
+              <div class="controls">
+                <select class="combobox" name="region" id="idregion">
+                  <option value="0">Empresa</option>
+                  <% @tablaregion.each do |a| %>
+                    <option value="<%= a['IdAgrupa'] %>"><%=h(a['Nombre']) %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-default">
+              <div class="panel-body">
+
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_0" value="ContriReg" checked> Contribución Reg.
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_1" value="ContriCd" disabled> Contribución Cd.
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_2" value="ContriSuc" disabled> Contribución Suc.
+                </label>
+                <br>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_3" value="GlobalVsObj"> Global Objetivos
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_4" value="GlobalCons"> Global Ventas Consolidado    
+                </label>
+                <br>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary go-to-filter">Consultar</button>
+      </div>
+    </form>
+  </div>
+
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <% if params[:anosel].to_i > 0 %>
+      <% if @nivelopc == "ContriReg" || @nivelopc == "ContriCd" || @nivelopc == "ContriSuc" %>
+
+        <ul class="nav nav-tabs">
+           <li class="active"><a href="#tab1" data-toggle="tab">Enero</a></li>
+           <li><a href="#tab2" data-toggle="tab">Febrero</a></li>
+           <li><a href="#tab3" data-toggle="tab">Marzo</a></li>
+           <li><a href="#tab4" data-toggle="tab">Abril</a></li>
+           <li><a href="#tab5" data-toggle="tab">Mayo</a></li>
+           <li><a href="#tab6" data-toggle="tab">Junio</a></li>
+           <li><a href="#tab7" data-toggle="tab">Julio</a></li>
+           <li><a href="#tab8" data-toggle="tab">Agosto</a></li>
+           <li><a href="#tab9" data-toggle="tab">Septiembre</a></li>
+           <li><a href="#tab10" data-toggle="tab">Octubre</a></li>
+           <li><a href="#tab11" data-toggle="tab">Noviembre</a></li>
+           <li><a href="#tab12" data-toggle="tab">Diciembre</a></li>
+        </ul>
+
+
+        <div class="tab-content">
+
+          <% if @nivelopc == "ContriReg" %>
+            <% entidadSel = "Region" %>
+          <% else %>
+            <% if @nivelopc == "ContriCd" %>
+              <% entidadSel = "Ciudad" %>
+            <% else %>
+              <% entidadSel = "Sucursal" %>
+            <% end %>
+          <% end %>
+
+          <div class="tab-pane active" id="tab1">
+            <h5>Contibución en Ventas de Enero, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contriene, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab2">
+            <h5>Contibución en Ventas de Febrero, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrifeb, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab3">
+            <h5>Contibución en Ventas de Marzo, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrimar, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab4">
+            <h5>Contibución en Ventas de Abril, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contriabr, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab5">
+            <h5>Contibución en Ventas de Mayo, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrimay, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab6">
+            <h5>Contibución en Ventas de Junio, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrijun, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab7">
+            <h5>Contibución en Ventas de Julio, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrijul, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab8">
+            <h5>Contibución en Ventas de Agosto, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contriago, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab9">
+            <h5>Contibución en Ventas de Septiembre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrisep, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab10">
+            <h5>Contibución en Ventas de Octubre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrioct, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab11">
+            <h5>Contibución en Ventas de Noviembre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contrinov, :entidad => entidadSel} %> 
+          </div>
+          <div class="tab-pane" id="tab12">
+            <h5>Contibución en Ventas de Diciembre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => "gridcontri", :locals => {:datos => @contridic, :entidad => entidadSel} %> 
+          </div>
+        </div>
+
+      <% else %>
+        <% if @nivelopc == "GlobalVsObj" %>
+
+          <ul class="nav nav-tabs">
+             <li class="active"><a href="#tab1" data-toggle="tab">Enero</a></li>
+             <li><a href="#tab2" data-toggle="tab">Febrero</a></li>
+             <li><a href="#tab3" data-toggle="tab">Marzo</a></li>
+             <li><a href="#tab4" data-toggle="tab">Abril</a></li>
+             <li><a href="#tab5" data-toggle="tab">Mayo</a></li>
+             <li><a href="#tab6" data-toggle="tab">Junio</a></li>
+             <li><a href="#tab7" data-toggle="tab">Julio</a></li>
+             <li><a href="#tab8" data-toggle="tab">Agosto</a></li>
+             <li><a href="#tab9" data-toggle="tab">Septiembre</a></li>
+             <li><a href="#tab10" data-toggle="tab">Octubre</a></li>
+             <li><a href="#tab11" data-toggle="tab">Noviembre</a></li>
+             <li><a href="#tab12" data-toggle="tab">Diciembre</a></li>
+             <li><a href="#tab13" data-toggle="tab">Anual</a></li>
+          </ul>
+
+
+          <div class="tab-content">
+
+            <% if @region.to_i == 0 %>
+              <% entidadSel = "Region" %>
+            <% else %>
+              <% entidadSel = "Ciudad" %>
+            <% end %>
+
+            <div class="tab-pane active" id="tab1">
+              <h5>Global Objetivos de Enero, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjene, :datost => @globobjenet, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab2">
+              <h5>Global Objetivos de Febrero, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjfeb, :datost => @globobjfebt, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab3">
+              <h5>Global Objetivos de Marzo, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjmar,:datost => @globobjmart, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab4">
+              <h5>Global Objetivos de Abril, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjabr, :datost => @globobjabrt, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab5">
+              <h5>Global Objetivos de Mayo, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjmay, :datost => @globobjmayt, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab6">
+              <h5>Global Objetivos de Junio, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjjun, :datost => @globobjjunt, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab7">
+              <h5>Global Objetivos de Julio, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjjul, :datost => @globobjjult, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab8">
+              <h5>Global Objetivos de Agosto, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjago, :datost => @globobjagot, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab9">
+              <h5>Global Objetivos de Septiembre, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjsep, :datost => @globobjsept, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab10">
+              <h5>Global Objetivos de Octubre, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjoct, :datost => @globobjoctt, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab11">
+              <h5>Global Objetivos de Noviembre, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjnov, :datost => @globobjnovt, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab12">
+              <h5>Global Objetivos de Diciembre, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjdic, :datost => @globobjdict, :entidad => entidadSel} %> 
+            </div>
+            <div class="tab-pane" id="tab13">
+              <h5>Global Objetivos Anual, Año ( <%= params[:anosel].to_s %> )</h5>
+              <%= render :partial => "gridglobalobj", :locals => {:datos => @globobjanual, :datost => @globobjanualt, :entidad => entidadSel} %> 
+            </div>
+          </div>
+
+        <% else %>
+
+          <ul class="nav nav-tabs">
+           <li class="active"><a href="#tab1" data-toggle="tab">Venta Real</a></li>
+           <li><a href="#tab2" data-toggle="tab">Venta Año Anterior</a></li>
+           <li><a href="#tab3" data-toggle="tab">Crecimiento Bruto</a></li>
+           <li><a href="#tab4" data-toggle="tab">Crecimiento Neto</a></li>
+           <li><a href="#tab5" data-toggle="tab">Resumen</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+              <h5>Ventas Año ( <%= params[:anosel].to_s %> )</h5>
+
+              <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="tabladir">
+                <thead>
+                  <tr>
+                    <% if @region.to_i == 0 %>
+                      <th><a href="#" data-toggle="tooltip" title="Region">Region</a></th>
+                    <% else %>
+                      <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+                    <% end %>
+                    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Anual">Anual</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Participacion">Participacion</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @vtanetareal.each do |m| %>
+                    <tr>
+                      <% if @region.to_i == 0 %>
+                        <td><%= m['Region'] %></td>
+                      <% else %>
+                        <td><%= m['Ciudad'] %></td>
+                      <% end %>
+                      <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Anual'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Participacion'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane" id="tab2">
+              <h5>Ventas Año ( <%= params[:anosel].to_i - 1 %> )</h5>
+
+              <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="tabladir">
+                <thead>
+                  <tr>
+                    <% if @region.to_i == 0 %>
+                      <th><a href="#" data-toggle="tooltip" title="Region">Region</a></th>
+                    <% else %>
+                      <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+                    <% end %>
+                    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Anual">Anual</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Participación">Participacion</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @antvtaneta.each do |m| %>
+                    <tr>
+                      <% if @region.to_i == 0 %>
+                        <td><%= m['Region'] %></td>
+                      <% else %>
+                        <td><%= m['Ciudad'] %></td>
+                      <% end %>
+                      <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Anual'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Participacion'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane" id="tab3">
+              <h5>Crecimiento Bruto Año ( <%= params[:anosel].to_s %> )</h5>
+
+              <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="tabladir">
+                <thead>
+                  <tr>
+                    <% if @region.to_i == 0 %>
+                      <th><a href="#" data-toggle="tooltip" title="Region">Region</a></th>
+                    <% else %>
+                      <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+                    <% end %>
+                    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Anual">Anual</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @crecimientobruto.each do |m| %>
+                    <tr>
+                      <% if @region.to_i == 0 %>
+                        <td><%= m['Region'] %></td>
+                      <% else %>
+                        <td><%= m['Ciudad'] %></td>
+                      <% end %>
+                      <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Anual'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane" id="tab4">
+              <h5>Crecimiento Neto Año ( <%= params[:anosel].to_s %> )</h5>
+
+              <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="tabladir">
+                <thead>
+                  <tr>
+                    <% if @region.to_i == 0 %>
+                      <th><a href="#" data-toggle="tooltip" title="Region">Region</a></th>
+                    <% else %>
+                      <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+                    <% end %>
+                    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Anual">Anual</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @crecimientoneto.each do |m| %>
+                    <tr>
+                      <% if @region.to_i == 0 %>
+                        <td><%= m['Region'] %></td>
+                      <% else %>
+                        <td><%= m['Ciudad'] %></td>
+                      <% end %>
+                      <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                      <td><P align=right><%= number_to_currency(m['Anual'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane" id="tab5">
+              <h5>Resumen Año ( <%= params[:anosel].to_s %> )</h5>
+              <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="tabladir">
+                <thead>
+                  <tr>
+                    <th><a href="#" data-toggle="tooltip" title="Nombre">Nombre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Anual">Anual</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @totales.each do |m| %>
+                    <tr>
+                      <td><P align=right><%= m['Nombre'] %></td>
+                      <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Anual'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <%# raise @antsaldos.to_json.inspect raw(@antsaldos.to_json) %>
+
+      <br />
+
+      <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+      <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+      <%= javascript_include_tag "/dt_v3" %>
+
+    <% else %>
+
+      Sin Datos.
+
+    <% end %>
+  <% end %>
+
+</div>
+
+<script>
+  $(document).ready(function() {
+
+    $('#idregion').change(function() {
+      idregion_val = $('#idregion').val();
+//alert("Cambia Región "+idregion_val);
+      if (idregion_val == 0) {
+        $('#idnivelo_0').prop('disabled',false);
+        if ($('#idnivelo_1:checked').val() == "ContriCd" || $('#idnivelo_2:checked').val() == "ContriSuc") {
+          $('#idnivelo_0').prop('checked','checked');
+        }
+        $('#idnivelo_1').prop('disabled','disabled');
+        $('#idnivelo_2').prop('disabled','disabled');
+        return;
+      }
+      else
+      {
+        $('#idnivelo_0').prop('disabled','disabled');
+        $('#idnivelo_1').prop('disabled',false);
+        if ($('#idnivelo_0:checked').val() == "ContriReg") {
+          $('#idnivelo_1').prop('checked','checked');
+        }
+        $('#idnivelo_2').prop('disabled',false);
+      }
+    });
+
+  });
+</script>

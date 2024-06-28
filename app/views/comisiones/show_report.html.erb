@@ -1,0 +1,804 @@
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&subset=latin-ext" rel="stylesheet">
+	<link rel="stylesheet" href="/assets/fonts/batch-icons/css/batch-icons.css">
+	<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/bootstrap/mdb.min.css">
+	<link rel="stylesheet" href="/assets/css/hamburgers/hamburgers.css">
+	<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap-rtl.min.css">
+	<link rel="stylesheet" href="/assets/css/quillpro/quillpro.css">
+<br><br><br>
+<div class="container card">
+<br><br><br><br>
+<h1 class="text-center">Estimación de comisiones por ventas de <%= if @tipo == 3 || @tipo == 13 then "Coordinador" elsif @tipo == 2 || @tipo == 12 then "Sucursal" else "Vendedor" end%> del mes <%= @mes_name %> de <%= @anio %></h1>
+<br><br><br>
+<div class="row">
+	<div class="offset-md-8 col-md-3">
+    <% if @tipo != 11 and @tipo != 12 and @tipo != 13 %>
+			<%= link_to  "Generar PDF", root_path << "print_pdf/#{@num_empleado}-#{@params_mes}-#{@comision_mes['Sucursal']}-#{@comision_mes['IdVendedor'].to_s}-#{@t_permiso}-#{@tipo}-#{@categoria}.pdf", class: "btn  btn-primary" %>
+    <% end %>
+	</div>
+</div>
+<br><br><br>
+	<div class="row">
+		<div class="col-md-6 text-right">
+			<h3>Nombre:</h3>
+			<h1><%=  @current_vendedor_name %></h1>
+			<h3><%= @tipo == 2 ? "" : "Num.Empleado: #{@num_empleado}" %></h3>
+			<% if @tipo == 1 || @tipo == 2 || @tipo == 11 || @tipo == 12 %>
+				<h3>Sucursal: <%= @comision_mes['Sucursal'] %>-<%= @nombre_suc['Nombre'] %></h3>
+			<% elsif @tipo == 13 %>
+				<h3>Región: <%= @comision_mes['subZona'] %></h3>
+			<% else %>
+				<h3>Zona:<%= @comision_mes['Zona'] %> <br> SubZona: <%= @comision_mes['SubZona'] %></h3>
+			<% end %>
+		</div>
+		<div class="col-md-6 mb-5">
+			<% if @tipo == 1 || @tipo == 2 || @tipo == 11 || @tipo == 12 %>
+				<h3>Último Día Procesado: <%= @comision_mes['ultFechaProcesada'][-2..-1] %>-<%= @comision_mes['ultFechaProcesada'][4..5] %>-<%= @comision_mes['ultFechaProcesada'][0..3] %></h3>
+			<% else %>
+				<h3>Último Día Procesado: <%= @comision_mes['UltFechaProcesada'][-2..-1] %>-<%= @comision_mes['UltFechaProcesada'][4..5] %>-<%= @comision_mes['UltFechaProcesada'][0..3] %></h3>
+			<% end %>
+			<h3 >Días con Venta: <%= number_to_currency(@comision_mes['DiasOperados'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %> Días</h3>
+			<h3>Días Restantes en el Mes: <%= number_to_currency(@comision_mes['DiasPorTranscurrir'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %> Días</h3>
+			<% if @tipo == 3 %>
+				<h3>Comisión de <%= @comision_mes['Categoria'] == '3' ? "Coordinador" : "Regional" %></h3>
+			<% end %>
+		</div>
+	</div>
+	<br><br><br>
+	<div class="offset-md-2">
+		<div class="row table-responsive-sm col-md-12 ">
+			<table class="table table-bordered text-right">
+        <% if @tipo == 11 %>
+          <thead>
+            <tr>
+              <th>INDICADORES</th>
+              <th>Objetivo</th>
+              <th>Alcance</th>
+              <th>Alcance Proyectado</th>
+              <th>Evaluacion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ventas Netas Sucursal</td>
+              <td><%= number_to_currency(@comision_mes['ObjNetasSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['VentaNetaSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNetasSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoNetasSuc']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Ventas Netas Asesor</td>
+              <td><%= number_to_currency(@comision_mes['ObjNetasVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['VentaNetaVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNetasVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoNetasVend']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Ticket Promedio</td>
+              <td><%= number_to_currency(@comision_mes['ObjTPVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TPVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaTPVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoTPVend']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Numero de Tickets</td>
+              <td><%= number_to_currency(@comision_mes['ObjNTVend'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['NTVend'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNTVend'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoNTVend']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Articulos por Tickets</td>
+              <td><%= number_to_currency(@comision_mes['ObjAxTVend'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['AxTVend'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaAxTVend'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoAxTVend']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Excelencia Operativa</td>
+              <td><%= number_to_currency(@comision_mes['ObjExOpSuc'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['ExOpSuc'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaExOpSuc'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoExOpSuc']).round(2) %> %</td>
+            </tr>
+          </tbody>
+        <% elsif @tipo == 12 %>
+          <thead>
+            <tr>
+              <th>INDICADORES DE SUCURSAL</th>
+              <th>Objetivo</th>
+              <th>Alcance</th>
+              <th>Alcance Proyectado</th>
+              <th>Evaluacion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ventas Netas Sucursal</td>
+              <td><%= number_to_currency(@comision_mes['ObjNetas'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['VentaNetaSucursal'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNetas'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoNetas']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Ticket Promedio</td>
+              <td><%= number_to_currency(@comision_mes['ObjTP'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TPSucursal'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaTP'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoTP']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Numero de Tickets</td>
+              <td><%= number_to_currency(@comision_mes['ObjNT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TicketsSucursal'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoNT']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Articulos por Tickets</td>
+              <td><%= number_to_currency(@comision_mes['ObjAxT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['AxTSucursal'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaAxT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoAxT']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Porcentaje de Descuento</td>
+              <td><%= (@comision_mes['ObjPorcDescAjustado']).round(2) %> %</td>
+              <td><%= (@comision_mes['TendenciaPorcDesc']).round(2) %> %</td>
+              <td><%= (@comision_mes['TendenciaPorcDesc']).round(2) %> %</td>
+              <td><%= (@comision_mes['CumplimientoPorcDesc']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Excelencia Operativa</td>
+              <td><%= number_to_currency(@comision_mes['ObjExOp'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['ExOp'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaExOp'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoExOp']).round(2) %> %</td>
+            </tr>
+          </tbody>
+        <% elsif @tipo == 13 %>
+          <thead>
+            <tr>
+              <th>INDICADORES DE ZONA</th>
+              <th>Objetivo</th>
+              <th>Alcance</th>
+              <th>Alcance Proyectado</th>
+              <th>Evaluación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ventas Netas</td>
+              <td><%= number_to_currency(@comision_mes['ObjNetas'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['Netas'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNetas'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoNetas']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Ticket Promedio</td>
+              <td><%= number_to_currency(@comision_mes['ObjTP'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TP'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaTP'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoTP']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Numero de Tickets</td>
+              <td><%= number_to_currency(@comision_mes['ObjNT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['NT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoNT']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Articulos por Tickets</td>
+              <td><%= number_to_currency(@comision_mes['ObjAxT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['AxT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaAxT'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoAxT']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Porcentaje de Descuento</td>
+              <td><%= (@comision_mes['ObjPorcDesc']).round(2) %> %</td>
+              <td><%= (@comision_mes['PorcDesc']).round(2) %> %</td>
+              <td><%= (@comision_mes['TendenciaPorcDesc']).round(2) %> %</td>
+              <td><%= (@comision_mes['CumplimientoPorcDesc']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Excelencia Operativa</td>
+              <td><%= number_to_currency(@comision_mes['ObjExOp'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['ExOp'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaExOp'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= (@comision_mes['CumplimientoExOp']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>EBITDA mes ant.</td>
+              <td><%= number_to_currency(@comision_mes['ObjEbitda'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['Ebitda'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaEbitda'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoEbitda']).round(2) %> %</td>
+            </tr>
+            <tr>
+              <td>Mantenimientos Programados</td>
+              <td><%= number_to_currency(@comision_mes['ObjMant'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['Mant'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaMant'], :locale => :mx, :precision => 2) %></td>
+              <td><%= (@comision_mes['CumplimientoMant']).round(2) %> %</td>
+            </tr>
+          </tbody>
+        <% else %>
+          <tbody>
+            <% if @tipo == 1 %>
+              <!-- Vendedor -->
+              <tr>
+                <td><h6>Objetivo de ventas del vendedor del mes <%= @mes_name %> de <%= @anio %></h6></td>
+                <td><%= number_to_currency(@comision_mes['ObjNetas'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td><h6>Objetivo Diario de ventas del vendedor al día <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h6></td>
+                <td><%= number_to_currency(@comision_mes['ObjNetasAlDia'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td><h6>Ventas Totales del vendedor al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h6></td>
+                <td><%= number_to_currency(@comision_mes['Netas'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td><h6>Cumplimiento de Objetivo de Ventas del vendedor al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h6></td>
+                <td><%= @comision_mes['OpaNetas'] %> %</td>
+              </tr>
+            <% elsif @tipo == 2 %>
+              <!-- Sucursal -->
+              <tr>
+                <td><h6>Objetivo de ventas de la sucursal del mes <%= @mes_name %> de <%= @anio %></h6></td>
+                <td><%= number_to_currency(@comision_mes['ObjNetas'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td><h6>Objetivo de ventas de la sucursal al día <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h6></td>
+                <td><%= number_to_currency(@comision_mes['ObjNetasAlDia'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td><h6>Ventas Totales de la sucursal al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h6></td>
+                <td><%= number_to_currency(@comision_mes['Netas'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td><h6>Cumplimiento de Objetivo de Ventas de la Sucursal al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h6></td>
+                <td><%= @comision_mes['OpaNetas'] %> %</td>
+              </tr>
+            <% else %>
+              <!-- Regional -->
+              <tr>
+                <td><h6>Alcance <%= @comision_mes['DiasPorTranscurrir']  > 0 ? "proyectado" : "" %> de objetivo de ventas de la <%= if @level == 10 then  "zona" else "sucursal" end %></h6></td>
+                <td><h4><%= if @tipo == 2 then  @comision_mes['OpaNetas'] elsif @tipo == 1 then @comision_mes['OpaSucNetas'] else  @comision_mes['OpaNetas']	end %> %</h4></td>
+              </tr>
+              <tr>
+                <td><h6>Ventas proporcionales proyectadas de la <%= if @level == 10 then  "zona" else "sucursal" end %> para la comisiòn de Obj. de Suc.</h6></td>
+                <td><h4><%= if @tipo == 2 then number_to_currency(@comision_mes['SucContadoProyectada'].to_f + @comision_mes['CobranzaProyectada'].to_f, :locale => :mx, :precision => 2) elsif @tipo == 1 then number_to_currency(@comision_mes['BaseComiSucNetas'] * (@comision_mes['FactorDeAsignacion']/100), :locale => :mx, :precision => 2) else number_to_currency(@comision_mes['ContadoProyectada'].to_f + @comision_mes['CobranzaProyectada'].to_f, :locale => :mx, :precision => 2) end %></h4></td>
+              </tr>
+              <tr>
+                <td><h6>Ventas proyectadas del vendedor para comisiones individuales</h6></td>
+                <td><h4><%= number_to_currency(@comision_mes['NetasProyectadas'], :locale => :mx, :precision => 2) %></h4></td>
+              </tr>
+            <% end %>
+          </tbody>
+        <% end %>
+			</table>
+		</div>
+	</div>
+	<br><br>
+  <% if @tipo == 11 %>
+  	<div class="offset-md-1">
+      <div class="row table-responsive-sm col-md-12 ">
+        <table class="table table-bordered text-right">
+          <thead>
+            <tr>
+              <th>Base para Comisiones</th>
+              <th>Venta de Contado Actual</th>
+              <th>Base para Comisiones Actual</th>
+              <th>Base para Comisiones Proyectada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Venta de Contado de la Sucursal</td>
+              <td><%= number_to_currency(@comision_mes['VentaNetaContSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['BaseParaComisionesSucActual'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['BaseParaComisionesSucFinal'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Venta de Contado del Asesor</td>
+              <td><%= number_to_currency(@comision_mes['VentaNetaContVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['BaseParaComisionesActual'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['BaseParaComisionesFinal'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br><br>
+    <div class="offset-md-1">
+      <div class="row table-responsive-sm col-md-12 ">
+        <table class="table table-bordered text-right">
+          <thead>
+            <tr>
+              <th>COMISIONES</th>
+              <th>% Según evaluación</th>
+              <th>Comisión Actual</th>
+              <th>Comisión Proyectada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Por cumplimiento de Objetivo de ventas de la sucursal</td>
+              <td><%= (@comision_mes['PorcPagoNetasSuc']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNetasSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNetasSuc'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento de Objetivo de ventas del asesor</td>
+              <td><%= (@comision_mes['PorcPagoNetasVend']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNetasVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNetasVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Ticket Promedio</td>
+              <td><%= (@comision_mes['PorcPagoTPVend']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisTPVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyTPVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Numero de Tickets</td>
+              <td><%= (@comision_mes['PorcPagoNTVend']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNTVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNTVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Articulos por Ticket</td>
+              <td><%= (@comision_mes['PorcPagoAxTVend']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisAxTVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyAxTVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Excelencia Operativa</td>
+              <td><%= (@comision_mes['PorcPagoExOpSuc']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisExOpSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyExOpSuc'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>COMISION TOTAL</th>
+              <th></th>
+              <th><bold><%= number_to_currency(@comision_mes['ComisTotal'], :locale => :mx, :precision => 2) %></bold></th>
+              <th><%= number_to_currency(@comision_mes['ComisProyTotal'], :locale => :mx, :precision => 2) %></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  <% elsif @tipo == 12 %>
+  	<div class="offset-md-1">
+      <div class="row table-responsive-sm col-md-12 ">
+        <table class="table table-bordered text-right">
+          <thead>
+            <tr>
+              <th>BASE PARA COMISIONES</th>
+              <th>Dias Transcurridos</th>
+              <th>Dias faltantes</th>
+              <th>Venta Contado a la fecha</th>
+              <th>Base para Comisiones a la fecha</th>
+              <th>Base para Comisiones Proyectada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @comision_mes['TipoComision'] == 'E' %>
+              <tr>
+                <td>Dias operados como encargado</td>
+                <td><%= number_to_currency(@comision_mes['diasEncargadoSucPropia'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['diasPorLaborarNormales'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['VentaContComoEnc'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisComoEnc'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyComoEnc'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td>Dias inasistencia comisionables al 100%</td>
+                <td><%= number_to_currency(@comision_mes['diasNoLaboradosComisionables'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['DiasPorLaborarJustificables'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['VentaContJustificable'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisJustificable'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyJustificable'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td>Dias inasistencia comisionables al 50%</td>
+                <td><%= number_to_currency(@comision_mes['diasNoLaboradosComisionablesAl50'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['DiasPorLaborarJustificablesAl50'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['VentaContJustificableAl50'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisJustificableAl50'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyJustificableAl50'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td>Dias inasistencia No comisionables</td>
+                <td><%= number_to_currency(@comision_mes['diasNoLaboradosNoComisionables'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td></td>
+                <td><%= number_to_currency(@comision_mes['VetaContNoJustificable'], :locale => :mx, :precision => 2) %></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Cobranza del mes</td>
+                <td></td>
+                <td></td>
+                <td><%= number_to_currency(@comision_mes['CobranzaSucursal'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisCobranza'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyCobranza'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td>Penalización Cobranza del mes</td>
+                <td></td>
+                <td></td>
+                <td><%= number_to_currency(@comision_mes['PenalizacionCobranza'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisPenalizaCobranza'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyPenalizaCobranza'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+            <% else %>
+              <tr>
+                <td>Dias cubre encargado comisionables al 100%</td>
+                <td><%= number_to_currency(@comision_mes['diasCubriendoEncargadoAl100'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['diasPorLaborarCubriendoEncargadoAl100'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['VentaContCubre100'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisCubre100'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyCubre100'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+              <tr>
+                <td>Dias cubre encargado comisionables al 50%</td>
+                <td><%= number_to_currency(@comision_mes['diasCubriendoEncargadoAl50'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['diasPorLaborarCubriendoEncargadoAl50'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+                <td><%= number_to_currency(@comision_mes['VentaContCubre50'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseComisCubre50'], :locale => :mx, :precision => 2) %></td>
+                <td><%= number_to_currency(@comision_mes['BaseProyCubre50'], :locale => :mx, :precision => 2) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>IMPORTE BASE PARA COMISIONES</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th><%= number_to_currency(@comision_mes['BaseComisTotal'], :locale => :mx, :precision => 2) %></th>
+              <th><%= number_to_currency(@comision_mes['BaseComisProyTotal'], :locale => :mx, :precision => 2) %></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <br><br>
+    <div class="offset-md-1">
+      <div class="row table-responsive-sm col-md-12 ">
+        <table class="table table-bordered text-right">
+          <thead>
+            <tr>
+              <th>COMISIONES</th>
+              <th>% Según evaluación</th>
+              <th>Comisión Actual</th>
+              <th>Comisión Proyectada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Por cumplimiento de Objetivo de ventas</td>
+              <td><%= (@comision_mes['PorcPagoNetas']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNetasSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNetasSuc'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Ticket Promedio</td>
+              <td><%= (@comision_mes['PorcPagoTP']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisTPVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyTPVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Numero de Tickets</td>
+              <td><%= (@comision_mes['PorcPagoNT']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNTVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNTVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Articulos por Ticket</td>
+              <td><%= (@comision_mes['PorcPagoAxT']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisAxTVend'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyAxTVend'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Porcentaje de Descuento</td>
+              <td><%= (@comision_mes['PorcPagoPorcDesc']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisPorDesc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyPorDesc'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Excelencia Operativa</td>
+              <td><%= (@comision_mes['PorcPagoExOp']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisExOpSuc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyExOpSuc'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>COMISION TOTAL</th>
+              <th></th>
+              <th><bold><%= number_to_currency(@comision_mes['ComisTotal'], :locale => :mx, :precision => 2) %></bold></th>
+              <th><%= number_to_currency(@comision_mes['ComisProyTotal'], :locale => :mx, :precision => 2) %></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  <% elsif @tipo == 13 %>
+  	<div class="offset-md-1">
+      <div class="row table-responsive-sm col-md-12 ">
+        <table class="table table-bordered text-right">
+          <thead>
+            <tr>
+              <th>BASE PARA COMISIONES</th>
+              <th>Venta Neta Contado</th>
+              <th>Cobranza</th>
+              <th>Penalizacion de Cobranza</th>
+              <th>Numero de Coord/Reg</th>
+              <th>Base para Comisiones a la Fecha</th>
+              <th>Base para Comisiones Proyectada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Actual</td>
+              <td><%= number_to_currency(@comision_mes['VentaNetaContado'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['Cobranza'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['PenalizacionCobranza'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['numCoordReg'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td><%= number_to_currency(@comision_mes['BaseParaComisiones'], :locale => :mx, :precision => 2) %></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Proyectada</td>
+              <td><%= number_to_currency(@comision_mes['TendenciaNetasCont'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaCobranza'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['TendenciaPenalizacionCobranza'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['numCoordReg'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+              <td></td>
+              <td><%= number_to_currency(@comision_mes['BaseProyParaComisiones'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br><br>
+    <div class="offset-md-1">
+      <div class="row table-responsive-sm col-md-12 ">
+        <table class="table table-bordered text-right">
+          <thead>
+            <tr>
+              <th>COMISIONES</th>
+              <th>% Según evaluación</th>
+              <th>Comisión Actual</th>
+              <th>Comisión Proyectada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Por cumplimiento de Objetivo de ventas</td>
+              <td><%= (@comision_mes['PorcPagoNetas']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNetas'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNetas'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Ticket Promedio</td>
+              <td><%= (@comision_mes['PorcPagoTP']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisTP'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyTP'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Numero de Tickets</td>
+              <td><%= (@comision_mes['PorcPagoNT']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisNT'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyNT'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Articulos por Ticket</td>
+              <td><%= (@comision_mes['PorcPagoAxT']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisAxT'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyAxT'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Porcentaje de Descuento</td>
+              <td><%= (@comision_mes['PorcPagoPorcDesc']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisPorcDesc'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyPorcDesc'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Excelencia Operativa</td>
+              <td><%= (@comision_mes['PorcPagoExOp']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisExOp'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyExOp'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento EBITDA Mes anterior</td>
+              <td><%= (@comision_mes['PorcPagoEbitda']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisEbitda'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyEbitda'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+            <tr>
+              <td>Por cumplimiento Mantenimientos</td>
+              <td><%= (@comision_mes['PorcPagoMant']).round(3) %> %</td>
+              <td><%= number_to_currency(@comision_mes['ComisMant'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(@comision_mes['ComisProyMant'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>COMISION TOTAL</th>
+              <th></th>
+              <th><bold><%= number_to_currency(@comision_mes['ComisTotal'], :locale => :mx, :precision => 2) %></bold></th>
+              <th><%= number_to_currency(@comision_mes['ComisProyTotal'], :locale => :mx, :precision => 2) %></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  <% else %>
+    <br><br><br>
+    <h1 class="text-center">Alcances registrados en el mes</h1>
+    <br><br><br>
+    <div class="offset-md-1">
+      <div class="card bg-primary mb-3 text-left">
+        <div class="card-body">
+          <div class="row table-responsive-sm col-md-12 ">
+            <table class="table table-bordered text-right">
+              <thead class="text-center">
+                <tr>
+                  <th><h4><b>Meta</b></h4></th>
+                  <% if @tipo == 2 || @tipo == 1 || @tipo == 11 %>
+                    <th><h4><b>Objetivo Diario al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></b></h4></th>
+                  <% else %>
+                    <th><h4><b>Objetivo Diario al <%= "#{@comision_mes['UltFechaProcesada'][6..7]}/#{@comision_mes['UltFechaProcesada'][4..5]}/#{@comision_mes['UltFechaProcesada'][0..3]}" %></b></h4></th>
+                  <% end %>
+                  <th>
+
+                <% if @tipo == 2 || @tipo == 1 || @tipo == 11 %>
+                  <h4><b>Alcance Real al <%= @comision_mes['ultFechaProcesada'][-2..-1] %>/<%= @comision_mes['ultFechaProcesada'][4..5] %>/<%= @comision_mes['ultFechaProcesada'][0..3] %> </b></h4>
+                <% else %>
+                  <h4><b>Alcance Real al <%= @comision_mes['UltFechaProcesada'][-2..-1] %>/<%= @comision_mes['UltFechaProcesada'][4..5] %>/<%= @comision_mes['UltFechaProcesada'][0..3] %> </b></h4>
+                <% end %>
+                  </th>
+                <% if @tipo == 2 || @tipo == 1 || @tipo == 11 %>
+                  <th><h4><b>% de cumplimiento al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></b></h4></th>
+                  <th><h4><b>Porcentaje Comisión</b></h4></th>
+                  <th><h4><b>Comisión Al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></b></h4></th>
+                <%else %>
+                  <th><h4><b>% de cumplimiento al <%= "#{@comision_mes['UltFechaProcesada'][6..7]}/#{@comision_mes['UltFechaProcesada'][4..5]}/#{@comision_mes['UltFechaProcesada'][0..3]}" %></b></h4></th>
+                  <th><h4><b>Porcentaje Comisión</b></h4></th>
+                  <th><h4><b>Comisión Al <%= "#{@comision_mes['UltFechaProcesada'][6..7]}/#{@comision_mes['UltFechaProcesada'][4..5]}/#{@comision_mes['UltFechaProcesada'][0..3]}" %></b></h4></th>
+                <% end %>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <tr>
+                  <td><h5>Objetivo Proporcional de Sucursal</h5></td>
+                  <td><h5><%= if @tipo == 2 then number_to_currency(@comision_mes['ObjNetasAlDia'], :locale => :mx, :precision => 2) elsif @tipo == 1 then "" else number_to_currency(@comision_mes['ObjNetas'], :locale => :mx, :precision => 2) end %></h5></td>
+                  <td><h5><%= if @tipo == 2 then number_to_currency(@comision_mes['Netas'], :locale => :mx, :precision => 2) elsif @tipo == 1 then number_to_currency(@comision_mes['BaseComiSucNetas'], :locale => :mx, :precision => 2) else number_to_currency(@comision_mes['Netas'], :locale => :mx, :precision => 2) end %></h5></td>
+                  <td><h5><%= if @tipo == 2 then  @comision_mes['OpaNetas'] elsif @tipo == 1 then @comision_mes['OpaSucNetas'] else  @comision_mes['OpaNetas'] end %> %</h5></td>
+                  <td><h5><%= if @categoria == '5' then (@comision_mes['ComisNetas']/@comision_mes['Netas']).round(4)  elsif @tipo == 2 then  @comision_mes['PorcComisNetas'] elsif @tipo == 1 then @comision_mes['PorcComisSucNetas'] else @comision_mes['PorcComisNetas']end %> %</h5></td>
+                  <td><h5><%= if @tipo == 2 then  number_to_currency(@comision_mes['ComisNetas'], :locale => :mx, :precision => 2) elsif @tipo == 1 then number_to_currency(@comision_mes['ComisSucNetas'], :locale => :mx, :precision => 2) else number_to_currency(@comision_mes['ComisNetas'], :locale => :mx, :precision => 2) end %></h5></td>
+                </tr>
+                <tr>
+                  <td><h5>Excelencia Operativa</h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5><%= @comision_mes['CalifExcelenciaOp'].to_f > 0 ? "SI" : "NO"  %> </h5></td>
+                  <td><h5><%= @comision_mes['PorcComisNetasExOp'] %> %</h5></td>
+                  <td><h5><%= number_to_currency(@comision_mes['ComisNetasExOp'], :locale => :mx, :precision => 2) %></h5></td>
+                </tr>
+                <% if @tipo != 2 %>
+                  <tr>
+                    <td><h5><%= "Ventas netas del vendedor" %></h5></td>
+                    <td><h5><%=  number_to_currency(@comision_mes['ObjNetasAlDia'], :locale => :mx, :precision => 2) %></h5></td>
+                    <td><h5><%=  number_to_currency(@comision_mes['Netas'], :locale => :mx, :precision => 2) %></h5></td>
+                    <td><h5><%= "#{@comision_mes['OpaNetas']}%" %>  </h5></td>
+                    <td><h5><%= "#{@comision_mes['PorcComisNetas']}%" %></h5></td>
+                    <td><h5><%= number_to_currency(@comision_mes['ComisNetas'], :locale => :mx, :precision => 2) %></h5></td>
+                  </tr>
+                <% end %>
+                <tr>
+                  <td><h5>Artículos por ticket</h5></td>
+                  <td><h5><%= if @tipo == 2 then @comision_mes['ObjAxT'] elsif @tipo == 1 then @comision_mes['ObjAxT'] else @comision_mes['ObjAxT'] end%></h5></td>
+                  <td><h5><%= @comision_mes['AxT'] %></h5></td>
+                  <td><h5><%= @comision_mes['OpaAxT'] %> %</h5></td>
+                  <td><h5><%=  if @categoria == '5' then (@comision_mes['ComisAxT']/@comision_mes['Netas']).round(4) else @comision_mes['PorcComisAxT'] end %> %</h5></td>
+                  <td><h5><%= number_to_currency(@comision_mes['ComisAxT'], :locale => :mx, :precision => 2) %></h5></td>
+                </tr>
+                <tr>
+                  <td><h5>Ticket promedio</h5></td>
+                  <td><h5><%= if @tipo == 2 then number_to_currency(@comision_mes['ObjTP'], :locale => :mx, :precision => 2) elsif @tipo == 1 then number_to_currency(@comision_mes['ObjTP'], :locale => :mx, :precision => 2) else number_to_currency(@comision_mes['ObjTP'], :locale => :mx, :precision => 2) end %></h5></td>
+                  <td><h5><%= number_to_currency(@comision_mes['TP'], :locale => :mx, :precision => 2) %></h5></td>
+                  <td><h5><%= @comision_mes['OpaTP'] %> %</h5></td>
+                  <td><h5><%= if @categoria == '5' then (@comision_mes['ComisTP']/@comision_mes['Netas']).round(4) else @comision_mes['PorcComisTP'] end %> %</h5></td>
+                  <td><h5><%= number_to_currency(@comision_mes['ComisTP'], :locale => :mx, :precision => 2) %></h5></td>
+                </tr>
+                <tr>
+                  <td><h5>Número de transacciones</h5></td>
+                  <td><h5><%= if @tipo == 2 then @comision_mes['ObjNT'] elsif @tipo == 1 then @comision_mes['ObjNTAlDia'] else @comision_mes['ObjNT'] end %></h5></td>
+                  <td><h5><%= @comision_mes['NT'] %></h5></td>
+                  <td><h5><%= @comision_mes['OpaNT'] %> %</h5></td>
+                  <td><h5><%= if @categoria == '5' then (@comision_mes['ComisNT']/@comision_mes['Netas']).round(4) else @comision_mes['PorcComisNT'] end %> %</h5></td>
+                  <td><h5><%= number_to_currency(@comision_mes['ComisNT'], :locale => :mx, :precision => 2) %></h5></td>
+                </tr>
+                <% if @level == 10 %>
+                  <tr>
+                    <td><h5>Rentabilidad</h5></td>
+                    <td><h5><%= if @tipo == 2 then @objetivos_mes['ObjNT'] elsif @tipo == 1 then @comision_mes['ObjNT'] else @comision_mes['ObjRentabilidad'] end %></h5></td>
+                    <td><h5><%= number_to_currency(@comision_mes['Rentabilidad'], :locale => :mx, :precision => 2)%></h5></td>
+                    <td><h5><%= @comision_mes['OpaRentabilidad'] %> %</h5></td>
+                    <td><h5><%= @comision_mes['PorcComisRentabilidad'] %> %</h5></td>
+                    <td><h5><%= number_to_currency(@comision_mes['ComisRentabilidad'], :locale => :mx, :precision => 2) %></h5></td>
+                  </tr>
+                  <tr>
+                    <td><h5>Cuentas Por Cobrar</h5></td>
+                    <td><h5></h5></td>
+                    <td><h5><%= number_to_currency(@comision_mes[''], :locale => :mx, :precision => 2) %></h5></td>
+                    <td><h5><%= @comision_mes['CalifCxC'] %>%</h5></td>
+                    <td><h5><%= @comision_mes['PorcComisCxC'] %> %</h5></td>
+                    <td><h5><%= number_to_currency(@comision_mes['ComisCxC'], :locale => :mx, :precision => 2) %></h5></td>
+                  </tr>
+                <% end %>
+              <% if @comision_mes['ComisCubreEncargado'].to_f > 0 %>
+                <tr>
+                    <td><h5>Comisión Por Cubrir Encargado</h5></td>
+                    <td><h5></h5></td>
+                    <td><h5><%= @dias_transcurridos['DiasTranscurridos'] ? "#{@dias_transcurridos['DiasTranscurridos']} Dias Transcurridos" : '' %> </h5></td>
+                    <td><h5></h5></td>
+                    <td><h5></h5></td>
+                    <td><h5><%= number_to_currency(@comision_mes['ComisCubreEncargado'], :locale => :mx, :precision => 2) %></h5></td>
+                  </tr>
+              <% end %>
+              <% if @tipo == 2 || @tipo == 1 || @tipo == 11 %>
+                <tr>
+                  <td><h5>Comisión Estimada al <%= "#{@comision_mes['ultFechaProcesada'][6..7]}/#{@comision_mes['ultFechaProcesada'][4..5]}/#{@comision_mes['ultFechaProcesada'][0..3]}" %></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h2><b><%= number_to_currency(@comision_total, :locale => :mx, :precision => 2) %></b></h2></td>
+                </tr>
+              <% else %>
+                <tr>
+                  <td><h5>Comisión Estimada al <%= "#{@comision_mes['UltFechaProcesada'][6..7]}/#{@comision_mes['UltFechaProcesada'][4..5]}/#{@comision_mes['UltFechaProcesada'][0..3]}" %></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h5></h5></td>
+                  <td><h2><b><%= number_to_currency(@comision_total, :locale => :mx, :precision => 2) %></b></h2></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <br><br><br>
+    </div>
+  <% end %>
+  <div class="card card-body bg-light text-right">
+    <p><b>Los datos mostrados en esta hoja unicamente muestran los alcances teoricos a los que se puede llegar al finalizar el mes, mismos que se iran modificando cada dìa con base a los datos de las ventas reales, y proyectando los dias futuros en que aun es posible hacer ventas.</b></p>
+    <p><b>El alcance proyectado es el que se puede obtener al fin del mes si se continua vendiendo con la misma tendencia en los dias del mes que restan.</b></p>
+    <p><b>La comision proyectada es la que se puede obtener al fin del mes si las ventas de la sucursal y del vendedor se mantienen con la misma tendencia durante los dias del mes que restan.</b></p>
+    <p><b>La comision proyectada es informativa, y sera diferente de la comision real alcanzada al final del mes.</b></p>
+    <p><b> </b></p>
+  </div>
+	<br><br><br><br><br><br>
+</div>
+
+<style>
+th {
+    background-color: #2B4E6D;
+    color: white !important;
+}
+td {
+    color: black;
+}
+</style>

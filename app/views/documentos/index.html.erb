@@ -1,0 +1,86 @@
+
+  <div class="cabecera">
+    <p align=center class="titulo1">Documentos</p>
+    <% @tituloArm = ""
+      arma_Titulo(params[:cveant]) %>
+    <p class="titulo2"><%= @tituloArm if params.has_key?(:cveant) %></p>
+  </div>
+  <br>
+  <p>
+    <% if params.has_key?(:regreso) && params[:regreso] == "1" %>
+      <% if @cveant_r == "*" %>
+        <a class="btn pull-left btn-primary btn-xs" href="/" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+      <% else %>
+        <a class="btn pull-left btn-primary btn-xs" href="/documentos?cveant=<%=@regreso[0]['CveAnt']%>&regreso=1" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+      <% end %>
+    <% else %>
+      <% if params.has_key?(:cveant) && params[:cveant] != "" %>
+        <% @cveant_r = "" %>
+        <a class="btn pull-left btn-primary btn-xs" href="/documentos?cveant=<%=params[:cveant]%>&regreso=1" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+      <% else %>
+        <a class="btn pull-left btn-primary btn-xs" href="/" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+      <% end %>
+    <% end %>
+
+    <% if @cveant_r == "*" %>
+      <a class="btn pull-right btn-primary btn-xs" href="/documentos_admin" role="button"><span class="glyphicon glyphicon-edit"></span> Modificar Carpetas ó Documentos</a>
+    <% else %>
+      <% if params.has_key?(:regreso) && params[:regreso] == "1" %>
+        <a class="btn pull-right btn-primary btn-xs" href="/documentos_admin?cveant=<%=@regreso[0]['CveAnt']%>" role="button"><span class="glyphicon glyphicon-edit"></span> Modificar Carpetas ó Documentos</a>
+      <% else %>
+        <a class="btn pull-right btn-primary btn-xs" href="/documentos_admin?cveant=<%=params[:cveant]%>" role="button"><span class="glyphicon glyphicon-edit"></span> Modificar Carpetas ó Documentos</a>
+      <% end %>
+    <% end %>
+  </p> 
+  <br>
+  <div class="row">
+    <% @documentos.each do |m| %>
+      <div class="col-sm-4 col-md-3 col-lg-3">
+        <div id="imagen_sel" class="thumbnails" >
+          <div class="caption">
+            <h4 align=center><%= m['Nombre'] %></h4>
+          </div>
+          <hr>
+
+          <% @Logo = "/nuevo.jpg" %>
+          <% image = DocumentosImage.find(m['Imagen'].to_i) rescue nil %>
+          <% @Logo = image.imagen.url(:medium) if image && m['Imagen'].to_s.length > 0 %>
+
+          <% if m['Ubicacion'].to_s.length > 0 %>
+            <img src="<%= @Logo %>" class="img-responsive" alt="Responsive image">
+          <% else %>
+            <a href="?cveant=<%= m['Clave']%>">
+              <img src="<%= @Logo %>" class="img-responsive" alt="Responsive image">
+            </a>
+          <% end %>
+          <br>
+          <div class="caption">
+            <% if @cuantos[0]['con_nota'].to_i > 0 %>
+             <p id="nota" align=center><%= m['Nota'] %></p>
+            <% end %>
+            <% if m['Ubicacion'].to_s.length > 0 %>
+              <% file = DocumentosFile.find(m['Ubicacion'].to_i) rescue nil %>
+              <% if file %>
+                <% nombre = file.file.original_filename %>
+                <% extension = nombre.slice(nombre.rindex("."), nombre.length).upcase %>
+                <p align=center>
+                <% if file.file.content_type.include?("pdf") %>
+                  <a target="_blank" class="btn btn-primary btn-xs" href="<%= file.file.url %>" role="button"><span class="glyphicon glyphicon-eye-open"></span> <%= extension %></a> 
+                <% end %>
+                <a class="btn btn-default btn-xs" href="<%= file.file.url %>" download="<%file.file.url%>" role="button"><span class="glyphicon glyphicon-download-alt"></span> <%= extension %></a>
+              <% else %>
+                Documento no Encontrado !
+              <% end %>
+              <% @fechar = Date.parse(m['Fecha']) rescue nil %>
+              <% if @fechar != nil && @fechar > Date.today - 5.day %>
+                <span class="label label-success"> Nuevo</span>
+              <% end %>
+              </p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+
+  </div>

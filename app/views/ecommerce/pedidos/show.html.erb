@@ -1,0 +1,214 @@
+<h3>Detalles de Pedido</h3>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <small>
+    <%= link_to "Regresar", "/ecommerce/pedidos" %>
+  </small>
+
+  <br />
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+	  <thead>
+      <tr>
+        <th>Fuente</th>
+        <th>Id</th>
+        <th>Fecha/Hora</th>
+        <th>Sucursal Asignada</th>
+        <th>Status de Pedido</th>
+        <th>Observaciones</th>
+	    </tr>
+	  </thead>
+    <tbody>
+      <tr>
+        <td><%= get_fuente(@pedido['idEcommerce']) %></td>
+        <td><%= @pedido['idPedido'] %></td>
+        <td><%= "#{@pedido['FechaPedido']} #{@pedido['HoraPedido']}" %></td>
+        <td><%= get_sucursal(@pedido['SucursalAsignada']) %></td>
+        <td><%= get_status_pedido(@pedido['idStatusPedido']) %></td>
+        <td><%= @pedido['Observaciones'] %></td>
+      </tr>
+	  </tbody>
+	</table>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+	  <thead>
+      <tr>
+        <th>Descuento</th>
+        <th>Importe</th>
+        <th>Forma de Pago</th>
+        <th>Status de Pago</th>
+        <th>Ultima Modificacion</th>
+	    </tr>
+	  </thead>
+    <tbody>
+      <tr>
+        <td><%= @pedido['Descuento'] > 0 ? number_to_currency(@pedido['Descuento'], :locale => :mx, :precision => 2) : "" %></td>
+        <td><%= @pedido['Importe'] > 0 ? number_to_currency(@pedido['Importe'], :locale => :mx, :precision => 2) : "" %></td>
+        <td><%= @pedido['FormaPago'] %></td>
+        <td><%= get_status_pago(@pedido['StatusPago']) %></td>
+        <td><%= get_usuario(@pedido['idUserUltAct']) %></td>
+      </tr>
+	  </tbody>
+	</table>
+
+  <table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+	  <thead>
+      <tr>
+        <th>Renglon</th>
+        <th>SKU</th>
+        <th>Descripcion</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Descuento</th>
+        <th>Importe</th>
+	    </tr>
+	  </thead>
+    <tbody>
+      <% @detallesPedido.each do |item| %>
+        <tr>
+          <td><%= item['IdRenglon'] %></td>
+          <td><%= item['SKU'] %></td>
+          <td><%= item['Descripcion'].to_s.truncate(30) %></td>
+          <td><%= item['Cantidad'] %></td>
+          <td><%= item['PrecioUnitario'] > 0 ? number_to_currency(item['PrecioUnitario'], :locale => :mx, :precision => 2) : "" %></td>
+          <td><%= item['Descuento'] > 0 ? number_to_currency(item['Descuento'], :locale => :mx, :precision => 2) : "" %></td>
+          <td><%= item['Importe'] > 0 ? number_to_currency(item['Importe'], :locale => :mx, :precision => 2) : "" %></td>
+        </tr>
+      <% end %>
+	  </tbody>
+	</table>
+
+  <div class="col-md-6 col-sm-6">
+    <p>
+      <strong>Datos Facturacion:</strong>
+      <pre>
+<%= @pedido['DatosFacturacion'] %>
+      </pre>
+    </pre>
+    <p>
+      <strong>Datos Entrega:</strong>
+      <pre>
+<%= @pedido['DatosEntrega'] %>
+      </pre>
+    </p>
+  </div>
+
+  <div class="col-md-6 col-sm-6">
+    <% if @puede_asignar_sucursal %>
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#asignarSucursal">
+        Asignar Sucursal
+      </button>
+    <% end %>
+    <% if @puede_cambiar_status && @nuevosStatus.present? %>
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#cambiarStatus">
+        Cambiar Status de Pedido
+      </button>
+    <% end %>
+  </div>
+
+</div>
+
+<% if @puede_asignar_sucursal %>
+  <div class="modal fade" id="asignarSucursal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Asignar Sucursal</h4>
+        </div>
+        <%= form_tag('/ecommerce/asignar_sucursal', class: 'form-horizontal' )  do |f| %>
+          <div class="modal-body">
+            <div class="ref-group">
+              <%= hidden_field_tag 'id', @id.join("-") %>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Sucursal</label>
+                <div class="col-md-6 col-sm-6">
+                  <%= select_tag 'SucursalAsignada', options_for_select(@sucursales), label: false, placeholder: "Sucursal", class: 'form-control' %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Asignar</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if @puede_cambiar_status && @nuevosStatus.present? %>
+  <div class="modal fade" id="cambiarStatus" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Cambiar Status de Pedido</h4>
+        </div>
+        <%= form_tag('/ecommerce/cambiar_status', class: 'form-horizontal' )  do |f| %>
+          <div class="modal-body">
+            <div class="ref-group">
+              <%= hidden_field_tag 'id', @id.join("-") %>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Status Actual</label>
+                <div class="col-md-6 col-sm-6">
+                  <h4>
+                    <%= get_status_pedido(@pedido['idStatusPedido']) %>
+                  </h4>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Nuevo Status</label>
+                <div class="col-md-6 col-sm-6">
+                  <%= select_tag 'idStatusEcommerce', options_for_select(@nuevosStatus), label: false, placeholder: "Status", class: 'form-control idStatusEcommerceSelect' %>
+                </div>
+              </div>
+
+              <div class="form-group observacionesDiv">
+                <label class="col-sm-4 control-label">Observaciones *</label>
+                <div class="col-md-6 col-sm-6">
+                  <%= text_field_tag 'observaciones', nil, label: false, placeholder: "Observaciones de cancelacion", class: 'form-control' %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary saveButton">Guardar</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('.observacionesDiv').hide();
+      $('#idStatusEcommerce').on('change', function() {
+        revisarCambios();
+      });
+			$('#observaciones').on('keyup input', function(){
+        revisarCambios();
+      });
+      revisarCambios();
+    });
+
+    var revisarCambios = function() {
+      var idStatusEcommerce = $('#idStatusEcommerce').val();
+      var observaciones = $('#observaciones').val();
+      if (idStatusEcommerce === '5') {
+        $('.observacionesDiv').show();
+      } else {
+        $('.observacionesDiv').hide();
+      }
+      if (idStatusEcommerce === '5' && observaciones === '') {
+        $('.saveButton').hide();
+      } else {
+        $('.saveButton').show();
+      }
+    }
+  </script>
+<% end %>

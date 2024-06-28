@@ -1,0 +1,131 @@
+ wb = xlsx_package.workbook 
+ if @type_export == "vendedor"
+  wb.add_worksheet(name: "Vendedor") do |sheet| 
+   sheet.add_row @meses_caption
+   sheet.add_row @netas_vendedor
+   sheet.add_row @tp_vendedor
+   sheet.add_row @nt_vendedor
+   sheet.add_row @axt_vendedor
+  end
+elsif @type_export == "sucursal"
+  wb.add_worksheet(name: "Sucursal") do |sheet| 
+    sheet.add_row @meses_caption
+    sheet.add_row @netas_sucursal
+    sheet.add_row @tp_sucursal
+    sheet.add_row @nt_sucursal
+    sheet.add_row @axt_sucursal
+  end
+
+  wb.add_worksheet(name: "Vendedores") do |sheet| 
+    @data_vendedores.each_with_index do |vendedor, index|
+      # meses = ["Enero-Objetivo", "Enero-Real", "Enero-Alcance", "Febrero-Objetivo", "Febrero-Real", "Febrero-Alcance", "Marzo-Objetivo", "Marzo-Real", "Marzo-Alcance", "Abril-Objetivo", "Abril-Real", "Abril-Alcance", "Mayo-Objetivo", "Mayo-Real", "Mayo-Alcance", "Junio-Objetivo", "Junio-Real", "Junio-Alcance", "Julio-Objetivo", "Julio-Real", "Julio-Alcance", "Agosto-Objetivo", "Agosto-Real", "Agosto-Alcance", "Septiembre-Objetivo", "Septiembre-Real", "Septiembre-Alcance", "Octubre-Objetivo", "Octubre-Real", "Octubre-Alcance", "Noviembre-Objetivo", "Noviembre-Real", "Noviembre-Alcance", "Diciembre-Objetivo", "Diciembre-Real", "Diciembre-Alcance"]
+      # meses.unshift(vendedor[0])
+      sheet.add_row @meses_vendedores[index]
+      sheet.add_row @netas_vendedores[index]
+      sheet.add_row @tp_vendedores[index]
+      sheet.add_row @nt_vendedores[index]
+      sheet.add_row @axt_vendedores[index]
+      sheet.add_row []
+      sheet.add_row []
+      sheet.add_row []
+    end
+  end
+elsif @type_export == "region"
+  wb.add_worksheet(name: "Region") do |sheet| 
+    sheet.add_row @meses_caption
+    sheet.add_row @netas_zona
+    sheet.add_row @tp_zona
+    sheet.add_row @nt_zona
+    sheet.add_row @axt_zona
+  end
+  wb.add_worksheet(name: "Sucursales") do |sheet| 
+    sheet.add_row ["Region:#{@id_region}"]
+     @data_sucursales.each_with_index do |sucursal, index|
+      sheet.add_row @meses2[index]
+      sheet.add_row @netas_sucursales[index]
+      sheet.add_row @tp_sucursales[index]
+      sheet.add_row @nt_sucursales[index]
+      sheet.add_row @axt_sucursales[index]
+      sheet.add_row []
+      sheet.add_row []
+      sheet.add_row []
+    end
+  end
+elsif @type_export == "superior"
+  wb.add_worksheet(name: "Netas") do |sheet| 
+    sheet.add_row ["NETAS"]
+    sheet.add_row @meses_caption
+    @netas_sucursales.each do |sucursal|
+      sheet.add_row sucursal
+    end
+  end
+
+  wb.add_worksheet(name: "TP") do |sheet| 
+    sheet.add_row ["TP"]
+    sheet.add_row @meses_caption
+    @tp_sucursales.each do |sucursal|
+      sheet.add_row sucursal
+    end
+  end
+
+  wb.add_worksheet(name: "NT") do |sheet| 
+    sheet.add_row ["NT"]
+    sheet.add_row @meses_caption
+    @nt_sucursales.each do |sucursal|
+      sheet.add_row sucursal
+    end
+  end
+
+  wb.add_worksheet(name: "AxT") do |sheet| 
+    sheet.add_row ["AXT"]
+    sheet.add_row @meses_caption
+    @axt_sucursales.each do |sucursal|
+      sheet.add_row sucursal
+    end
+  end
+
+   wb.add_worksheet(name: "Zonas") do |sheet| 
+    sheet.add_row ["Datos Zonas"]
+    sheet.add_row @meses_caption
+    sheet.add_row @netas_gral
+    sheet.add_row @tp_gral
+    sheet.add_row @nt_gral
+    sheet.add_row @axt_gral
+    sheet.add_row []
+    sheet.add_row []
+    sheet.add_row []
+
+    sheet.add_row ["Netas Zonas"]
+    sheet.add_row @meses_caption2
+    @netas_zona.each do |zona|
+      sheet.add_row zona
+    end
+    sheet.add_row []
+    sheet.add_row []
+    sheet.add_row []
+
+    sheet.add_row ["TP Zonas"]
+    sheet.add_row @meses_caption2
+    @tp_zona.each do |zona|
+      sheet.add_row zona
+    end
+    sheet.add_row []
+    sheet.add_row []
+    sheet.add_row []
+
+    sheet.add_row ["NT Zonas"]
+    sheet.add_row @meses_caption2
+    @nt_zona.each do |zona|
+      sheet.add_row zona
+    end
+    sheet.add_row []
+    sheet.add_row []
+    sheet.add_row []
+
+    sheet.add_row ["AxT Zonas"]
+    sheet.add_row @meses_caption2
+    @axt_zona.each do |zona|
+      sheet.add_row zona
+    end
+  end
+end

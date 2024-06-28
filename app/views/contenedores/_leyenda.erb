@@ -1,0 +1,37 @@
+<div class="col-md-6 col-md-offset-3 well">
+  <h3><center>Leyenda</center></h3>
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+    <tbody >
+      <tr>
+        <td><span style="color:#D3D3D3" class="glyphicon glyphicon-unchecked"></span></td>
+        <td>Actividad pendiente de inicio</td>
+        <%# status_tarea Status 1 %>
+        <td>Cuando la tarea detonadora todavía no está terminada</td>
+      </tr>
+      <tr>
+        <td><span style="color:#483D8B" class="glyphicon glyphicon-eye-open"></span></td>
+        <td>Actividad en progreso</td>
+        <%# status_tarea Status 2 %>
+        <td>Cuando la tarea detonadora está terminada, la tarea actual no está terminada pero todavía no se vence el plazo</td>
+      </tr>
+      <tr>
+        <td><span class="glyphicon glyphicon-ok"></span></td>
+        <td>Actividad terminada</td>
+        <%# status_tarea Status 3 %>
+        <td>Cuando la tarea está terminada</td>
+      </tr>
+      <tr>
+        <td><span class="glyphicon glyphicon-remove"></span></td>
+        <td>Actividad retrasada</td>
+        <%# status_tarea Status 4 %>
+        <td>Cuando la tarea detonadora está terminada, la tarea actual no está terminada y ya se venció el plazo</td>
+      </tr>
+      <tr>
+        <td><span style="color:#D3D3D3" class="glyphicon glyphicon-minus"></span></td>
+        <td>No aplica</td>
+        <%# Status 5 %>
+        <td>Cuando la tarea no existe para este tipo de contenedor</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,100 @@
+<%= form_tag(@form_url, html: { class: 'form-horizontal' }) do %>
+
+  <div class="form-inputs loader-form">
+
+    <%= hidden_field_tag 'id', "#{@id}-#{@idcat}" %>
+    <%= hidden_field_tag 'IdChecklist', @id %>
+    <%= hidden_field_tag 'IdCatChecklist', @idcat %>
+    <%= hidden_field_tag 'IdFldChecklist', @idcampo %>
+
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nombre</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'nombre', @campo ? @campo[0]['Nombre'] : '', class: 'form-control', placeholder: "Estacionamiento", autofocus: true %>
+        <p class="help-block">Ingresa el Nombre del Campo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Descripción</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'descripcion', @campo ? @campo[0]['Descripcion'] : '', class: 'form-control', placeholder: "Está pintado?" %>
+        <p class="help-block">Ingresa la Descripción del Campo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Orden</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'orden', @campo ? @campo[0]['Orden'] : '0', class: 'form-control', placeholder: "0" %>
+        <p class="help-block">Ingresa el Orden del Campo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Opcion NA</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'opcionna', options_for_select([[1,"Sí"],[0,"No"]].collect{|t| [ t[1], t[0] ]}, @campo ? @campo[0]['OpcionNA'].to_i : 0), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Selecciona si es un campo que acepta No Aplica</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Puntos Sí</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'puntossi', options_for_select((0..100), @campo ? @campo[0]['PuntosSi'].to_i : 0), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Selecciona los puntos que da el Sí</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">To-Do Sí</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'todosi', options_for_select(@niveles, @campo ? @campo[0]['ToDoSi'].split(",") : nil), class: 'form-control', multiple: true, placeholder: "Selecciona los Niveles...", data: { placeholder: "Selecciona los Niveles..." } %>
+        <p class="help-block">Selecciona los Niveles a los que genera To-Dos cuando sea Sí</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Puntos No</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'puntosno', options_for_select((0..100), @campo ? @campo[0]['PuntosNo'].to_i : 0), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Selecciona los puntos que da el No</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">To-Do No</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'todono', options_for_select(@niveles, @campo ? @campo[0]['ToDoNo'].split(",") : nil), class: 'form-control', multiple: true, placeholder: "Selecciona los Niveles...", data: { placeholder: "Selecciona los Niveles..." } %>
+        <p class="help-block">Selecciona los Niveles a los que genera To-Dos cuando sea No</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Activo</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'activo', options_for_select([[1,"Activo"],[0,"Inactivo"]].collect{|t| [ t[1], t[0] ]}, @campo ? @campo[0]['Activo'].to_i : 1), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Selecciona si es un Campo Activo</p>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-3">
+      <div class="form-actions loader-form text-center">
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
+
+<script type="text/javascript">
+  $('#todosi').chosen();
+  $('#todono').chosen();
+</script>

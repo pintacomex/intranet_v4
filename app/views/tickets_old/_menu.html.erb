@@ -1,0 +1,16 @@
+<h1 class="text-right">Mis tickets</h1><hr>
+  <div class="col-md-12 menu">
+    <ul class="list-group">
+      <% @my_tickets.reverse_each do |ticket| %>
+        <li class="list-group-item list-group-item-action">
+          <%= link_to ({:controller => "tickets", :action => "show", :id => ticket.id }) do %>
+            <div class="col-md-12 text-left">
+              <h6 class="text-center"><%= ticket.title %></h6>
+              <p class="text-left"><%= ticket.created_at[0..9] %> | <%= ticket.group %> | <%= ticket.state.capitalize %></p>
+
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>

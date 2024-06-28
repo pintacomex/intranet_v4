@@ -1,0 +1,41 @@
+<%= form_tag("/documentos_admin_create", html: { class: 'form-horizontal' }) do %>
+  <%= hidden_field_tag 'cveant', @cveantnew %>
+
+  <div class="form-inputs loader-form">
+
+    <br>
+
+    <div class="form-group">
+      <div id="margen5" class="col-sm-4 col-md-4 col-lg-3"><%= label_tag 'clave', 'Carpeta ó Documento' %></div>
+      <div id="margen5" class="col-sm-7 col-md-8 col-lg-8">
+        <%= text_field_tag 'clave', '', class: 'form-control' %>
+      </div>
+      <div id="margen5" class="col-sm-4 col-md-4 col-lg-3"><%= label_tag 'nombre', 'Título' %></div>
+      <div id="margen5" class="col-sm-7 col-md-8 col-lg-8">
+        <%= text_field_tag 'nombre', '', class: 'form-control' %>
+      </div>
+      <%= hidden_field_tag 'imagen', '' %>
+      <%= hidden_field_tag 'archivo', '' %>
+      <div id="margen5" class="col-sm-4 col-md-4 col-lg-3"><%= label_tag 'nota', 'Nota' %></div>
+      <div id="margen5" class="col-sm-7 col-md-8 col-lg-8">
+        <%= text_area_tag 'nota', '', class: 'form-control' %>
+      </div>
+      <div id="margen5" class="col-sm-4 col-md-4 col-lg-3"><%= label_tag 'fecha', 'Fecha' %></div>
+      <div id="margen5" class="col-sm-7 col-md-8 col-lg-8">
+        <%= date_field_tag 'fecha', '', class: 'form-control' %>
+      </div>
+      <div id="margen5" class="col-sm-4 col-md-4 col-lg-3"><%= label_tag 'numord', 'Orden' %></div>
+      <div id="margen5" class="col-sm-7 col-md-8 col-lg-8">
+        <%= number_field_tag 'numord', '', class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="col-sm-7 col-md-8 col-lg-8">
+      <div class="form-actions loader-form">
+        <%= submit_tag "Guardar", class: "btn btn-primary btn-sm" %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>

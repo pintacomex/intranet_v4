@@ -1,0 +1,200 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+<div class="col-md-12">
+	<div class="col-md-3">
+		<% if !@show_arrow  %>
+			<%=  link_to "Nuevo Reporte", {controller: 'homereportes', action: 'new'}, class: 'btn btn-primary text-left'%>
+		<% else %>
+			<%=  link_to "Nuevo Empleado", {controller: 'homereportes', action: 'new_employee'}, class: 'btn btn-primary text-left'%>
+		<% end %>
+		<div class="col-md-12 card">
+			<h5 class="text-center">Promedio del mes: <h1 class="text-center"><%= @average %></h1></h5>
+			<div class="stars text-center">
+				<% (1..10).each do |number| %>
+					<% if number <= @average.to_i %>
+						<span class="fa fa-star checked"></span>
+					<% else %>
+						<span class="fa fa-star"></span>			
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+		<br><br><br>
+	</div>
+	<div class="col-md-9">
+		<% if @show_arrow %>
+		<div class="testimonial-group">
+		  <div class="row text-center">
+		  	<% @home_employees.each do |e| %>
+			  	<%= link_to "homereportes/homereportes/user_id=#{e['user_id']}" do %>
+				    <div class="col-xs-3">
+				    	<% user = @employees.select {|m| m['id'] == e['user_id'].to_i }.first %>
+				    	<h5 class="text-center"><%= " #{user['id']}-#{user['name']}" %></h5>
+				    </div>
+			    <% end %>
+		    <% end %>
+		  </div>
+		</div>
+		<% end %>
+	</div>
+	<div class="col-md-9 card text-center">
+		<div class="col-md-12">
+			<%= render(partial: 'month') %>	
+		</div>
+	</div>
+</div>
+<!-- <div class="col-md-12 card">
+	<div class="row" style="margin:20px;">
+	    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+	        <div class="carousel-inner">
+	            <div class="item active">
+	                <div class="paymentdetails">
+	                    <div id="container"></div>
+	                </div>
+	            </div>
+	            <div class="item">
+	                <div class="paymentdetails">
+	                    <div id="container2"></div>
+	                </div>
+	            </div>
+	        </div>
+	        <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+	            <span class="controls glyphicon glyphicon-chevron-left"></span>
+	        </a>
+	        <a class="carousel-control right" href="#myCarousel" data-slide="next">
+	            <span class="controls glyphicon glyphicon-chevron-right"></span>
+	        </a>
+	    </div>
+	</div>	
+</div> -->
+
+
+
+
+<style type="text/css">
+@import 'https://code.highcharts.com/css/highcharts.css';
+	.carousel {
+	    background: #fff;
+	    margin-top: 5px;
+	    padding: 3px 30px;
+	}
+	.paymentdetails {
+	    border: 1px #434348 solid;
+	    margin-right: 2px;
+	    padding: 5px;
+	}
+	.carousel-control {
+	    width: 0px !important;
+	}
+	.controls {
+	    background-color: #7070db;
+	    padding: 5px;
+	    border-radius: 15px;
+	    font-size: 18px !important;
+	}
+	.card {
+	    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	    transition: 0.3s;
+	    border-radius: 5px;
+	    margin: 30px 0;
+	    padding: 0;
+	}
+  .checked {
+    color: orange;
+	}
+	.stars{
+		margin: 10px 10px;
+	}
+	.desktime{
+		margin: 0 0 0 0;
+	}
+		/* The heart of the matter */
+	.testimonial-group > .row {
+	  overflow-x: auto;
+	  white-space: nowrap;
+	}
+	.testimonial-group > .row > .col-xs-3 {
+	  display: inline-block;
+	  float: none;
+	}
+	/* Decorations */
+	.col-xs-3 { 
+		color: #fff; 
+		font-size: 48px; 
+		padding-bottom: 40px; 
+		padding-top: 40px; 
+		border: 2px solid #1e88e5;
+	}
+</style>
+<script type="text/javascript">
+	
+Highcharts.chart('container', {
+    chart: {
+        type: 'line'
+    },
+    title: {
+        text: 'Monthly Average Temperature'
+    },
+    subtitle: {
+        text: 'Source: WorldClimate.com'
+    },
+    xAxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    yAxis: {
+        title: {
+            text: 'Temperature (°C)'
+        }
+    },
+    plotOptions: {
+        line: {
+            dataLabels: {
+                enabled: true
+            },
+            enableMouseTracking: false
+        }
+    },
+    series: [{
+        name: 'Agosto',
+        data: [7.0, 6.9, 9.5, 14.5, 18.4, 0, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+    }]
+});
+Highcharts.chart('container2', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Stacked column chart'
+    },
+    xAxis: {
+        categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Horas Laboradas'
+        }
+    },
+    tooltip: {
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+        shared: true
+    },
+    plotOptions: {
+        column: {
+            stacking: 'percent'
+        }
+    },
+    series: [{
+        name: 'John',
+        data: [5, 3, 4, 7, 2]
+    }, {
+        name: 'Jane',
+        data: [2, 2, 3, 2, 1]
+    }]
+});
+</script>
+
+<!-- {"id"=>67728, "name"=>"Humberto Arroyo", "email"=>"humbertoa@pintacomex.mx", "groupId"=>0, "group"=>"-", "profileUrl"=>"https://desktime.com/app/employee/67728/2018-08-01", "isOnline"=>false, "arrived"=>false, "left"=>false, "late"=>false, "onlineTime"=>0, "desktimeTime"=>0, "atWorkTime"=>0, "afterWorkTime"=>0, "beforeWorkTime"=>0, "productiveTime"=>0, "productivity"=>0, "efficiency"=>0, "activeProject"=>[]}
+ -->

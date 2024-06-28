@@ -1,0 +1,11 @@
+<div class="wrapper">
+  <div class="box">
+    <div id="g<%= id.to_s.gsub("-", "") %>" class="gauge"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    $.getScript('/tableros/medidores_display_medidor?id=<%= id %>');
+  });
+</script>

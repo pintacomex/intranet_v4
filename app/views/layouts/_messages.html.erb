@@ -1,0 +1,17 @@
+<%# Rails flash messages styled for Bootstrap 3.0 %>
+<% flash.each do |name, msg| %>
+  <% if msg.is_a?(String) %>
+    <% name = "notice" if msg.include?("Bienvenido") %>
+    <div class="text-right alert alert-<%= name == "notice" ? "success" : "danger" %> fade in">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <%= content_tag :div, msg, :id => "flash_#{name}" %>
+    </div>
+  <% end %>
+<% end %>
+<script>
+window.setTimeout(function() {
+  $(".alert").fadeTo(300, 0).slideUp(300, function(){
+      $(this).remove();
+  });
+}, 3000);
+</script>

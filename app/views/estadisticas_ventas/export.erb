@@ -1,0 +1,590 @@
+<!-- <?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+   <ss:Styles>
+      <ss:Style ss:ID="s0">
+          <ss:Font ss:Bold="1" ss:Size="50"/>
+      </ss:Style>
+      <ss:Style ss:ID="s4">
+          <ss:Font ss:Bold="1" ss:Size="30"/>
+      </ss:Style>
+      <ss:Style ss:ID="1">
+          <ss:Font ss:Bold="1"/>
+          <Interior ss:Color="#bbdefb" ss:Pattern="Solid"/>
+          <Borders>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+         </Borders>
+      </ss:Style>
+      <ss:Style ss:ID="s2">
+        <Interior ss:Color="#e3f2fd" ss:Pattern="Solid"/>
+        <Borders>
+          <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+          <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+          <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+          <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+       </Borders>
+      </ss:Style>
+      <ss:Style ss:ID="s3">
+        <ss:Borders>
+          <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+          <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+          <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+          <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+       </ss:Borders>
+      </ss:Style>
+  </ss:Styles>
+
+  <% if @type_export == "region" %>
+    <Worksheet ss:Name="region">
+      <Table>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String"># Region: <%= @id_region %></Data></Cell>
+          <% @meses_caption.each do |caption| %>
+            <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String">Netas</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(@objetivos[index]['objNetas'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(mes['netas'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objNetas'].to_f) * mes['netas']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String">TP</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(@objetivos[index]['objTP'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(mes['tp'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objTP'].to_f) * mes['tp']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String">NT</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+          <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objNT'].round(0) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['nt'].round(0) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objNT'].to_f) * mes['nt']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String">AxT</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+          <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objAxt'] %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['axt'] %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objAxt'].to_f) * mes['axt']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+      </Table>
+    </Worksheet>
+    <Worksheet ss:Name="sucursales">
+    <Table>
+      <Row>
+        <Cell ss:StyleID="1"><Data ss:Type="String"># Region: <%= @id_region %></Data></Cell>
+      </Row>
+      <Row>
+        <Cell ss:StyleID="1"><Data ss:Type="String">Netas</Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+      </Row>
+      <% @data_sucursales.each_with_index do |suc, index| %>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= suc[0] %>-<%= @grupo_sucursales.select{|s| s['Num_suc'] == suc[0]}[0]['Nombre'] %></Data></Cell>
+          <% suc[1].each_with_index do |mes, i| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= number_to_currency(@objetivos_sucursales[suc[0]][i]['objNetas'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= number_to_currency(mes['netas'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= ((100.0/@objetivos_sucursales[suc[0]][i]['objNetas']) * mes['netas']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+      <% end %>
+      <Row></Row><Row></Row><Row></Row>  
+    </Table>
+     <Table>
+      <Row>
+        <Cell ss:StyleID="1"><Data ss:Type="String">TP</Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+      </Row>
+      <% @data_sucursales.each_with_index do |suc, index| %>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= suc[0] %>-<%= @grupo_sucursales.select{|s| s['Num_suc'] == suc[0]}[0]['Nombre'] %></Data></Cell>
+          <% suc[1].each_with_index do |mes, i| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= number_to_currency(@objetivos_sucursales[suc[0]][i]['objTP'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= number_to_currency(mes['tp'], :locale => :mx, :precision => 2) %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= ((100.0/@objetivos_sucursales[suc[0]][i]['objTP']) * mes['tp']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+      <% end %>
+      <Row></Row><Row></Row><Row></Row>  
+    </Table> 
+    <Table>
+      <Row>
+        <Cell ss:StyleID="1"><Data ss:Type="String">NT</Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+      </Row>
+      <% @data_sucursales.each_with_index do |suc, index| %>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= suc[0] %>-<%= @grupo_sucursales.select{|s| s['Num_suc'] == suc[0]}[0]['Nombre'] %></Data></Cell>
+          <% suc[1].each_with_index do |mes, i| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= @objetivos_sucursales[suc[0]][i]['objNT'] %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= mes['nt'] %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= ((100.0/@objetivos_sucursales[suc[0]][i]['objNT']) * mes['nt']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+      <% end %>
+      <Row></Row><Row></Row><Row></Row>  
+    </Table>
+    <Table>
+      <Row>
+        <Cell ss:StyleID="1"><Data ss:Type="String">AXT</Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+      </Row>
+      <% @data_sucursales.each_with_index do |suc, index| %>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= suc[0] %>-<%= @grupo_sucursales.select{|s| s['Num_suc'] == suc[0]}[0]['Nombre'] %></Data></Cell>
+          <% suc[1].each_with_index do |mes, i| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= @objetivos_sucursales[suc[0]][i]['objAxt'] %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= mes['axt'] %></Data></Cell>
+            <Cell ss:StyleID="s3"><Data ss:Type="String"><%= ((100.0/@objetivos_sucursales[suc[0]][i]['objAxt']) * mes['axt']).round(2) %>%</Data></Cell>
+          <% end %>
+        </Row>
+      <% end %>
+    </Table>
+    </Worksheet>
+
+  <% elsif @type_export == "sucursal" %>
+    <Worksheet ss:Name="sucursal">
+        <Table>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String"># Sucursal: <%= @id_sucursal %></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">Netas</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(@objetivos[index]['objNetas'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(mes['netas'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objNetas'].to_f) * mes['netas']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">TP</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(@objetivos[index]['objTP'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(mes['tp'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objTP'].to_f) * mes['tp']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">NT</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objNT'].round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['nt'].round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objNT'].to_f) * mes['nt']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">AxT</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objAxt'] %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['axt'] %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objAxt'].to_f) * mes['axt']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+        </Table>
+      </Worksheet>
+
+      <Worksheet ss:Name="vendedores">
+        <% @data_vendedores.each_with_index do |vendedor, index_v| %>
+          <% vend = @objetivos_vendedores.select{|key, hash| key == vendedor[0]} %>
+          <Table>
+            <Row>
+              <Cell ss:StyleID="1"><Data ss:Type="String">Netas</Data></Cell>
+              <% @meses_caption.each do |caption| %>
+                <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+              <% end %>
+            </Row>
+            <Row>
+                <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= vendedor[0] %></Data></Cell>
+              <% vendedor[1].each_with_index do |data, index| %>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(vend[vendedor[0]].to_a[index].to_h['objNetas'], :locale => :mx, :precision => 2)  %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(data['netas'], :locale => :mx, :precision => 2) %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/vend[vendedor[0]].to_a[index].to_h['objNetas'].to_f) *  data['netas'].to_f).to_f.round(1) %>%</Data></Cell>
+              <% end %>     
+            </Row>   
+          </Table>
+          <Table>
+            <Row>
+              <Cell ss:StyleID="1"><Data ss:Type="String">TP</Data></Cell>
+              <% @meses_caption.each do |caption| %>
+                <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+              <% end %>
+            </Row>
+            <Row>
+                <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= vendedor[0] %></Data></Cell>
+              <% vendedor[1].each_with_index do |data, index| %>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(vend[vendedor[0]].to_a[index].to_h['objTP'], :locale => :mx, :precision => 2)  %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(data['tp'], :locale => :mx, :precision => 2) %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/vend[vendedor[0]].to_a[index].to_h['objTP'].to_f) *  data['tp'].to_f).to_f.round(1) %>%</Data></Cell>
+              <% end %>     
+            </Row>
+
+          </Table>
+          <Table>
+            <Row>
+              <Cell ss:StyleID="1"><Data ss:Type="String">NT</Data></Cell>
+              <% @meses_caption.each do |caption| %>
+                <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+              <% end %>
+            </Row>
+            <Row>
+                <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= vendedor[0] %></Data></Cell>
+              <% vendedor[1].each_with_index do |data, index| %>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= vend[vendedor[0]].to_a[index].to_h['objNT']  %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= data['nt'] %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/vend[vendedor[0]].to_a[index].to_h['objNT'].to_f) *  data['nt'].to_f).to_f.round(1) %>%</Data></Cell>
+              <% end %>     
+            </Row>
+              
+          </Table>
+          <Table>
+            <Row>
+              <Cell ss:StyleID="1"><Data ss:Type="String">AXT</Data></Cell>
+              <% @meses_caption.each do |caption| %>
+                <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+              <% end %>
+            </Row>
+            <Row>
+                <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= vendedor[0] %></Data></Cell>
+              <% vendedor[1].each_with_index do |data, index| %>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= vend[vendedor[0]].to_a[index].to_h['objAxt']  %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= data['axt'] %></Data></Cell>
+                  <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/vend[vendedor[0]].to_a[index].to_h['objAxt'].to_f) *  data['axt'].to_f).to_f.round(1) %>%</Data></Cell>
+              <% end %>     
+            </Row>
+            <Row></Row><Row></Row><Row></Row>   
+          </Table>
+        <% end %>
+      </Worksheet>
+  <% elsif @type_export != "vendedor" %>
+    <Worksheet ss:Name="Netas">
+      <Table>
+          <Row ss:Height="50">
+            <Cell ss:StyleID="s0"><Data ss:Type="String">Netas</Data></Cell>
+          </Row>
+        
+          <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+      <% @sucursales.each do |suc| %>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= suc['Num_suc'] %>-<%= suc['Nombre'] %></Data></Cell>
+          <% row_data = @data.select{|key, hash| key == suc['Num_suc'] } %>
+          <% row_data.each do |row| %>
+            <% renglon = row[1].sort_by {|r| r['Mes']} %>
+            <% renglon.each do |dato| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(dato['ObjNetas'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(dato['Netas'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['OpaNetas'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          <% end %>
+        </Row>
+      <% end %>
+      </Table>
+    </Worksheet>
+
+    <Worksheet ss:Name="TicketPromedio">
+      <Table>
+          <Row ss:Height="50">
+            <Cell ss:StyleID="s4"><Data ss:Type="String">Ticket Promedio</Data></Cell>
+          </Row>
+        
+          <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+      <% @sucursales.each do |suc| %>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= suc['Num_suc'] %>-<%= suc['Nombre'] %></Data></Cell>
+          <% row_data = @data.select{|key, hash| key == suc['Num_suc'] } %>
+          <% row_data.each do |row| %>
+            <% renglon = row[1].sort_by {|r| r['Mes']} %>
+            <% renglon.each do |dato| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(dato['ObjTP'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(dato['TP'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['OpaTP'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          <% end %>
+        </Row>
+      <% end %>
+      </Table>
+    </Worksheet>
+
+    <Worksheet ss:Name="NumeroTickets">
+      <Table>
+          <Row ss:Height="50">
+            <Cell ss:StyleID="s4"><Data ss:Type="String">Número Tickets</Data></Cell>
+          </Row>
+        
+          <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+      <% @sucursales.each do |suc| %>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= suc['Num_suc'] %>-<%= suc['Nombre'] %></Data></Cell>
+          <% row_data = @data.select{|key, hash| key == suc['Num_suc'] } %>
+          <% row_data.each do |row| %>
+            <% renglon = row[1].sort_by {|r| r['Mes']} %>
+            <% renglon.each do |dato| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['ObjNT'].to_f %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['NT'].to_f %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['OpaNT'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          <% end %>
+        </Row>
+      <% end %>
+      </Table>
+    </Worksheet>
+
+    <Worksheet ss:Name="AxT">
+      <Table>
+          <Row ss:Height="50">
+            <Cell ss:StyleID="s4"><Data ss:Type="String">AxT</Data></Cell>
+          </Row>
+        
+          <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+      <% @sucursales.each do |suc| %>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= suc['Num_suc'] %>-<%= suc['Nombre'] %></Data></Cell>
+          <% row_data = @data.select{|key, hash| key == suc['Num_suc'] } %>
+          <% row_data.each do |row| %>
+            <% renglon = row[1].sort_by {|r| r['Mes']} %>
+            <% renglon.each do |dato| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['ObjAxT'].to_f %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['AxT'].to_f %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= dato['OpaAxT'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          <% end %>
+        </Row>
+      <% end %>
+      </Table>
+    </Worksheet>
+
+    <Worksheet ss:Name="Zonas">
+      <Table>
+          <Row ss:Height="50">
+            <Cell ss:StyleID="s0" ss:Height="50"><Data ss:Type="String">Datos Generales</Data></Cell>
+          </Row>
+          <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text">Netas</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(@objetivos[index]['objNetas'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(mes['netas'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objNetas'].to_f)* mes['netas'].to_f).round(1) %> %</Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text">TP</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(@objetivos[index]['objTP'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(mes['tp'].to_f, :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objTP'].to_f)* mes['tp'].to_f).round(1) %>%</Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text">NT</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objNT'].to_f.round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['nt'].to_f.round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objNT'].to_f)* mes['nt'].to_f).round(1) %>%</Data></Cell>
+          <% end %>
+        </Row>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="Text">AxT</Data></Cell>
+          <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objAxt'].to_f %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['axt'].to_f %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objAxt'].to_f)* mes['axt'].to_f).round(1) %>%</Data></Cell>
+          <% end %>
+        </Row>
+      </Table>
+      <Table>
+        <Row></Row><Row></Row><Row></Row>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="String">Netas Zonas</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption2.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+        </Row>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+        <% @subagrupa.each_with_index do |zona, index| %>
+          <Row>
+            <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= zona['Nombre'] %></Data></Cell>
+            <% @data_zonas[index].each do |zone|  %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(zone['netas'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= zone['OpaNetas'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          </Row>
+        <% end %>
+      </Table>
+      <Table>
+        <Row></Row><Row></Row><Row></Row>
+        <Row>
+          <Cell ss:StyleID="s2"><Data ss:Type="String">TP Zonas</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption2.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+        </Row>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+        <% @subagrupa.each_with_index do |zona, index| %>
+          <Row>
+            <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= zona['Nombre'] %></Data></Cell>
+            <% @data_zonas[index].each do |zone|  %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= number_to_currency(zone['tp'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= zone['OpaTP'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          </Row>
+        <% end %>
+      </Table>
+      <Table>
+        <Row></Row><Row></Row><Row></Row>
+        <Row>
+          <Cell  ss:StyleID="s2"><Data ss:Type="String">NT Zonas</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption2.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+        </Row>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <% @meses_caption.each do |caption| %>
+          <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+        <% end %>
+        <% @subagrupa.each_with_index do |zona, index| %>
+          <Row>
+            <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= zona['Nombre'] %></Data></Cell>
+            <% @data_zonas[index].each do |zone|  %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= zone['nt'].to_f.round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= zone['OpaNT'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          </Row>
+        <% end %>
+      </Table>
+      <Table>
+        <Row></Row><Row></Row><Row></Row>
+        <Row>
+          <Cell ss:StyleID="1"><Data ss:Type="String">AxT Zonas</Data></Cell>
+        </Row>
+        <Row>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <% @meses_caption2.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+        </Row>
+        <% @subagrupa.each_with_index do |zona, index| %>
+          <Row>
+            <Cell ss:StyleID="s2"><Data ss:Type="Text"><%= zona['Nombre'] %></Data></Cell>
+            <% @data_zonas[index].each do |zone|  %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= zone['axt'].to_f.round(2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= zone['OpaAxT'].to_f.round(1) %>%</Data></Cell>
+            <% end %>
+          </Row>
+        <% end %>
+      </Table>
+    </Worksheet>
+    <% else %>
+      <Worksheet ss:Name="vendedor">
+        <Table>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String"># Vendedor: <%= @id_vendedor %></Data></Cell>
+            <% @meses_caption.each do |caption| %>
+              <Cell ss:StyleID="1"><Data ss:Type="String"><%= caption %></Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">Netas</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(@objetivos[index]['objNetas'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(mes['netas'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objNetas'].to_f) * mes['netas']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">TP</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(@objetivos[index]['objTP'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=number_to_currency(mes['tp'], :locale => :mx, :precision => 2) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objTP'].to_f) * mes['tp']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">NT</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objNT'].round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['nt'].round(0) %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= ((100.0/@objetivos[index]['objNT'].to_f) * mes['nt']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+          <Row>
+            <Cell ss:StyleID="1"><Data ss:Type="String">AxT</Data></Cell>
+            <% @data_meses.each_with_index do |mes, index| %>
+            <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= @objetivos[index]['objAxt'] %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%= mes['axt'] %></Data></Cell>
+              <Cell ss:StyleID="s3"><Data ss:Type="Text"><%=((100.0/@objetivos[index]['objAxt'].to_f) * mes['axt']).round(2) %>%</Data></Cell>
+            <% end %>
+          </Row>
+        </Table>
+      </Worksheet>
+    <% end %>
+</Workbook>
+ -->
+
+  <% @meses_caption.each do |caption| %>
+    <%= caption %>
+  <% end %>

@@ -1,0 +1,137 @@
+<% if @sistemawp.to_i == 0 %>
+    <h1 class="text-center">Cotizaciones</h1>
+    <h3 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h3>
+
+<% else %>
+    <h1  class="text-center">Cotizaciones</h1>
+    <h3  class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h3>
+<% end %>
+<br>
+<br>
+
+
+
+ 
+<div class="row">
+  <ul class="nav navbar-nav">
+    <% if @vendedor.to_i == 0 %>
+      <li><a href="/pdv_selvend?movnvo=Z" class="btn btn-primary">Nueva Cotización</a></li>
+    <% else %>
+      <li><a href="/pdv_selprod?movnvo=Z" class="btn btn-primary">Nueva Cotización</a></li>
+    <% end %>
+
+  </ul>
+</div>
+<br><br><br><br><br><br><br><br>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+
+          <div class="btn-group float-left">
+            <button type="button" class="btn btn-info btn-xs">Ver Cotizaciones</button>
+           
+            <button type="button" class="btn btn-info btn-xs dropdown-toggle"
+                    data-toggle="dropdown">
+              <span class="caret"></span>
+              <span class="sr-only">Desplegar menú</span>
+            </button>
+           
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="/pdv?vendedor=<%=@vendedor%>&filtro=VIG">Vigentes</a></li>
+              <li class="divider"></li>
+              <li><a href="/pdv?vendedor=<%=@vendedor%>&filtro=VEN">Vencidas</a></li>
+              <li class="divider"></li>
+              <li><a href="/pdv?vendedor=<%=@vendedor%>&filtro=FAC">Facturadas</a></li>
+              <li class="divider"></li>
+              <li><a href="/pdv?vendedor=<%=@vendedor%>&filtro=CAN">Canceladas</a></li>
+              <li class="divider"></li>
+              <li><a href="/pdv?vendedor=<%=@vendedor%>&filtro=TOD">Todas</a></li>
+            </ul>
+          </div>
+
+          <a id="margenh5" class="btn float-left btn-info btn-xs" href="/pdv_pendientes" role="button"> Ver Pendientes</a>
+          <h3 class="panel-title text-center">Cotizaciones <span class="badge"><%=@nomfiltro%></span></h3>
+          <br>
+      </div>
+      <div class="panel-body fixed-panel">
+        <% if @hcotiza && @hcotiza.count > 0 %>
+
+          <div class="row">
+            <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped">
+
+              <thead>
+                <tr>
+                  <th><a href="#" data-toggle="tooltip" title="Fecha">Fecha</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Vigencia">Vigencia en Dias</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Fecha Vencimiento">Fecha Vigencia</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">No. Mov.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Tipo de Movimiento">Tipo</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Estatus del Movimiento">Status</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="IdVendedor">Vendedor</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="SubTotal">SubTotal</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Descuento">Desc.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="IVA">I.V.A.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Monto Total">Total</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Cliente">Cliente</a></th>
+                  <!--<th><a href="#" data-toggle="tooltip" title="Sucursal de Intercambio">Suc. Interc.</a></th>-->
+                  <th><a href="#" data-toggle="tooltip" title="No. de Control de Factura">Control. Fac.</a></th>
+                  <!--<th><a href="#" data-toggle="tooltip" title="Folio de Intercambio">Folio Interc.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="No. de Obra">Obra</a></th>-->
+                  <th><a href="#" data-toggle="tooltip" title="Acción a Ejecutar">Acción</a></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @hcotiza.each do |s| %>
+                  <tr>
+                    <td><%= s['Fecha'] %></td>
+                    <td><%= s['Vigencia'] %></td>
+                    <td><P align=right><%= 
+                      @fechavig = Date.parse(s['Fecha']) + s['Vigencia'].day
+                      if s['Controlfac'].to_i > 0 || s['Status2'].to_s == "C"
+                        raw("<span class='label label-info'>") + s['Fechavig'] + raw("</span>") 
+                      else
+                        if @fechavig > Date.today
+                          raw("<span class='label label-success'>") + s['Fechavig'] + raw("</span>") 
+                        #raise @fechacot.inspect
+                        else 
+                          if @fechavig == Date.today
+                             raw("<span class='label label-warning'>") + s['Fechavig'] + raw("</span>")
+                          else
+                             raw("<span class='label label-danger'>") + s['Fechavig'] + raw("</span>")
+                          end
+                        end
+                      end
+                    %></td>
+                    <td><%= s['Nummov'] %></td>
+                    <td><%= s['Tipo_subt'] %></td>
+                    <td><%= s['Status2'] %></td>
+                    <td><P align=right><%= s['Idvendedor'] %></td>
+                    <td><P align=right><%= number_to_currency(s['Subtotfac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= number_to_currency(s['Descfac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= number_to_currency(s['Ivafac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= number_to_currency(s['Total'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= s['Idcliente'] %></td>
+                    <td><P align=right><%= s['Controlfac'] %></td>
+                    <td>
+                    <p>
+                      <a class="btn btn-info btn-xs" href="/pdv_cotiza_terminada?vendedor=<%=s['Idvendedor']%>&fechamov=<%=s['Fecha']%>&nummov=<%=s['Nummov']%>&filtro=<%=@filtro%>&nomfiltro=<%=@nomfiltro%>" role="button"> Ver Cotización</a>
+                    </p>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p align=center class="titulo2">Sin Movimientos</p>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+

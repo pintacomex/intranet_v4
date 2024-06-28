@@ -1,0 +1,36 @@
+<div class="col-md-9 col-sm-offset-1 col-md-offset-2">
+  <div class="cabecera">
+    <p align=center class="titulo1">Añadir Archivo</p>
+    <% @tituloArm = ""
+      arma_Titulo(params[:cveant]) %>
+    <% if params[:cveant] == "*" %>
+      <p class="titulo2"><%= params[:clave] %></p>
+    <% else %>
+      <p class="titulo2"><%= @tituloArm + " - " + params[:clave] %></p>
+    <% end %>
+  </div>
+  <br>
+  <p>
+  	<a class="btn pull-left btn-primary btn-xs" href="/documentos_admin?cveant=<%=params[:cveant]%>" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  </p> 
+
+  <br>
+
+  <%= form_for @documentos_file, url: documentos_files_path, html: { multipart: true } do |form| %>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <%= hidden_field_tag 'CveAnt', params[:cveant] %>
+        <%= hidden_field_tag 'Clave', params[:clave] %>
+        <div class="form-group">
+          <%= form.file_field :file, multiple: "multiple" %>
+          <p class="help-block">Sólo imágenes (JPEG, JPG, PNG o GIF) o documentos (PDF, DOC, XLS, PPT)</p>
+          <div class="col-sm-7 col-md-8 col-lg-8">
+            <div class="form-actions loader-form">
+              <%= submit_tag  "+ Añadir el archivo", class: "btn btn-primary  btn-xs" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

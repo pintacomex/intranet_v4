@@ -1,0 +1,7 @@
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('layouts') %>><a href="/tableros/layouts">Layouts</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('medidores') %>><a href="/tableros/medidores">Medidores</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('usuarios') %>><a href="/tableros/usuarios">Usuarios</a></li>
+
+</ul>
+<br>

@@ -1,0 +1,15 @@
+<tr>
+	<% url = "/tickets_programados_edit?id=#{ticket['IdTodoProgramado']}" %>
+	<% url_robot = "/tickets_programados_robot?id=#{ticket['IdTodoProgramado']}" %>
+	<td><%= link_to fecha_ticket_programado(ticket), url %></td>
+	<td><%= link_to getTipoGrupo(ticket['Tipo']), url %></td>
+	<td><%= link_to ticket['Texto'].to_s.gsub("\n", "").truncate(20), url %></td>
+	<td><%= dias_limite(ticket) %></td>
+	<td><%= getStatus(ticket['Status']) %></td>
+	<td>
+		<%= link_to 'Editar', url, class: "btn btn-xs btn-primary" %>
+		<%= link_to 'Programar', url_robot, target: "_blank", class: "btn btn-xs btn-info", data: { confirm: 'Está seguro de intentar programar este ticket? Sólo se generará el ticket si hoy es el día que debería generarse' } %>
+		<%= link_to 'Forzar', "#{url_robot}&force=1", target: "_blank", class: "btn btn-xs btn-info", data: { confirm: 'Está seguro de forzar programar este ticket? Se generará el ticket incluso si hoy no es el día que debería generarse' } %>
+		<%= link_to 'Borrar', "/tickets_programados_destroy?id=#{ticket['IdTodoProgramado']}", method: :delete, data: { confirm: 'Está seguro?' }, class: "btn btn-xs btn-danger" %>
+	</td>
+</tr>

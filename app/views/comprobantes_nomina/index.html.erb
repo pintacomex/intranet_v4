@@ -1,0 +1,31 @@
+<br><br>
+<h1 class="text-center">Comprobantes de Nómina</h1>
+
+<br>
+
+<div class="col-md-8 col-sm-8 col-md-offset-2 col-sm-offset-2">
+
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered text-center">
+
+	  <tr>
+	    <th>Período</th>
+	    <th>Fecha Final del Período</th>
+	    <th>Descargar CFDI</th>
+	  </tr>
+
+	  <% @comprobantes.each do |c| %>
+	    <tr>
+	      <td><%= c['AnoFiscal'] %>/<%= c['NumPeriodo'] %></td>
+	      <td><%= fix_show_date(c['FechaFinalPago']) %></td>
+	      <td>
+	      	<% if c['EstatusTimbrado'] == "A" %>
+			  <div class="btn-group" role="group">
+	      	    <%= link_to "PDF", "/comprobantes_nomina_descarga/#{c['AnoFiscal']}_#{c['NumPeriodo']}_#{c['Consec']}.pdf?AnoFiscal=#{c['AnoFiscal']}&NumPeriodo=#{c['NumPeriodo']}&Consec=#{c['Consec']}", class: "btn btn-info btn-xs" %> <%= link_to "XML", "/comprobantes_nomina_descarga/#{c['AnoFiscal']}_#{c['NumPeriodo']}_#{c['Consec']}.xml?AnoFiscal=#{c['AnoFiscal']}&NumPeriodo=#{c['NumPeriodo']}&Consec=#{c['Consec']}", class: "btn btn-success btn-xs" %>
+			  </div>	      	
+	      	<% end %>
+	      </td>
+	    </tr>
+	  <% end %>
+	</table>
+
+</div>

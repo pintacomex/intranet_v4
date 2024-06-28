@@ -1,0 +1,191 @@
+// Place all the styles related to the pdv controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.cabecera {
+	padding: 10px;
+	border: 1px solid #999999;
+	background: -webkit-radial-gradient(center center, circle, black, #1162ac);
+	background: -moz-radial-gradient(center center, circle, black, #1162ac);
+	border-radius: 6px;
+	box-shadow: rgb(150,150,150) 5px 5px 10px;
+}
+
+.cabecerawp {
+	padding: 10px;
+	border: 1px solid #999999;
+//	background:-webkit-radial-gradient(center center, ellipse, white 25%, skyblue 66%, black 96%);
+//	background:-moz-radial-gradient(center center, ellipse, white 25%, peru 66%, black 96%);
+//	background:-webkit-linear-gradient(top, red, gold);
+//	background:-moz-linear-gradient(top, red, gold);
+	background:-webkit-linear-gradient(30deg, crimson, gold, skyblue, olive, orangered);
+	background:-moz-linear-gradient(30deg, crimson, gold, skyblue, olive, orangered);
+	border-radius: 6px;
+	box-shadow: rgb(150,150,150) 5px 5px 10px;
+}
+
+.titulo1 {
+	font: bold 29px verdana, sans-serif;
+	color: #1995dc;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo2 {
+	font: bold 22px verdana, sans-serif;
+	color: #1995dc;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo2b {
+	font: bold 22px verdana, sans-serif;
+	color: #F8F8FF;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo3x {
+	font: bold 18px verdana, sans-serif;
+	color: #1995dc;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo3 {
+	font: bold 16px verdana, sans-serif;
+	color: #F8F8FF;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo4s {
+	font: bold 14px verdana, sans-serif;
+	color: #058B24;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo4d {
+	font: bold 14px verdana, sans-serif;
+	color: #A92020;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.texto {
+	height: 50px;
+}
+
+#imagen_sel {
+	margin: 0px 0px 10px 0px;
+	padding: 10px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #DDDDDD;
+}
+
+#imagen_sel_fija {
+	margin: 0px 0px 10px 0px;
+	padding: 10px;
+  min-height: 180px;
+  max-height: 180px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #DDDDDD;
+}
+
+#imagen_sel_fija_s {
+	margin: 0px 0px 10px 0px;
+	padding: 10px;
+  min-height: 160px;
+  max-height: 160px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #E5EEFD;
+}
+
+#imagen_sel_fija_sx {
+	margin: 0px 0px 10px 0px;
+	padding: 10px;
+  min-height: 70px;
+  max-height: 70px;
+	text-shadow: rgb(1,13,23) 1px 1px 1px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #DDDDDD;
+}
+
+#imagen_sel_nego {
+	margin: 0px 0px 10px 0px;
+	padding: 10px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #DDDDDD;
+}
+
+#nota {
+	height: 70px;
+}
+
+#margen5 {
+	margin: 0px 0px 5px 0px;
+}
+
+#margenh5 {
+	margin: 0px 5px 0px 0px;
+}
+
+#margenh20 {
+	margin: 0px 20px 0px 0px;
+}
+
+#margenvh5 {
+	margin: 5px 5px 0px 0px;
+}
+
+#margenvh10 {
+	margin: 10px 10px 0px 0px;
+}
+
+.w3-btn,
+.w3-btn-ttc:link {
+	margin: 10px 0px 0px 0px;
+  color: #10205F;
+  height: 55px;
+  width: 80px;
+  background-color: #C8C7C2;
+}
+
+.btn-ttc,
+.btn-ttc:active {
+	margin: 10px 0px 0px 0px;
+  color: white;
+  height: 55px;
+  width: 80px;
+  background-color: #C8C7C2;
+}
+
+.btn-ttcs,
+.btn-ttcs:active {
+	margin: 10px 0px 0px 0px;
+  color: white;
+  height: 30px;
+  width: 80px;
+  background-color: #3384B6;
+}
+
+.container-fluid{
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.fixed-panel {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.fixed-prod {
+  max-height: 181px;
+  overflow-y: scroll;
+}
+
+.navbar-nav li a {
+ line-height: 36px;
+}
+

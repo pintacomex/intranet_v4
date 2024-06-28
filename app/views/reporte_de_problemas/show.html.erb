@@ -1,0 +1,39 @@
+<div class="col-md-6 col-md-offset-3">
+
+  <h1>Detalle de Reporte de Problemas</h1>
+
+  <p id="notice"><%= notice %></p>
+
+  <p>
+    <b>Fecha y Hora:</b>
+    <%= @reporte_de_problema.created_at.to_s %>
+  </p>
+
+  <p>
+    <b>Sitio:</b>
+    <%= @reporte_de_problema.nombreWeb %>
+  </p>
+
+  <p>
+    <b>Nombre:</b>
+    <%= @reporte_de_problema.nombre %>
+  </p>
+
+  <p>
+    <b>Email:</b>
+    <%= @reporte_de_problema.email %>
+  </p>
+
+  <p>
+    <b>Ciudad:</b>
+    <%= @reporte_de_problema.ciudad %>
+  </p>
+
+  <p>
+    <b>Descripcion:</b>
+    <%= @reporte_de_problema.descripcion %>
+  </p>
+
+  <%= link_to 'Regresar', reporte_de_problemas_path, class: "btn" %>
+
+</div>

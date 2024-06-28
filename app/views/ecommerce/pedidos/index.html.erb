@@ -1,0 +1,145 @@
+<% if current_user.has_role?(:admin) %>
+  <%= render(partial: '/ecommerce/navpills') %>
+<% else %>
+  <a href="/ecommerce/pedidos/">
+    <h3>Pedidos</h3>
+  </a>
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <div class="pull-left">
+    <div class="col-md-5 col-sm-5">
+      <% fuentes_options = (1..@fuentes.count).collect{|t| [ get_fuente(t), t ]}.unshift(["Fuente: Todas", 0]) %>
+      <%= select_tag 'fuente', options_for_select(fuentes_options, @fuente ? @fuente.to_i : 0), include_blank: false, class: 'form-control' %>
+    </div>
+    <div class="col-md-7 col-sm-7">
+      <% if true #@puede_ver_sucursales %>
+        <% sucursales_options = @sucursales.unshift(["Sucursal Asignada: Todas", -1]) %>
+        <%= select_tag 'sucursal_asignada', options_for_select(sucursales_options, @sucursal_asignada ? @sucursal_asignada.to_i : -1), include_blank: false, class: 'form-control' %>
+      <% end %>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#buscar">
+    Buscar por Id
+  </button>
+
+  <div class="pull-right text-right">
+    <small>
+      <% filtros_params = "fuente=#{@fuente}&sucursal_asignada=#{@sucursal_asignada}" %>
+      <% if @ver_todos %>
+        <a href="/ecommerce/pedidos/?<%= filtros_params %>">Ver pedidos activos</a> |
+        Ver todos
+      <% else %>
+        Ver pedidos activos |
+        <a href="/ecommerce/pedidos/?ver_todos=1&<%= filtros_params %>">Ver todos</a>
+      <% end %>
+    </small>
+  </div>
+
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class="text-center table table-hover table-bordered table-striped"
+  id="table"
+			 data-toggle="table"
+			 data-search="true"
+			 data-filter-control="true"
+			 data-show-export="true"
+			 data-click-to-select="true"
+			 data-toolbar="#toolbar"
+ >
+	  <thead>
+      <tr>
+        <th>
+          Fuente
+        </th>
+        <th data-field="id" data-filter-control="input" data-sortable="true">Id</th>
+        <th data-field="fecha" data-filter-control="select" data-sortable="true">
+          Fecha
+        </th>
+        <th>
+          Sucursal Asignada
+        </th>
+        <th data-field="status" data-filter-control="select" data-sortable="true">
+          Status
+        </th>
+        <th data-field="importe" data-filter-control="input" data-sortable="true">Importe</th>
+        <th data-field="observaciones" data-filter-control="input" data-sortable="false">Observaciones</th>
+        <th></th>
+	    </tr>
+	  </thead>
+    <tbody>
+      <% @pedidos.each do |item| %>
+      <%# raise item.inspect %>
+        <% url = "/ecommerce/pedidos/#{item['IdEcommerce']}-#{item['IdPedido']}" %>
+        <tr>
+          <td><%= get_fuente(item['IdEcommerce']) %></td>
+          <td><%= link_to item['IdPedido'], url %></td>
+          <td><%= item['FechaPedido'] %></td>
+          <td><%= get_sucursal(item['SucursalAsignada']) %></td>
+          <td><%= get_status_pedido(item['IdStatusPedido']) %></td>
+          <td><%= item['Importe'] > 0 ? number_to_currency(item['Importe'], :locale => :mx, :precision => 2) : "" %></td>
+          <td><%= item['Observaciones'].to_s.truncate(25) %></td>
+          <td>
+            <%= link_to 'Ver', url, class: 'btn btn-xs btn-primary' %>
+          </td>
+        </tr>
+      <% end %>
+	  </tbody>
+	</table>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.16.0/extensions/filter-control/bootstrap-table-filter-control.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.16.0/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+<div class="modal fade" id="buscar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Buscar por Id</h4>
+      </div>
+
+      <%= form_tag('/ecommerce/pedidos', method: :get, class: 'form-horizontal' )  do |f| %>
+
+        <div class="modal-body">
+          <div class="ref-group">
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Id Pedido</label>
+              <div class="col-md-6 col-sm-6">
+                <%= text_field_tag 'id', "", label: false, autofocus: true, placeholder: "o12345678", class: 'form-control' %>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $(document).ready(function() {
+    $('#fuente').change(function() {
+      fuente = $('#fuente').val();
+      suc = $('#sucursal_asignada').val();
+      url = "/ecommerce/?fuente=" + fuente + "&sucursal_asignada=" + suc;
+      window.location.href = url;
+    });
+    $('#sucursal_asignada').change(function() {
+      fuente = $('#fuente').val();
+      suc = $('#sucursal_asignada').val();
+      url = "/ecommerce/?fuente=" + fuente + "&sucursal_asignada=" + suc;
+      window.location.href = url;
+    });
+  });
+</script>

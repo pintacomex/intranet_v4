@@ -1,0 +1,127 @@
+<% if request.original_fullpath == '/' %>
+
+<nav class="navbar navbar-expand-lg navbar-dark  bg-primary justify-content-between">
+  <a class="navbar-brand logo-nav" href="<%= get_modulo_root(request.path) %>"><img src="/logo-36px-<%= @sitio[0].sufijo %>.png"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
+
+
+         <a href="/" class="nav-link text-white">Home</a>
+        <% if user_signed_in? %>
+          <% if controller.controller_name == 'comprobantes_nomina' %>
+             <%= link_to 'Ayuda', comprobantes_nomina_ayuda_path, class: "text-white nav-link" %>
+          <% else %>
+             <%= link_to 'Ayuda', ayuda_path, class: "nav-link text-white" %>
+          <% end %>
+        <% end %>
+
+      <ul class="navbar-nav">
+        <% if user_signed_in? %>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown"><%= current_user.name.split("-")[0].strip.titleize rescue "Usuario" %><b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <% if current_user.has_role? :admin %>
+                <li><%= link_to 'Administrar Sitio', admin_root_path, class: "dropdown-item" %></li>
+
+                <% if Devise.mappings[:user].invitable? %>
+                  <li><%= link_to 'Crear Invitación', new_user_invitation_path, class: "dropdown-item" %></li>
+                <% end %>
+
+                <li role="presentation" class="divider"></li>
+              <% end %>
+
+              <%#- if Devise.mappings[:user].registerable? %>
+                <li><%= link_to 'Perfil', edit_user_registration_path, class: "dropdown-item" %></li>
+              <%# end -%>
+
+              <li><%= link_to 'Salir', destroy_user_session_path, :method=>'delete', class: "dropdown-item" %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li><%= link_to 'Login', new_user_session_path, class: "dropdown-item" %></li>
+        <% end %>
+      </ul>
+
+  </div>
+</nav>
+
+<style type="text/css">
+  
+  @media only screen and (min-width: 995px) {
+    ul{
+    position: absolute;
+    right: 0;
+  }
+}
+</style>
+
+<% else %>
+
+<header class="navbar navbar-default navbar-fixed-top" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand logo-nav" href="<%= get_modulo_root(request.path) %>"><img src="/logo-36px-<%= @sitio[0].sufijo %>.png"></a>
+      <!-- <a class="navbar-brand" href="/"></a> -->
+      <%#= link_to '', root_path, class: 'navbar-brand' %>
+    </div>
+    <nav class="collapse navbar-collapse navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li <%= raw "class='active'" if controller.controller_name == 'home' && controller.action_name == 'index' %>><a href="/">Home</a></li>
+        <% if user_signed_in? %>
+          <% if controller.controller_name == 'comprobantes_nomina' %>
+            <li <%= raw "class='active'" if controller.action_name == 'ayuda' %>><%= link_to 'Ayuda', comprobantes_nomina_ayuda_path %></li>
+          <% else %>
+            <li <%= raw "class='active'" if controller.action_name == 'ayuda' %>><%= link_to 'Ayuda', ayuda_path %></li>
+          <% end %>
+        <% end %>
+
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <% if user_signed_in? %>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name.split("-")[0].strip.titleize rescue "Usuario" %><b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <% if current_user.has_role? :admin %>
+                <li><%= link_to 'Administrar Sitio', admin_root_path %></li>
+
+                <% if Devise.mappings[:user].invitable? %>
+                  <li><%= link_to 'Crear Invitación', new_user_invitation_path %></li>
+                <% end %>
+
+                <li role="presentation" class="divider"></li>
+              <% end %>
+
+              <%#- if Devise.mappings[:user].registerable? %>
+                <li><%= link_to 'Perfil', edit_user_registration_path %></li>
+              <%# end -%>
+
+              <li><%= link_to 'Salir', destroy_user_session_path, :method=>'delete' %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li><%= link_to 'Login', new_user_session_path %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+body {
+  margin-top: 90px; /* adjust this if the height of the menu bar changes */
+}
+.navbar-nav li a {
+ line-height: 36px;
+}
+</style>
+
+<% end %>

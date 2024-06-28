@@ -1,0 +1,6 @@
+<% if @medidor['TipoMedidor'] == 'GaugePorcentual' %>
+    var g<%= @id.to_s.gsub("-", "") %> = new JustGage(<%= raw @medidor_params %>); 	
+<% else %>
+    var chart = new CanvasJS.Chart("c<%= @id.to_s.gsub("-", "") %>", <%= raw @medidor_params %>);
+    chart.render();
+<% end %>

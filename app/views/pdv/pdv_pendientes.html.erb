@@ -1,0 +1,160 @@
+<% if @sistemawp.to_i == 0 %>
+    <h1 align=center class="text-center">Cotizaciones</h1>
+    <h2 align=center class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+    <h2 align=center class="text-center">Movimientos Pendientes</h2>
+<% else %>
+    <h1 align=center class="text-center">Cotizaciones</h1>
+    <h2 align=center class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+    <h2 align=center class="text-center">Movimientos Pendientes</h2>
+<% end %>
+<br>
+
+<p>
+  <a class="btn pull-left btn-info btn-sm" href="/pdv" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+</p>
+<div class="clearfix"></div>
+<br>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Movimientos Pendientes</h3>
+      </div>
+      <div class="panel-body fixed-panel">
+        <% if @hcarritopend && @hcarritopend.count > 0 %>
+
+          <div class="row">
+            <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="cabeza">
+
+              <thead>
+                <tr>
+                  <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">No. Mov.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Fecha">Fecha</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Número de Vendedor">Vendedor</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Tipo de Movimiento">Tipo</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Estatus del Movimiento">Status</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="SubTotal">SubTotal</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Descuento">Desc.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="IVA">I.V.A.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Monto Total">Total</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Cliente">Cliente</a></th>
+                  <!--<th><a href="#" data-toggle="tooltip" title="Sucursal de Intercambio">Suc. Interc.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="No. de Control de Factura">Control. Fac.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Folio de Intercambio">Folio Interc.</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="No. de Obra">Obra</a></th>-->
+                  <th><a href="#" data-toggle="tooltip" title="Acción a Ejecutar">Acción</a></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @hcarritopend.each do |s| %>
+                  <tr>
+                    <% if s['Tipo_subt'][0] == "V" || s['Tipo_subt'][0] == "Z" %>
+                      <% @movnvo = s['Tipo_subt'][0] %>
+                    <% else %>
+                      <% @movnvo = s['Tipo_subt'] %>
+                    <% end %>
+                    <!-- <td><a href="/pdv_pendientes?vendedor=<%=s['IdVendedor']%>&nummov=<%=s['Nummov']%>"><%= s['Nummov'] %></a></td> -->
+                    <td><a href="/pdv_pendientes?nummov=<%=s['Nummov']%>"><%= s['Nummov'] %></a></td>
+                    <td><%= s['Fecha'] %></td>
+                    <td><P align=right><%= s['IdVendedor'] %></td>
+                    <td><%= s['Tipo_subt'] %></td>
+                    <td><%= s['Status2'] %></td>
+                    <td><P align=right><%= number_to_currency(s['Subtotfac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= number_to_currency(s['Descfac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= number_to_currency(s['Ivafac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= number_to_currency(s['Total'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <td><P align=right><%= s['Idcliente'] %></td>
+                    <!--<td><P align=right><%= s['Idsucursal'] %></td>
+                    <td><P align=right><%= s['Controlfac'] %></td>
+                    <td><%= s['Foliointer'] %></td>
+                    <td><P align=right><%= s['IdObra'] %></td>-->
+                    <td>
+                      <p>
+                        <a class="btn btn-success btn-xs" href="/pdv_selprod?vendedor=<%=s['IdVendedor']%>&activap=1&nummovp=<%=s['Nummov']%>&movnvo=<%=@movnvo%>&tipo_subt='<%=s['Tipo_subt']%>'&tab=2" role="button"><span class="glyphicon glyphicon-edit"></span> Terminar el Movimiento</a>
+                      </p>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p align=center class="titulo2">Sin Movimientos Pendientes</p>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="clearfix"></div>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    
+    <% if @hcarritopend && @hcarritopend.count > 0 %>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Detalle del Movimiento No. <%= @nummov %></h3>
+        </div>
+        <div class="panel-body fixed-panel">
+          <% if @dcarritopend && @dcarritopend.count > 0 %>
+
+            <div class="row">
+              <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="detalle">
+
+                <thead>
+                  <tr>
+                    <th><a href="#" data-toggle="tooltip" title="Número de Renglón">Renglón</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Fecha">Fecha</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Tipo de Movimiento">Tipo</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Estatus del Movimiento">Status</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="CveAsoc del Producto">CveAsoc</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Descripción del Producto">Descripción</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Unidad de Medida">Unidad</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Precio de Lista">Precio Lista</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Cantidad">Cantidad</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Precio Unitario">Precio Unit.</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Porcentaje de Descuento">% Desc.</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Total Renglón">Total</a></th>
+                    <th><a href="#" data-toggle="tooltip" title="Tipo de Descuento">Tipo Desc.</a></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @dcarritopend.each do |s| %>
+                    <tr>
+                      <td><%= s['Idrenglon'] %></td>
+                      <td><%= s['Fecha'] %></td>
+                      <td><%= s['Tipo_subt'] %></td>
+                      <td><%= s['Status2'] %></td>
+                      <td><%= s['Cveasoc'] %></td>
+                      <td><%= s['Descrip'] %></td>
+                      <td><%= s['UMedida'] %></td>
+                      <td><P align=right><%= number_to_currency(s['Preciolp'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= s['Cantidad'] %></td>
+                      <td><P align=right><%= number_to_currency(s['Preunifac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(s['Pordesfac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(s['Totrenfac'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><%= s['Tipodesc'] %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p align=center class="titulo2">Sin Detalle del Movimientos <%=@nummov%></p>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+    <%= javascript_include_tag "/dt_v3" %>
+
+  </div>
+
+</div>

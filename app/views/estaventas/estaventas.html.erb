@@ -1,0 +1,354 @@
+
+<h3>Estadísticas de Ventas</h3>
+
+<% if !params.has_key?(:agrupa) %>
+  <br>
+  <div class="loader-form">
+    <form class="form" role="form">
+      <div class="form-group">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Seleccionar Agrupación</div>
+          <div class="panel-body">
+            <div class="control-group">
+              <label class="control-label col-md-3" id="labagrupa" name="labagrupa">Superior:</label>
+              <div class="controls">
+                <select class="combobox" name="agrupa" id="idagrupa">
+                  <% @agrupa.each do |a| %>
+                    <option value="<%= a['IdAgrupa'] %>"><%=h(a['Nombre']) %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+            <br>
+            <div class="control-group">
+              <label class="control-label col-md-3" id="labsubagrupa" name="labsubagrupa">Intermedio:</label>
+              <div class="controls">
+                <select class="combobox" name="subagrupa" id="idsubagrupa">
+                  <% if @excluyente %>
+                    <option value="<%= '' %>"><%=h('') %></option>
+                  <% end %>
+                  <% @subagrupa.each do |a| %>
+                    <option value="<%= a['IdSubAgrupa'] %>"><%=h(a['Nombre']) %></option>
+                  <% end %>
+                </select>
+                <script>
+                  if @excluyente {
+                    $('#idsubagrupa').val( <%= 0 %> )
+                  }
+                </script>
+              </div>
+            </div>
+            <br>
+            <div class="control-group">
+              <label class="control-label col-md-3" id="labagrupasuc" name="labagrupasuc">Sucursal:</label>
+              <div class="controls">
+                <select class="combobox" name="agrupasuc" id="idagrupasuc" disabled="disabled">
+                  <option value="<%= '' %>"><%=h('') %></option>
+                  <% @agrupasuc.each do |a| %>
+                    <option value="<%= a['IdSucursal'] %>"><%=h(a['Nombre']) %></option>
+                  <% end %>
+                </select>
+                <script>
+                  $('#idagrupasuc').val( <%= 0 %> )
+                </script>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="panel panel-primary">
+          <div class="panel-heading">Seleccionar el tipo de Estadística</div>
+          <div class="panel-body">
+            <div class="control-group">
+              <label class="control-label col-md-3">Total:</label>
+              <div class="controls">
+                <select class="comboboxbos" name="estadisticat" id="idestadisticat">
+                  <option value="1">Venta Neta</option>
+                  <option value="2">Venta Stock</option>
+                  <option value="3">Venta Costo</option>
+                  <option value="4">Tickets</option>
+                  <option value="5">Renglones</option>
+                  <option value="6">Artículos</option>
+                </select>
+              </div>
+            </div>
+            <br>
+            <div class="control-group">
+              <label class="control-label col-md-3">Parcial:</label>
+              <div class="controls">
+                <select class="comboboxbos" name="estadisticap" id="idestadisticap">
+                  <option value="<%= '' %>"><%=h('') %></option>
+                  <option value="11">Contado General</option>
+                  <option value="12">Contado Clientes con Descuento</option>
+                  <option value="13">Crédito</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">Seleccionar Indice para Deflactar</div>
+          <div class="panel-body">
+            <label class="radio-inline">
+              <input type="radio" name="deflactar" id="iddef_0" value="nodefinido"> No Deflactar
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="deflactar" id="iddef_1" value="I.N.P.C."> I.N.P.C.
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="deflactar" id="iddef_2" value="I.I.P." checked> Intermedio de Pintura 
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="deflactar" id="iddef_3" value="I.C."> Competitividad    
+            </label>
+          </div>
+        </div>
+
+
+
+      </div>
+      <br>
+      <div class="form-actions">
+        <input class="btn btn-primary go-to-filter" type="button" value="Consultar"
+         onclick="windowOpen()" />
+         <script>
+          function windowOpen() {
+            parametros = "?agrupa=" + $('#idagrupa').val();
+            parametros += "&subagrupa=" + $('#idsubagrupa').val();
+            parametros += "&agrupasuc=" + $('#idagrupasuc').val();
+            parametros += "&estadisticat=" + $('#idestadisticat').val();
+            parametros += "&estadisticap=" + $('#idestadisticap').val();
+            if ($('#iddef_0:checked').val() == "nodefinido") {
+              parametros += "&deflactar=" + $('#iddef_0').val();
+            } else {
+              if ($('#iddef_1:checked').val() == "I.N.P.C.") {
+                parametros += "&deflactar=" + $('#iddef_1').val();
+              } else {
+                if ($('#iddef_2:checked').val() == "I.I.P.") {
+                  parametros += "&deflactar=" + $('#iddef_2').val();
+                } else {
+                  
+                  if ($('#iddef_3:checked').val() == "I.C.") {
+                    parametros += "&deflactar=" + $('#iddef_3').val();
+                  }
+                }
+              }
+            }
+
+            parametros += "&sin_navegador=1";
+  //          alert(parametros);
+            var myWindow = window.open(parametros,'_blank','height=700,scrollbars=yes,menubar=no');
+          }
+         </script>
+      </div>
+    </form>
+  </div>
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <% if @antsaldos.count > 0 %>
+
+      <% case @estadistica %>
+      <% when 1,2,3,11,12,13,21,22,23,31,32,33 %>
+        <% @descdato = @descdato + " -- " + params[:deflactar].to_s %>
+      <% end  %>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+        </div>
+        <div class="panel-body">
+          <%= despliega_grafica2("lineas",{ series: @series, categorias: @categorias, titulo: @nomCia, subtitulo: @tituloAgrupa + " ( " + @descdato + " )", ytitulo: @ytitulo, tultip: @tultip }) %>
+        </div>
+      </div>
+
+      <%# raise @antsaldos.to_json.inspect raw(@antsaldos.to_json) %>
+
+
+      <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="example">
+
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Año">Año</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% @antsaldos.each do |m| %>
+            <tr>
+              <td><%= m['Año'] %></td>
+              <td><%= number_to_currency(m['Enero'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Febrero'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Marzo'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Abril'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Mayo'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Junio'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Julio'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Agosto'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Septiembre'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Octubre'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Noviembre'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['Diciembre'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <br />
+        <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+        <%= javascript_include_tag "/dt_v3" %>
+
+      </div> 
+
+    <% else %>
+
+      Sin Datos.
+
+    <% end %>
+  <% end %>
+
+</div>
+
+<script>
+  $(document).ready(function() {
+
+    $('#idagrupa').change(function() {
+      agrupa_val = $('#idagrupa').val();
+      subagrupa_val = $('#idsubagrupa').val();
+      if (agrupa_val == 0) {
+        $('#idsubagrupa').prop('disabled','disabled');
+        $('#idagrupasuc').prop('disabled','disabled');
+        return;
+      } else {
+        $('#idagrupasuc').val( <%= 0 %> )
+      }
+      $.ajax({
+        url: "/estaventas_ajax_subagrupa?agrupa="+agrupa_val,
+        dataType: 'json',
+        success: function( json ) {
+            $('#idsubagrupa').empty();
+            excluyente = 0;
+            $.each(json, function(i, value) {
+              excluyente = value['Excluyente'];
+            });
+//            alert("Valor = " + excluyente);
+            if (excluyente) {
+              $('#idsubagrupa').append($('<option>').text('').attr('value', ""));
+            }
+            $.each(json, function(i, value) {
+                $('#idsubagrupa').append($('<option>').text(value['Nombre']).attr('value', value['IdSubAgrupa']));
+            });
+        }
+      });
+      $('#idsubagrupa').prop('disabled',false);
+      $('#idagrupasuc').prop('disabled','disabled');
+     });
+
+    $('#idsubagrupa').change(function() {
+      agrupa_val = $('#idagrupa').val();
+      subagrupa_val = $('#idsubagrupa').val();
+      // alert("Cambia SubAgrupa "+agrupa_val+" y "+subagrupa_val);
+      if (subagrupa_val == 0) {
+        $('#idagrupasuc').prop('disabled','disabled');
+        return;
+      }
+      $.ajax({
+        url: "/estaventas_ajax_agrupasuc?agrupa="+agrupa_val+"&subagrupa="+subagrupa_val,
+        dataType: 'json',
+        success: function( json ) {
+            $('#idagrupasuc').find('option').remove().end()
+            $('#idagrupasuc').append($('<option>').text('').attr('value', ""));
+            $.each(json, function(i, value) {
+                $('#idagrupasuc').append($('<option>').text(value['Nombre']).attr('value', value['IdSucursal']));
+            });
+        }
+      });
+      $('#idagrupasuc').prop('disabled',false);
+    });
+
+    $('#idestadisticat').change(function() {
+      estadisticat_val = $('#idestadisticat').val();
+//      alert("estadisticat_val = " + estadisticat_val);
+      switch(estadisticat_val) {
+       case '1':
+       case '2':
+       case '3':
+          $('#iddef_0').prop('disabled',false);
+          $('#iddef_1').prop('disabled',false);
+          $('#iddef_2').prop('disabled',false);
+          $('#iddef_3').prop('disabled',false);
+          break;
+       case '4':
+       case '5':
+       case '6':
+          $('#iddef_0').prop('checked','checked');
+          $('#iddef_0').prop('disabled','disabled');
+          $('#iddef_1').prop('disabled','disabled');
+          $('#iddef_2').prop('disabled','disabled');
+          $('#iddef_3').prop('disabled','disabled');
+          break;
+       default:
+          $('#iddef_0').prop('disabled',false);
+          $('#iddef_1').prop('disabled',false);
+          $('#iddef_2').prop('disabled',false);
+          $('#iddef_3').prop('disabled',false);
+      } 
+
+      $('#idestadisticap').empty();
+      $('#idestadisticap').append($('<option>').text('').attr('value', ""));
+      switch(estadisticat_val) {
+       case '1':
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "11"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "12"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "13"));
+          break;
+       case '2':
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "21"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "22"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "23"));
+          break;
+       case '3':
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "31"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "32"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "33"));
+          break;
+       case '4':
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "41"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "42"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "43"));
+          break;
+       case '5':
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "51"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "52"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "53"));
+          break;
+       case '6':
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "61"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "62"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "63"));
+          break;
+       default:
+          $('#idestadisticap').append($('<option>').text('Contado General').attr('value', "11"));
+          $('#idestadisticap').append($('<option>').text('Contado Clientes con Descuento').attr('value', "12"));
+          $('#idestadisticap').append($('<option>').text('Crédito').attr('value', "13"));
+      } 
+     });
+
+  });
+</script>

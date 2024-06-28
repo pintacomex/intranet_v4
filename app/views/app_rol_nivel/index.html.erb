@@ -1,0 +1,111 @@
+<br><br>
+<%= render(partial: 'navpills') %>
+
+<h1 class="text-center">Autorizaciones por App Rol Nivel</h1>
+
+<br>
+
+  <div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Nombre de la Aplicación o Módulo">App</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre del Rol">Rol</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nivel de Acceso Permitido">Nivel</a></th>
+          <th class="no-sort"><a href="#" data-toggle="tooltip" title="Quitar o Dar Acceso">Accesos</a></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% @apps.each do |a| %>
+          <% app_nivels = @app_nivels[a.id] ? @app_nivels[a.id] : @niveles_default %>
+          <% app_nivels = app_nivels.unshift(["Sin Acceso",0]) if app_nivels.first.last != 0 %>
+          <% @roles.each do |r| %>
+            <tr>
+              <td><%= link_to a.nombre, "/app_rol_nivel?qapp=#{a.id}" %></td>
+              <td><%= r.nomPermiso %></td>
+              <% arn = AppRolNivel.where("app = #{a.id} AND rol = #{r.nivel}").first.nivel rescue 0 %>
+              <td><%= app_nivels[arn].first rescue "No encontrado" %></td>
+              <% url = "/app_rol_nivel_acceso?#{params[:qapp].to_i > 0 ? "qapp=#{params[:qapp].to_i}&" : ""}app=#{a.id}&rol=#{r.nivel}&nivel=" %>
+              <td>
+                <% if app_nivels == @niveles_default %>
+                  <%= link_to raw('&nbsp;&nbsp;Quitar&nbsp;&nbsp;'), "#{url}0", class: "btn btn-info btn-xs" if arn != 0 %>
+                  <%= link_to raw('&nbsp;Lectura&nbsp;'), "#{url}1", class: "btn btn-primary btn-xs" if arn != 1 %>
+                  <%= link_to 'Escritura', "#{url}2", class: "btn btn-primary btn-xs" if arn != 2 %>
+                <% else %>
+                  <div class=btn-group> 
+                    <button class="btn btn-info btn-xs dropdown-toggle" type=button data-toggle=dropdown aria-haspopup=true aria-expanded=false> Seleccionar <span class=caret></span> </button> 
+                    <ul class=dropdown-menu> 
+                      <% app_nivels.each do |app_nivel| %>
+                        <li><a href="<%= "#{url}#{app_nivel.last}" %>"><%= app_nivel.first %></a></li> 
+                      <% end %>
+                    </ul> 
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+      <br />
+  </div>
+  </div> 
+
+<style type="text/css">
+  #example_filter{
+    width: 50%;
+    text-align: left;
+    margin: 25px 0;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

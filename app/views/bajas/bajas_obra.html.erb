@@ -1,0 +1,116 @@
+<h1 class="text-center">Bajas de Mercancía para Obra</h1>
+
+<br>
+
+<% if @bajas.count > 0 %>
+
+  <div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+    <small>
+      <%= link_to "Regresar", "/bajas/" %>
+    </small>
+    <br />
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Zona y Número de la Sucursal">Zona-Suc</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre de la Sucursal">Sucursal</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha de la Baja">Fecha</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">Mov</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total">Total</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total Valuado">Valuado</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Identificador de la Obra">Obra</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Tipo Subtipo o Tipo de Baja">TipoSubt/Baja</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Observaciones">Observaciones</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Autorización del Regional">R</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Autorización del Contralor">C</a></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% @bajas.each do |m| %>
+          <tr>
+            <td><%= link_to "#{m['ZonaAsig']}-#{m['Sucursal']}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{m['Nombre']}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{fix_show_date(m['Fecha'])}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{m['Nummov']}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{number_to_currency(m['Total'], :locale => :mx, :precision => 2)}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{number_to_currency(m['Totvaluado'], :locale => :mx, :precision => 2)}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= m['IdObra'].to_i > 0 ? link_to("#{m['IdObra']}", "/bajas_obra?idobra=#{m['IdObra']}") : "" %></td>
+            <td><%= m['Tipo_subt'] == "B" ? "#{m['Tipo_subt']}-#{m['Folioinfo']}-#{m['Descrip']}" : "#{m['Tipo_subt']}-#{m['NomTipoSubTipo']}" %></td>
+            <td><%= m['Observac'] %></td>
+            <td><%= m['baRegAutorizacion'] == 1 ? raw("<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>") : "" %></td>
+            <td><%= m['baCtlAutorizacion'] == 1 ? raw("<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>") : "" %></td>            
+          </tr>
+        <% end %>
+
+      </tbody>
+    </table>
+  <br />
+
+  </div> 
+
+</div>
+
+<% else %>
+
+  Sin Datos.
+
+<% end %>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+</style>
+
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

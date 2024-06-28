@@ -1,0 +1,9 @@
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" <%= raw "class='active'" if controller.action_name.start_with?('tickets') and !controller.action_name.start_with?('tickets_programados') and controller.action_name != 'tickets_new' %>><a href="/tickets">Tickets</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.action_name == 'tickets_new' %>><a href="/tickets_new">Crear Ticket</a></li>
+  <% if current_user.has_role? :admin %>
+    <li role="presentation" <%= raw "class='active'" if controller.action_name == 'grupos' || controller.action_name == 'grupos_edit' %>><a href="/grupos">Administrar Grupos</a></li>
+  	<li role="presentation" <%= raw "class='active'" if controller.action_name.start_with?('tickets_programados') %>><a href="/tickets_programados">Tickets Programados</a></li>
+  <% end %>
+</ul>
+<br>

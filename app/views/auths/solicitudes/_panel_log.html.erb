@@ -1,0 +1,22 @@
+<div role="tabpanel" class="tab-pane" id="log">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-sm-10">
+					<h3>Log</h3>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-sm-12">
+					<% @solicitud_logs.each do |item| %>
+						<p>
+							<%= item['FechaCreacion'].to_s[0..19] %>:
+							<%= item['Texto'] %>
+						</p>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Ant Saldos Emails Enviados</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Fecha</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ant_saldos_emails_enviados.each do |ant_saldos_emails_enviado| %>
+      <tr>
+        <td><%= ant_saldos_emails_enviado.email %></td>
+        <td><%= ant_saldos_emails_enviado.fecha %></td>
+        <td><%= link_to 'Show', ant_saldos_emails_enviado %></td>
+        <td><%= link_to 'Edit', edit_ant_saldos_emails_enviado_path(ant_saldos_emails_enviado) %></td>
+        <td><%= link_to 'Destroy', ant_saldos_emails_enviado, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ant saldos emails enviado', new_ant_saldos_emails_enviado_path %>

@@ -1,0 +1,136 @@
+<%= form_for(@medidor, html: { class: 'form-horizontal' }) do |f| %>
+  <div class="form-inputs loader-form">
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-9">Tipo</label>
+      <div class="col-md-3 text-right">
+        <%= f.select :tipo, options_for_select(@tipos, @medidor ? @medidor.tipo : @tipos.first.last), {}, { label: false, placeholder: "Tipo de Medidor", autofocus: true, class: 'form-control' }  %>
+        <%#= select_tag :tipo, options_for_select(@tipos, @medidor ? @medidor.tipo : @tipos.first.last), label: false, placeholder: "Tipo de Medidor", class: 'form-control'  %>
+        <p class="help-block">Ingresa el Tipo del Medidor</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Titulo</label>
+      <div class="col-md-9 text-right">
+        <%= f.text_field :titulo, placeholder: "Ventas vs Objetivo", class: 'form-control'  %>
+        <p class="help-block">Ingresa el Titulo del Medidor</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Primer Subtítulo</label>
+      <div class="col-md-9 text-right">
+        <%= f.text_field :subtitulo1, placeholder: "Objetivo:", class: 'form-control'  %>
+        <p class="help-block">Ingresa el Primer Subtítulo del Medidor</p>
+      </div>
+    </div>  
+    
+    <div class="form-group">
+      <label class="control-label col-md-3">Primer Dato</label>
+      <div class="col-md-9 text-right">
+        <%= f.text_area :minimo, size: "50x3", placeholder: "SELECT 1", class: 'form-control'  %>
+        <%#= text_area_tag 'minimo', @medidor ? @medidor.minimo : nil, size: "50x3", class: "form-control", placeholder: "SELECT 1" %>
+        <p class="help-block">Ingresa el Query del Primer Dato del Medidor</p>
+      </div>
+    </div>    
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Segundo Subtítulo</label>
+      <div class="col-md-9 text-right">
+        <%= f.text_field :subtitulo2, placeholder: "Alcance:", class: 'form-control'  %>
+        <p class="help-block">Ingresa el Segundo Subtítulo del Medidor</p>
+      </div>
+    </div>  
+    
+    <div class="form-group">
+      <label class="control-label col-md-3">Segundo Dato</label>
+      <div class="col-md-9 text-right">
+        <%= f.text_area :maximo, size: "50x3", placeholder: "SELECT 10", class: 'form-control'  %>
+        <%#= text_area_tag 'maximo', @medidor ? @medidor.maximo : nil, size: "50x3", class: "form-control", placeholder: "SELECT 10" %>
+        <p class="help-block">Ingresa el Query del Segundo Dato del Medidor</p>
+      </div>
+    </div>      
+
+    <!-- ESTO NO SE USA AHORA <div class="form-group">
+      <label class="control-label col-md-3">Valor</label>
+      <div class="col-md-9 text-right"> -->
+        <%#= f.text_area :valor, size: "50x3", placeholder: "SELECT 1", class: 'form-control'  %>
+        <%#= text_area_tag 'valor', @medidor ? @medidor.valor : nil, size: "50x3", class: "form-control", placeholder: "SELECT 1" %>
+        <!-- <p class="help-block">Ingresa el Query del Valor del Medidor</p>
+      </div>
+    </div> -->
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Opciones</label>
+      <div class="col-md-9 text-right">
+        <%= f.text_area :opciones, size: "50x3", placeholder: "{ title: 'Ventas' }", class: 'form-control'  %>
+        <%#= text_area_tag 'opciones', @medidor ? @medidor.opciones : nil, size: "50x3", class: "form-control", placeholder: "{}" %>
+        <p class="help-block">Ingresa las Opciones (en JSON) del Medidor</p>
+      </div>
+    </div>      
+    
+    <div class="form-group">
+      <label class="control-label col-md-9">Símbolo</label>
+      <div class="col-md-3 text-right">
+        <%= f.text_field :simbolo, placeholder: "%", class: 'form-control'  %>
+        <%#= text_field_tag 'simbolo', @medidor ? @medidor.simbolo : nil, class: "form-control", placeholder: "%" %>
+        <p class="help-block">Ingresa el Símbolo del Medidor</p>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <label class="control-label col-md-9">Activado</label>
+      <div class="col-md-3 text-right">
+        <%= f.select :activado, options_for_select(@activados, @medidor ? @medidor.activado : @activados.first.last), {}, { label: false, placeholder: "Activado/Desactivado", class: 'form-control' }  %>
+        <%#= select_tag 'activado', options_for_select(@activados, @medidor ? @medidor.activado : @activados.first.last), label: false, placeholder: "Tipo de Medidor", class: 'form-control'  %>
+        <p class="help-block">Ingresa el Tipo del Medidor</p>
+      </div>
+    </div>  
+
+    <!-- <div class="form-group">
+      <label class="control-label col-md-3">Roles</label>
+      <div class="col-md-9 text-right "> -->
+        <%#= f.select :roles, options_for_select(@roles, @medidor ? @medidor.roles : []), {}, { multiple: :multiple, class: 'dual_listbox' }  %>
+        <%#= select_tag "roles[]", options_for_select(@roles, @medidor ? @medidor.roles : []), { multiple: :multiple, class: "dual_listbox" } %>
+        <!--   <p class="help-block">Edita los Roles para los que el Medidor es Visible</p>
+       </div>
+    </div> -->
+        
+    <br>
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", medidores_path, class: "btn btn-default" %>
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+    <div class="col-md-6 well">
+      <p>
+        <b>Nota:</b> Los campos que aceptan queries se ejecutan sobre la base de datos de estadistica y cualquier resultado se espera que sea numérico, y es pasado a un número. Por ejemplo, un query válido es `SELECT 100`. También se pueden agregar las variables `p2` y `p3`, que vienen de la tabla de permisos para los usuarios, y se insertan con la sintaxis `__p2__` o `__p3__`. El campo P2 tiene las zonas de un usuario, y el P3 tiene las sucursales de un usuario, separadas por comas. Por default viene como `0`.
+      </p>
+    </div>
+  </div>
+
+
+<% end %>
+
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+		var list = $('.dual_listbox').bootstrapDualListbox({
+		  nonSelectedListLabel: 'Roles Disponibles',
+		  selectedListLabel: 'Roles en Medidor',
+		  preserveSelectionOnMove: 'moved',
+		  moveOnSelect: false
+		});
+  });
+</script>
+<style>
+	.info-container {
+		display: none;
+	}
+</style>

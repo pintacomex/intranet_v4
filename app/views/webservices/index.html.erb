@@ -1,0 +1,43 @@
+<h1 class="text-center">Webservices</h1>
+<div class="container text-right">
+	<h2>Llamada PDV DescMes</h2>
+	<p>Ejemplo: <a href="/webservices/pdv?comando=descMes&param=99,201601" target="_blank">/webservices/pdv?comando=descMes&amp;param=99,201601</a></p>
+	<hr>
+	<h2>Llamada PDV EnviarNotificacion</h2>
+	<p>Ejemplo: <a href="/webservices/pdv?comando=enviarNotificacion&param=78,5&texto=TestDeNotificacion" target="_blank">/webservices/pdv?comando=enviarNotificacion&amp;param=78,5&amp;texto=TestDeNotificacion</a></p>
+	<hr>
+	<h2>Llamada PDV Autoriza</h2>
+	<p>Nota: Para ejecutar la llamada, instalar CURL y hacer un post como el siguiente.</p>
+	<hr>
+	<pre>
+	curl 'http://servercampinta.dyndns.org:8090/webservices/pdv/autoriza' -H 'Content-Type: application/json' --data-binary '{ "comando": "autoriza", "param": "97,1,34812121212121212,5,1", "texto": "Suc. RIVERA DEL RIO||Venta por: $2,797.36 ..." }'
+	</pre>
+	<hr>
+	<h2>Llamada PDV Autoriza Cancelación</h2>
+	<p>Nota: Con esta llamada se cancela una solicitud de autorización. La llamada es la misma, pero en el texto se envia SOLICITUD_CANCELADA.</p>
+	<pre>
+	curl 'http://servercampinta.dyndns.org:8090/webservices/pdv/autoriza' -H 'Content-Type: application/json' --data-binary '{ "comando": "autoriza", "param": "97,1,34812121212121212,5,1", "texto": "SOLICITUD_CANCELADA" }'
+	</pre>
+	<hr>
+	<h2>Llamada PDV Autoriza Autorización desde Tienda</h2>
+	<p>Nota: Con esta llamada se marca como autorizada una solicitud de autorización. La llamada es la misma, pero en el texto se envia con el inicio SOLICITUD_AUTORIZADA y después el texto que se quiera enviar a las tiendas, como autorizada por Nivel 5 o por tal persona.</p>
+	<pre>
+	curl 'http://servercampinta.dyndns.org:8090/webservices/pdv/autoriza' -H 'Content-Type: application/json' --data-binary '{ "comando": "autoriza", "param": "97,1,34812121212121212,5,1", "texto": "SOLICITUD_AUTORIZADA Solicitud Autorizada en Tienda por Nivel 5" }'
+	</pre>
+	<hr>
+	<h2>Llamada Ecommerce Pedido Nuevo</h2>
+	<p>Nota: Con esta llamada se notifica que hay un pedido nuevo en
+    uno de los canales de Ecommerce</p>
+	<pre>
+		curl 'http://servercampinta.dyndns.org:8090/webservices/ecommerce/pedido' -H 'Content-Type: application/json' --data-binary '{ "comando": "pedido_nuevo", "param": "123,1" }'
+	</pre>
+</div>
+<style>
+	pre {
+	    white-space: pre-wrap;       /* Since CSS 2.1 */
+	    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	    white-space: -pre-wrap;      /* Opera 4-6 */
+	    white-space: -o-pre-wrap;    /* Opera 7 */
+	    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	}
+</style>

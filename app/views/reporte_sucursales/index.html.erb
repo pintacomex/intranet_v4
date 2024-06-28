@@ -1,0 +1,256 @@
+<div class="col-md-12">
+<% if params[:notice] == "Sucursal y/o vendedor sin objetivos" %>
+	<div class="text-center alert alert-danger" role="alert">
+  	<%= params[:notice] %>
+	</div>
+<% end %>
+<% @incidencias.inspect%>
+<h2 class="text-center"><%=  @vendedores ? "Vendedores" : "Sucursales" %></h2>
+<h5 class="text-right">Viendo ventas del <%=  @type ==  "mes" ? "Mes" : "Día" %> <br> Ordenado por: <%= if @order.include?("sucursal") then "Sucursal" elsif @order.include?("AxT") then "Artículos por Ticket" elsif @order.include?("NT") then "Número de Transacciones" elsif @order.include?("TP") then "Ticket Promedio"  elsif @order.include?("Netas") then "Objetivo" end %>-<%=  @order_type == "asc" ? "Ascendente" : "Descendente" %> <br> Viendo <%= if @objetivo == "todos" then "Todos" elsif @objetivo == "withobj" then "Con objetivo" elsif @objetivo == "withoutobj" then "Sin objetivo" end %></h5><hr>
+	<div class="row">
+		<div class="col-lg-9 col-md-6 text-right">
+			<%= link_to "Ver Sucursales", {:controller => "reporte_sucursales", action: "index", vendedores: false, type: @type, order: @order, order_type: @order_type, objetivo: @objetivo}, class: 'btn btn-default col-md-5 col-lg-2' %>
+			<%= link_to "Ver Vendedores", {:controller => "reporte_sucursales", action: "index", vendedores: true, type: @type, order: @order, order_type: @order_type, objetivo: @objetivo}, class: 'btn btn-default col-md-5 col-lg-2' %>
+			<%= link_to "Ver Mes", {:controller => "reporte_sucursales", action: "index", type: "mes", vendedores: @vendedores, order: @order, order_type: @order_type, objetivo: @objetivo}, class: 'btn btn-primary col-md-5 col-lg-2' %>
+			<%= link_to "Ver Día", {:controller => "reporte_sucursales", action: "index", type: "dia", vendedores: @vendedores, order: @order, order_type: @order_type, objetivo: @objetivo}, class: 'btn btn-primary col-md-5 col-lg-2' %>
+		</div>
+		<div class="col-lg-3 col-md-5">
+			<div class="dropdown col-lg-5">
+			    <!-- <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			      Ordenar por
+			    </button> -->
+			    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    Ordenar Por
+				    <span class="caret"></span>
+				  </button>
+			    <div class="dropdown-menu text-right" aria-labelledby="btnGroupDrop1">
+			      <li><%= link_to "Sucursal(Asc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "sucursal", order_type: "asc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "Sucursal(Desc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "sucursal", order_type: "desc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			     	<% if @vendedores %>
+			      	<li><%= link_to "IdVendedor(Asc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "vendedor", order_type: "asc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      	<li><%= link_to "IdVendedor(Desc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "vendedor", order_type: "desc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <% end %>
+			      <% if @type == "mes"  %>
+			      	<li><%= link_to "Objetivo(Asc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "objetivo", order_type: "asc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      	<li><%= link_to "Objetivo(Desc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "objetivo", order_type: "desc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <% end %>
+			      <li><%= link_to "AxT(Asc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "axt", order_type: "asc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "AxT(Desc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "axt", order_type: "desc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "TP(Asc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "tp", order_type: "asc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "TP(Desc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "tp", order_type: "desc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "NT(Asc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "nt", order_type: "asc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "NT(Desc)", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: "nt", order_type: "desc", objetivo: @objetivo}, class: 'dropdown-item' %></li>
+			    </div>
+			</div>
+			<div class="dropdown col-lg-5" role="group">
+			    <!-- <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			      Con/Sin-Obj
+			    </button> -->
+			    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			      Con/Sin-Obj
+			      <span class="caret"></span>
+			    </button>
+			    <div class="dropdown-menu text-right" aria-labelledby="btnGroupDrop1">
+			      <li><%= link_to "Todos", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: @order, order_type: @order_type, objetivo: "todos"}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "Con Objetivo", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: @order, order_type: @order_type, objetivo: "withobj"}, class: 'dropdown-item' %></li>
+			      <li><%= link_to "Sin Objetivo", {:controller => "reporte_sucursales", action: "index", type: @type, vendedores: @vendedores, order: @order, order_type: @order_type, objetivo: "withoutobj"}, class: 'dropdown-item' %></li>
+			    </div>
+			    
+			</div>
+		</div>
+	</div>
+</div>
+<% cells = 0 %>
+
+
+<% if @number == 4 then cells = 3 else cells = 4 end %>
+<div class="fluid-container">
+	<div class="grid">
+	<% @sucursales.each do |sucursal| %>
+		<% bg = "" %>
+		<% hours_ago = DateTime.now - (4/24.0) %>
+		<% hours_ago = hours_ago.to_s[0..9] + " " +  hours_ago.to_s[11..18] %>
+		<% if sucursal['DiasOperadosVend'].to_f <= 0 and sucursal['Netasmes'].to_f <= 0 then bg = '#616161' elsif sucursal['HoraActualizacion'].to_s[0..18] >= hours_ago then  bg = '#000000' else bg = '#0B2161' end%>
+		<% emp = @employees.select {|vend| vend['IdVendedor'].to_s == sucursal['Idvendedor'].to_s}.first rescue "NA" %>
+		<% if emp || sucursal['Idvendedor'] == 0 %>
+		<a href="/reporte_sucursales/<%= sucursal['Sucursal'] %>/<%= @type %>">
+		<div  class="carta col-sm-6 col-md-6 col-lg-3 col-xl-3" style="background-color: <%= bg %>; <%=  @vendedores == "true" ? 'height: 400px' : 'height: 300px' %>">	
+			<h3 class="text-center text-white col-sm-12">Suc:<%= sucursal['Sucursal'] %>-<%= @sucs.select {|suc| suc['Num_suc'] == sucursal['Sucursal']}.first['Nombre'].split("(")[0][0..12] %></h3>
+			<% if @vendedores == "true" %>
+				<h6 class="text-center text-white">Días Laborados:<%= sucursal['DiasOperadosVend'] %></h6>
+				<h5 class="text-center text-white col-sm-12"><%= sucursal['Idvendedor'] %>-<%= @employees.select {|vend| vend['IdVendedor'].to_s == sucursal['Idvendedor'].to_s}.first['Nombre'] rescue "" %></h5>
+			<% end %>
+			<% (1..@number).each do |n| %>
+				<% porcentaje = '' %>
+				<% if @type == "mes" %>
+					<% if n == 1 then porcentaje = 'PorcOpaNetasMes' elsif n == 2 then porcentaje = 'PorcAxTmes' elsif n == 3 then porcentaje = 'PorcTPmes' elsif n == 4 then porcentaje = 'PorcNTmes' end %>
+				<% else %>
+					<% if n == 1 then porcentaje = 'PorcAxTdia' elsif n == 2 then porcentaje = 'PorcTPdia' elsif n == 3 then porcentaje = 'PorcNTdia' end %>
+				<% end %>
+				<div class="col-md-<%= cells %>">
+					<% clase = "" %>
+					<% if sucursal[porcentaje].to_f.round(0) < 80 then clase = 'rojo'  elsif  sucursal[porcentaje].to_f.round(0) < 90 then clase = 'naranja' elsif  sucursal[porcentaje].to_f.round(0) < 100 then clase = 'amarillo' elsif sucursal[porcentaje].to_f.round(0) >= 100 then clase = 'verde' end	%>
+					<% clase = 'azul' if sucursal['ObjNetasmes'] < 0.1  %>
+					<div class=" <%= clase %> " ><h4 class="text-center textin"><%= sucursal[porcentaje].to_f.round(0) %>%</h4></div>
+					<div class=" " ><h2 class="text-white text-center "><%= @textos[n-1] %></h2></div>
+					<% if @vendedores %>
+						<% if @number == 4 %>
+							<% if n == 1 then porcentaje = 'ObjNetasmes' elsif n == 2 then porcentaje = 'ObjAxTmes' elsif n == 3 then porcentaje = 'ObjTPmes' elsif n == 4 then porcentaje = 'ObjNTmes' end %>
+						<% else %>
+							<% if n == 1 then porcentaje = 'ObjAxTdia' elsif n == 2 then porcentaje = 'ObjTPdia' elsif n == 3 then porcentaje = 'ObjNTdia' end %>
+						<% end %>
+						<div>
+							<% if porcentaje.include?("AxT") || porcentaje.include?("NT") %>
+								<h6 class="text-white text-center "><%= sucursal[porcentaje] %></h6>
+							<% else %>
+								<h6 class="text-white text-center "><%= number_to_currency(sucursal[porcentaje], :locale => :mx, :precision => 1) %></h6>
+							<% end %>
+								
+						</div>
+						<% if @number == 4 %>
+							<% if n == 1 then porcentaje = 'Netasmes' elsif n == 2 then porcentaje = 'AxTmes' elsif n == 3 then porcentaje = 'TPmes' elsif n == 4 then porcentaje = 'NTmes' end %>
+						<% else %>
+							<% if n == 1 then porcentaje = 'AxTdia' elsif n == 2 then porcentaje = 'TPdia' elsif n == 3 then porcentaje = 'NTdia'  end %>
+						<% end %>
+						<div>
+							<% if porcentaje.include?("AxT") || porcentaje.include?("NT") %>
+								<h6 class="text-white text-center "><%= sucursal[porcentaje] %></h6>
+							<% else %>
+								<h6 class="text-white text-center "><%= number_to_currency(sucursal[porcentaje], :locale => :mx, :precision => 1) %></h6>
+							<% end %>
+						</div>
+					<% end %>
+				</div>
+			<% end %>
+			<% if @vendedores %>
+				<% cat = @employees.select {|vend| vend['IdVendedor'].to_s == sucursal['Idvendedor'].to_s}.first['Categoria'] rescue "NA" %>
+				<div class="col-md-12"><div class="text-white col-md-6"><p class="foot"><%= sucursal['HoraActualizacion'].to_s[0..18] %></p></div><div class="text-white col-md-6"><p class="foot">Suc: <%= @employees.select {|vend| vend['IdVendedor'].to_s == sucursal['Idvendedor'].to_s}.first['Sucursal']  rescue "NA" %> - Rol: <%= if cat == 0 then "Vendedor" elsif cat == 1 then "Encargado" elsif cat == 2 then "Supervisor" elsif cat == 3 then "Coordinador" elsif cat == 6 then "Volante" else cat end %></p>
+				</div></div>
+				<% ins = @incidencias.select {|vend| vend['IdVendedor'].to_s == sucursal['Idvendedor'].to_s} %>
+				<ul>
+				<% ins.each do |i| %>
+					<% id_ins = @cat_incidencias.select {|vend| vend['IdExcepcion'].to_s == i['Excepcion'].to_s}.first %>
+					<li class="text-white" style="font-size: 11px">Del: <%= "#{i['Del'][0..3]}-#{i['Del'][4..5]}-#{i['Del'][6..-1]}" %> Al: <%= "#{i['Al'][0..3]}-#{i['Al'][4..5]}-#{i['Al'][6..-1]}" %>. <%= id_ins['Nombre'] %> <%=  "en Suc: #{i['Sucursal'].to_i}" if  i['Sucursal'].to_i != 0 %>
+						<%=  "SucOrigen: #{i['SucOrigen']}" if  i['Sucursal'].to_i == 0 and i['Excepcion'].to_i == 1 %>
+					</li>
+				<% end %>
+				</ul>
+				<% if ins.count <= 0 %>
+					<div class="d-nil "></div>
+				<% end %>
+			<% else %>
+				<div class="col-md-12"><div class="blockquote-footer text-white col-md-6 float-right"><%= sucursal['HoraActualizacion'].to_s[0..18] %></div></div>
+			<% end %>
+		</div>
+		</a>
+		<% end %>
+	<% end %>
+	</div>
+</div>
+
+<style type="text/css">
+.btn{
+	margin: 5px;
+}
+.dropdown-menu{
+	width: 200px;
+}
+.btn-group{
+	margin: 5px;
+}
+.text-white{
+	color: #ffffff;
+}
+h4{
+	color: #000000;
+}
+.textin{
+position: relative;
+top: 50%;
+transform: translateY(-50%);
+
+}
+.carta {
+  margin: 10px 0px;
+  padding: 0 0 300px 0;
+  border: solid  5px white;
+}
+
+.rojo{
+	align-content: center;
+	margin: auto;
+	width: 57px;
+	height: 57px;
+	border-radius: 50%;
+	background-color: #e53935;
+
+}
+.amarillo{
+	align-content: center;
+	margin: auto;
+	width: 57px;
+	height: 57px;
+	border-radius: 50%;
+	background-color: #9ACD32;
+}
+
+.naranja{
+	align-content: center;
+	margin: auto;
+	width: 57px;
+	height: 57px;
+	border-radius: 50%;
+	background-color:#FFFF00;
+}
+
+.verde{
+	align-content: center;
+	margin: auto;
+	width: 57px;
+	height: 57px;
+	border-radius: 50%;
+	background-color: #4caf50;
+}
+.azul{
+	align-content: center;
+	margin: auto;
+	width: 57px;
+	height: 57px;
+	border-radius: 50%;
+	background-color: #a0ffff;
+}
+.parpadear {
+  
+  animation-name: parpadeo;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+
+  -webkit-animation-name:parpadeo;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+}
+
+@-moz-keyframes parpadeo{  
+  0% { opacity: 1.0; }
+  50% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes parpadeo {  
+  0% { opacity: 1.0; }
+  50% { opacity: 0.0; }
+   100% { opacity: 1.0; }
+}
+
+@keyframes parpadeo {  
+  0% { opacity: 1.0; }
+   50% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
+.foot{
+	font-size: 12px;
+}
+
+</style>

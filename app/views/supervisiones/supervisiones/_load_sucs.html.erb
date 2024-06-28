@@ -1,0 +1,6 @@
+<%= select_tag 'sucursal', options_for_select(@sucursales), class: 'form-control', placeholder: "Selecciona Sucursal", data: { placeholder: "Selecciona Sucursal" } %>
+<% if @sucursales.count < 1 %>
+	<p class="help-block">Nota: No hay Sucursales con este SubTipoSuc para el Usuario. Favor de arreglar en la Administración de Checklists y Administración de Usuarios.</p>
+<% else %>
+	<p class="help-block">Seleccione la Sucursal a Supervisar</p>
+<% end %>

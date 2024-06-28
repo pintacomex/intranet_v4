@@ -1,0 +1,158 @@
+<div class="pull-right text-right">
+  <small>
+    <a href="/contenedores/" class="btn btn-primary btn-xs">Contenedores</a>
+  </small>
+</div>
+
+
+<div class="col-md-12">
+
+  <% if @contenedor.count > 0 %>
+
+    <h3 class="text-center">Status del Contenedor: <%= @contenedor.first['NumContenedor'] %> - <%= @contenedor.first['RefContenedor'] %></h3>
+    <br>
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+        <thead>
+          <tr>
+            <th>Tarea/ID Tarea</th>
+            <th style="text-align:center">Descripción</th>
+            <th>Estado</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Esperada</th>
+            <th>Fecha Finalización</th>
+            <th>Días Faltantes</th>
+            <th>Días Vencido</th>
+          </tr>
+        </thead>
+        <tbody >
+
+        <% @contenedor.each do |item| %>
+          <% mexPnm = item['RefContenedor'].to_s.start_with?("PNM") ? "Pnm" : "Mex" %>
+          <% semaforo = @semaforo.select{ |i| i['NumContenedor'] == item['NumContenedor'] }.first rescue nil %>
+          <% if semaforo %>
+            <% i = 0 %>
+            <% ultimoDias = 1 %>
+            <% @tareas.each do |tarea| %>
+              <% if tarea["dias#{mexPnm}"].to_i > 0 %>
+                <% i = i + 1 %>
+                <% while i < tarea["IdTarea"].to_i %>
+                  <%= render :partial => "contenedor_vacio", :locals => {:i => i} %>
+                  <% i = i + 1 %>
+                <% end %>
+                <% val = semaforo[tarea['tarea']] %>
+                <% valFec = Date.parse(semaforo["#{tarea['tarea']}Fec"].to_s) rescue "Sin Fecha" %>
+                <% valFecLim = Date.parse(semaforo["#{tarea['tarea']}Fec"].to_s) + ultimoDias rescue "Sin Fecha" %>
+                <% tareaDetonadoraVal = semaforo[tarea['tareaDetonadora']] %>
+                <% tareaDetonadoraValFec = Date.parse(semaforo["#{tarea['tareaDetonadora']}Fec"].to_s) rescue "Sin Fecha" %>
+                <% tareaDetonadoraValFecLim = Date.parse(semaforo["#{tarea['tareaDetonadora']}Fec"].to_s) + ultimoDias rescue "Sin Fecha" %>
+                <% diasFaltantes = tareaDetonadoraValFecLim - Date.today rescue -1%>
+                <% diasVencido = Date.today - tareaDetonadoraValFecLim rescue -1%>
+                <% status_checar_si_aplica = @tareasHash[tarea['tarea']]['StatusChecarSiAplica'] %>
+                <% status_checar_si_aplica_val = -1 %>
+                <% if status_checar_si_aplica.to_s != '' %>
+                  <% status_checar_si_aplica_val = semaforo[status_checar_si_aplica] %>
+                <% end %>
+                <% ultimoDias = tarea["dias#{mexPnm}"].to_i %>
+                <% if status_checar_si_aplica_val == 0 %>
+                  <%= render :partial => "contenedor_vacio", :locals => {:i => tarea['IdTarea'].to_i} %>
+                <% else %>
+                  <tr>
+                    <td>
+                      <strong><%= tarea['IdTarea'].to_i %></strong>
+                    </td>
+                    <td>
+                      <strong><a href="#" data-toggle="tooltip" title="<%= tarea['Nombre'] %>"><%= tarea['Tooltip'] %></a></strong>
+                    </td>
+                    <td>
+                      <% if status_checar_si_aplica_val == 0 %>
+                        <span style="color:#D3D3D3" class="glyphicon glyphicon-minus"></span>
+                      <% elsif val == 1 %>
+                        <span class="glyphicon glyphicon-ok"></span>
+                      <% elsif val == 0 and tareaDetonadoraVal == 1 and diasVencido <= 0 # valFecLim != "Sin Fecha" and valFecLim >= Date.today %>
+                        <span style="color:#483D8B" class="glyphicon glyphicon-eye-open"></span>
+                      <% elsif val == 0 and tareaDetonadoraVal == 1 and (valFecLim == "Sin Fecha") or (valFecLim != "Sin Fecha" and valFecLim < Date.today) %>
+                        <span style="color:red" class="glyphicon glyphicon-remove"></span>
+                      <% else %>
+                        <span style="color:#D3D3D3" class="glyphicon glyphicon-unchecked"></span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <%= tareaDetonadoraValFec %>
+                    </td>
+                    <td>
+                      <%= tareaDetonadoraValFecLim %>
+                    </td>
+                    <td>
+                      <%= valFec %>
+                    </td>
+                    <td>
+                      <%= val == 0 && diasFaltantes >= 0 ? diasFaltantes.to_i : "" %>
+                    </td>
+                    <td>
+                      <%= val == 0 && diasVencido >= 0 ? diasVencido.to_i : "" %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+
+  <% else %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr>
+          <td>Sin Datos</td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<%= render 'leyenda' %>
+
+<br />
+</div>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+

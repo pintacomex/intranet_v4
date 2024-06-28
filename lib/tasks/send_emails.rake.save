@@ -1,0 +1,8 @@
+task :send_emails
+ => :environment do
+	puts "Enviando Emails!" * 5
+	#include Rails.application.routes.url_helpers
+ 	#url_for controller: 'bajas', action: 'bajas_enviar_mails_robot', only_path: true  
+	JustMailer.email_something_html("humberto-_-lzc@hotmail.com", "mail_subject", "mail_body").deliver_later
+	puts "-" * 50
+end

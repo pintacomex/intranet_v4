@@ -1,0 +1,35 @@
+<br>
+<%= render(partial: '/tableros/navpills') %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+
+	  <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Layout</th>
+        <th></th>
+	    </tr>
+	  </thead>
+
+    <tbody>
+      <% @usuarios.each do |item| %>
+        <% url = "/tableros/usuarios/#{item['IdUsuario']}-#{item['IdLayout']}" %>
+        <tr>
+          <td><%= link_to item['NombreUsuario'], url, title: item['NombreUsuario'], data: { toggle: "tooltip" } %></td>
+          <td><%= link_to item['IdLayout'], url, title: item['IdLayout'], data: { toggle: "tooltip" } %></td>
+          <td>
+            <%= link_to 'Ver', url, class: 'btn btn-xs btn-primary' %>
+            <%= link_to 'Borrar', url, method: :delete, class: 'btn btn-xs btn-danger', data: { confirm: 'Esta seguro?' } %>
+          </td>
+        </tr>
+      <% end %>
+	  </tbody>
+	</table>
+
+  <%= link_to 'Crear Usuario', new_tableros_usuario_path, class: "btn btn-primary" %>
+
+</div>

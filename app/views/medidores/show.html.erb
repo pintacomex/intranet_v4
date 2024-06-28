@@ -1,0 +1,220 @@
+<div class="col-md-6 col-sm-6">
+  <h3>
+    <%= @medidor['Titulo'] %>
+  </h3>
+
+  <p>
+    <strong>Etiqueta:</strong>
+    <strong><%= @etiqueta %></strong>
+    <pre>
+<%= @medidor['Etiqueta'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>Valor Mínimo:</strong>
+    <strong><%= @minimo %></strong>
+    <pre>
+<%= @medidor['ValorMin'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>Valor Máximo:</strong>
+    <strong><%= @maximo %></strong>
+    <pre>
+<%= @medidor['ValorMax'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>Valor Actual:</strong>
+    <strong><%= @valor %></strong>
+    <pre>
+<%= @medidor['ValorActual'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>Color 1:</strong>
+    <strong><%= @medidor['Color1'] %>: <%= @color1 %></strong>
+  </p>
+
+  <p>
+  <strong>Low 1:</strong>
+  <strong><%= @lo1 %></strong>
+  <pre>
+<%= @medidor['lo1'] %>
+  </pre>
+
+  <p>
+  <strong>High 1:</strong>
+  <strong><%= @hi1 %></strong>
+  <pre>
+<%= @medidor['hi1'] %>
+  </pre>
+
+  <p>
+  <strong>Color 2:</strong>
+  <strong><%= @medidor['Color2'] %>: <%= @color2 %></strong>
+  </p>
+
+  <p>
+  <strong>Low 2:</strong>
+  <strong><%= @lo2 %></strong>
+  <pre>
+<%= @medidor['lo2'] %>
+  </pre>
+
+  <p>
+  <strong>High 2:</strong>
+  <strong><%= @hi2 %></strong>
+  <pre>
+<%= @medidor['hi2'] %>
+  </pre>
+
+  <p>
+  <strong>Color 3:</strong>
+  <strong><%= @medidor['Color3'] %>: <%= @color3 %></strong>
+  </p>
+
+  <p>
+  <strong>Low 3:</strong>
+  <strong><%= @lo3 %></strong>
+  <pre>
+<%= @medidor['lo3'] %>
+  </pre>
+
+  <p>
+  <strong>High 3:</strong>
+  <strong><%= @hi3 %></strong>
+  <pre>
+<%= @medidor['hi3'] %>
+  </pre>  
+  </p>
+
+  <p>
+  <strong>Color 4:</strong>
+  <strong><%= @medidor['Color4'] %>: <%= @color4 %></strong>
+  </p>
+
+  <p>
+  <strong>Low 4:</strong>
+  <strong><%= @lo4 %></strong>
+  <pre>
+<%= @medidor['lo4'] %>
+  </pre>
+
+  <p>
+  <strong>High 4:</strong>
+  <strong><%= @hi4 %></strong>
+  <pre>
+<%= @medidor['hi4'] %>
+  </pre>
+
+  <p>
+  <strong>Color 5:</strong>
+  <strong><%= @medidor['Color5'] %>: <%= @color5 %></strong>
+  </p>
+
+  <p>
+  <strong>Low 5:</strong>
+  <strong><%= @lo5 %></strong>
+  <pre>
+<%= @medidor['lo5'] %>
+  </pre>
+
+  <p>
+  <strong>High 5:</strong>
+  <strong><%= @hi5 %></strong>
+  <pre>
+<%= @medidor['hi5'] %>
+  </pre>
+
+  <p>
+    <strong>Simbolo Unidades:</strong>
+    <strong>
+      <%= @medidor['SimboloUnidades'] %>
+    </strong>
+  </p>
+
+  <p>
+    <strong>Tipo:</strong>
+    <strong>
+      <%= get_tipo_medidor(@medidor['TipoMedidor']) %>
+    </strong>
+  </p>  
+
+  <!-- <p>
+  <strong>Valor:</strong>
+  <pre> -->
+    <%#= @medidore.valor %>
+    <!-- </pre>
+</p> -->
+  <!-- <p>
+    <strong>Roles:</strong> -->
+    <%#= @medidore.roles %>
+    <!-- </p> -->
+
+  <%= link_to 'Editar', edit_medidore_path(@medidor) %> |
+  <%= link_to 'Regresar', medidores_path %>
+</div>
+
+<div class="col-md-6 col-sm-6">
+  <%= render(partial: 'medidor', locals: { medidor: @medidor } ) %>
+</div>
+<div class="col-md-6 col-sm-6">
+  <br>
+  <pre>
+Medidor Params:
+<%= JSON.pretty_generate(JSON.parse(@medidor_params)) %>
+
+Major Ticks:
+<%= @majorTicks %>
+
+P2:
+<%= @p2 %>
+
+P3:
+<%= @p3 %>
+
+Minimo Query:
+<%= @minimo_query %>
+
+Maximo Query:
+<%= @maximo_query %>
+
+Valor Query:
+<%= @valor_query %>
+
+Lo1 Query:
+<%= @lo1_query %>
+
+Hi1 Query:
+<%= @hi1_query %>
+
+Lo2 Query:
+<%= @lo2_query %>
+
+Hi2 Query:
+<%= @hi2_query %>
+
+Lo3 Query:
+<%= @lo3_query %>
+
+Hi3 Query:
+<%= @hi3_query %>
+
+Lo4 Query:
+<%= @lo4_query %>
+
+Hi4 Query:
+<%= @hi4_query %>
+
+Lo5 Query:
+<%= @lo5_query %>
+
+Hi5 Query:
+<%= @hi5_query %>
+</pre>
+</div>

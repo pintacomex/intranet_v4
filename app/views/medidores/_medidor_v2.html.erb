@@ -1,0 +1,13 @@
+<canvas id="g<%= @id %>" class="gauges"></canvas>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    $.getScript('/medidores_display_medidor?id=<%= @id %>');
+  });
+</script>
+<style>
+.gauges {
+  width: 100%;
+  height: 100%;
+}
+</style>

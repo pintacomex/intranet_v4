@@ -1,0 +1,8 @@
+ wb = xlsx_package.workbook 
+  wb.add_worksheet(name: "Bajas") do |sheet| 
+   sheet.add_row ['Zona', 'Sucursal', 'Fecha', 'Mov', 'Total', 'Valuado', 'Obra', 'TipoSub/Baja', 'Observaciones', 'R', 'C']
+    @bajas.each do |m|
+      sheet.add_row ["#{m['ZonaAsig']}", "#{m['Sucursal']}-#{m['Nombre']}", "#{fix_show_date(m['Fecha'])}", "#{m['Nummov']}", "#{number_to_currency(m['Total'], :locale => :mx, :precision => 2)}", "#{number_to_currency(m['Totvaluado'], :locale => :mx, :precision => 2)}", m['IdObra'].to_i > 0 ? "#{m['IdObra']}" : "", m['Tipo_subt'] == "B" ? "#{m['Tipo_subt']}-#{m['Folioinfo']}-#{m['Descrip']}" : "#{m['Tipo_subt']}-#{m['NomTipoSubTipo']}", "#{m['Observac']}", "#{m['baRegAutorizacion']}", "#{m['baCtlAutorizacion']}"]
+
+    end
+  end

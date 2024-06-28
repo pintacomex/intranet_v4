@@ -1,0 +1,42 @@
+<div class="panel panel-primary" id="panel-historial">
+  <button type="button" class="close" id="btn-panel-historial"
+    data-target="#panel-historial" 
+    data-dismiss="alert">
+    <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+  </button>
+  <div class="panel-heading">
+    <h3 class="panel-title">Movimientos <%= @year %></h3>
+  </div>
+  <div class="panel-body">
+    <p>Movimientos del Cliente para el Año <%= @year %></p>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+    <thead>
+      <tr>
+        <th><a href="#" data-toggle="tooltip" title="Id del Cliente">Id</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Nombre del Cliente">Cliente</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Importe de Ventas">Ventas</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Importe de Pagos">Pagos</a></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @historial.each do |m| %>
+        <tr>
+          <td><a href='<%="/ant_saldos_detalle?suc_origen=#{@suc}&control_fac=#{m['Controlfac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['Idcliente'] %></a></td>
+          <td><a href='<%="/ant_saldos_detalle?suc_origen=#{@suc}&control_fac=#{m['Controlfac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= @nomcliente %></a></td>
+          <td><a href='<%="/ant_saldos_detalle?suc_origen=#{@suc}&control_fac=#{m['Controlfac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= fix_show_date(m['minFecha']) %></a></td>
+          <td><a href='<%="/ant_saldos_detalle?suc_origen=#{@suc}&control_fac=#{m['Controlfac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['Controlfac'] %></a></td>
+          <td><%= m['sumVentas'] != 0 ? number_to_currency(m['sumVentas'], :locale => :mx, :precision => 2) : "" %></td>
+          <td><%= m['sumPagos'] != 0 ? number_to_currency(m['sumPagos'], :locale => :mx, :precision => 2) : "" %></td>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<style>
+  #btn-panel-historial {
+    padding-right: 10px;
+  }
+</style>

@@ -1,0 +1,36 @@
+<%= form_tag('/tableros/usuarios', class: 'form-horizontal' )  do |f| %>
+  <div class="form-inputs loader-form ">
+    <%= hidden_field_tag 'new', @new %>
+
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">Usuario</label>
+      <div class="col-md-6 text-right">
+        <p><%= select_tag 'idusuario', options_for_select(@usuarios, @usuario['IdUsuario']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Usuario que tiene el Layout</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Id Layout</label>
+      <div class="col-md-6 text-right">
+        <p><%= select_tag 'idlayout', options_for_select(@layouts, @usuario['IdLayout']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Layout que tiene el Usuario</p>
+      </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", tableros_usuarios_path, class: "btn btn-default" %>
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+<% end %>

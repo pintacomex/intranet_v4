@@ -1,0 +1,7 @@
+<% if current_user.has_role? :admin %>
+	<ul class="nav nav-pills" role="tablist">
+	  <li role="presentation" <%= raw "class='active'" if controller.controller_name == "app_rol_nivel" %>><a href="/app_rol_nivel">Autorizaciones por App Rol Nivel</a></li>
+	  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'app_nivels' %>><a href="/app_nivels">Apps con Niveles Especiales</a></li>
+	</ul>
+	<br>
+<% end %>

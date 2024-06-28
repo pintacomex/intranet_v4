@@ -1,0 +1,102 @@
+<% if @sistemawp.to_i == 0 %>
+    <h1 class="text-center">Cotizaciones</h1>
+    <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+  	<h2 class="text-center"><%= @titulomov %></h2>
+  </div>
+<% else %>
+    <h1 class="text-center">Cotizaciones</h1>
+    <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+  	<h2 class="text-center"><%= @titulomov %></h2>
+<% end %>
+<br>
+
+<div class="loader-form">
+  <form class="form" role="form">
+    <div class="form-group">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Buscar Cliente</h3>
+        </div>
+        <div class="panel-body">
+				  <div class="control-group">
+    				<label class="control-label col-xs-12 col-sm-3 col-md-4 col-lg-4" for="inputPassword">Nombre ó Id del Cliente</label>
+						<div class="controls">
+  						<%= hidden_field_tag 'cliente', params[:cliente] %>
+  						<%= hidden_field_tag 'movnvo', params[:movnvo] %>
+  						<%= hidden_field_tag 'vendedor', params[:vendedor] %>
+			      	<input id="q" name="q" type="text" class="input col-xs-12 col-sm-9 col-md-8 col-lg-8" maxlenght="50" value="<%= params[:q] if params.has_key?(:q) %>" autofocus placeholder="Nombre ó Id del Cliente">
+		      	</div>
+				  </div>
+					<div class="clearfix"></div>
+			    <div class="form-actions">
+					  <a id="margenvh10" class="btn pull-left btn-info btn-sm" href="/pdv_selprod?vendedor=<%=@vendedor%>&cliente=<%=params[:cliente]%>&movnvo=<%=params[:movnvo]%>&tab='2'" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+			      <button class="btn pull-right btn-info btn-ttcs btn-sm go-to-filter"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+			    </div>
+					<br>
+        </div>
+      </div>
+    </div>
+ </form>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Seleccionar Cliente</h3>
+      </div>
+      <div class="panel-body fixed-panel">
+        <% if @clientes && @clientes.count > 0 %>
+
+          <div class="row">
+						<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped">
+						  <thead>
+						    <tr>
+					        <th><a href="#" data-toggle="tooltip" title="IdCliente">IdCliente</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Nombre">Nombre</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Rfc">Rfc</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Tipo Precio">Tipo Prec.</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Calle y Número">Calle Núm.</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Número Exterior">Núm. Ext.</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Número Interior">Núm. Int.</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Colonia">Colonia</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Delegación ó Municipio">Deleg. Muni.</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Estado">Estado</a></th>
+					        <th><a href="#" data-toggle="tooltip" title="Código Postal">CP</a></th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <% @clientes.each do |m| %>
+						      <tr>
+					          <td><a href="/pdv_selprod?vendedor=<%=@vendedor%>&cliente=<%= m['IdCliente'] %>&movnvo=<%=@movnvo%>&tab='2'&clienteant=<%= params[:cliente] %>"><%=m['IdCliente'] %></a></td>
+					          <td><%= m['Nombre'] %></td>
+					          <td><%= m['Rfc'] %></td>
+					          <td><%= m['Tipoprecio'] %></td>
+					          <td><%= m['Callenum'] %></td>
+					          <td><%= m['NumExt'] %></td>
+					          <td><%= m['NumInt'] %></td>
+					          <td><%= m['Colonia'] %></td>
+					          <td><%= m['Delemuni'] %></td>
+					          <td><%= m['Estado'] %></td>
+					          <td><%= m['Cp'] %></td>
+						      </tr>
+						    <% end %>
+						  </tbody>
+						</table>
+
+						<script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+						<script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+						<%= javascript_include_tag "/dt_v3" %>
+
+          </div>
+        <% else %>
+          <p align=center class="titulo2">Sin Clientes</p>
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

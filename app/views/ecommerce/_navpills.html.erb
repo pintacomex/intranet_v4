@@ -1,0 +1,5 @@
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('pedido') %>><a href="/ecommerce/pedidos">Pedidos</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('webservices') %>><a href="/ecommerce/webservices">Webservices</a></li>
+</ul>
+<br>

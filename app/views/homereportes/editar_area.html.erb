@@ -1,0 +1,90 @@
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
+<%= link_to "Ir al Index", {controller: "homereportes", action: "index"}, class: "btn btn-primary" %>
+<%= link_to "Ir a áreas", {controller: "homereportes", action: "new_area"}, class: "btn btn-primary" %>
+<div class="fluid-container">
+	<h1 class="text-center">Editar área: <%= @area.name.capitalize %></h1><hr>
+	<div class="col-md-6">
+		<h3 class="text-center">Selecciona a los jefes del área</h3>
+		<%= form_tag :action => 'create_areauser' do |f| %> 
+			<%= hidden_field_tag "area_id", @area.id %>  	
+			<div class="form-group">
+				<table id="example2" class="display" style="width:100%">
+				  <thead>
+				    <tr>
+				      <th></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+			      <% @users2.each do |u| %>
+					    <tr>
+					    	<td><%= check_box_tag 'users[]', "#{u[:id]}", u[:check] %><%= " #{u[:name]}" %></td>
+					  	</tr>
+					  <% end %>
+				  </tbody>
+				</table>
+			</div>
+			<div class="form-group">
+				<br>
+				<%= submit_tag "Guardar cambios", class: 'btn btn-primary' %>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-md-6">
+		<h3 class="text-center">Selecciona a los empleados del área</h3>
+		<%= form_tag :action => 'create_areaempleado' do |f| %>
+			<%= hidden_field_tag "area_id", @area.id %>
+			<div class="form-group">  	
+				<table id="example1" class="display" style="width:100%">
+				  <thead>
+				    <tr>
+				      <th></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	<% @users_home2.each do |u| %>
+				  		<tr>
+				  			<td>
+				  				<% user = @users.select {|e| e['id'].to_i == u[:user_id].to_i }.first rescue "" %>
+					    		<%= check_box_tag 'users[]', "#{user[:id]}", u[:check] %><%= "#{user[:name]}" %> <br>
+				  			</td>
+				  		</tr>
+					  <% end %>
+				  </tbody>
+				</table>
+			</div>
+			<br>
+			<div class="form-group">
+		  	<%= submit_tag "Guardar cambios", class: 'btn btn-primary' %>
+		  </div>
+		<% end %>
+	</div>
+</div>
+
+<style type="text/css">
+		.scroller { 
+		border:2px solid #ccc; 
+		height: 100px; 
+		overflow-y: scroll;
+	}
+</style>
+<script type="text/javascript">
+	$(document).ready(function() {
+    $('#example2').DataTable( {
+        "scrollY":        "400px",
+        "scrollCollapse": true,
+        "paging":         false,
+        "bInfo": false
+
+    } );
+     $('#example1').DataTable( {
+        "scrollY":        "400px",
+        "scrollCollapse": true,
+        "paging":         false,
+        "bInfo": false
+
+    } );
+} );
+</script>

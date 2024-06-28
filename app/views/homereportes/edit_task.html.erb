@@ -1,0 +1,80 @@
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
+<%= link_to "Ir al Index", {controller: "homereportes", action: "index"}, class: "btn btn-primary" %>
+<%= link_to "Ir a Tareas", {controller: "homereportes", action: "new_task"}, class: "btn btn-primary" %>
+<div class="fluid-container">
+	<h1 class="text-center">Editar Tarea <% @task %></h1><hr>
+	<div class="modal-body mx-3">
+    <%= form_tag :action => 'update_task' do |f| %>
+      <div class="form-group">
+        <label class="control-label">Escribe la descripción de la tarea</label>
+        <%= text_field_tag 'descripcion', nil, autofocus: true,  :value => @task.descripcion, class: 'form-control'  %>
+      </div>
+      <%= hidden_field_tag "id", @task.id %>
+      <div class="scroller form-group">
+        <% @home_employees.each do |e| %>
+          <% user = @users.select {|m| m['id'] == e['user_id'].to_i }.first  rescue ""%>
+          <% check = false %>
+          <% check = true if @task_user.select {|m| m['id_user'] == user['id'].to_i }.length > 0 %>
+          <%= check_box_tag 'users_task[]', "#{user.id rescue ''}-#{user.name rescue ''}",  check, disabled: check %>  <%= user.name rescue "" %> <br>
+        <% end %>
+      </div>
+      <div class="form-group">
+        <label class="control-label">Fecha Inicio</label>
+        <%= date_field_tag 'fecha_inicio', nil, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <label class="control-label">Fecha Lìmite</label>
+        <%= date_field_tag 'fecha_limite', nil, min: Time.zone.today, class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= submit_tag "Guardar Cambios", class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+  <div>
+  	<h2 class="text-center">Tareas Asignadas</h2>
+		<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+		  <thead>
+		    <tr class="text-center">
+		      <th>ID Tarea</th>
+		      <th>Usuario</th>
+		      <th>Fecha Inicio</th>
+		      <th>Fecha Limite</th>
+		      <th>Creado por</th>
+		      <th>Fecha Tèrminada</th>
+		      <th>% Avance</th>
+		      <th>Ùlt.Fech.Proc.</th>
+		      <th></th>
+		      <th></th>
+		    </tr>
+		  </thead>
+	    <tbody>
+	      <% @taskusers.each do |m| %>
+	        <tr>
+	          <td><%= m.id_task %></td>
+	          <td><%= @users.select {|e| e['id'] == m.id_user }.first.name rescue "" %></td>
+	          <td><%= m.fecha_inicio %></td>
+	          <td><%= m.fecha_limite %></td>
+	          <td><%= @users.select {|e| e['id'] == m.creado_por }.first.name rescue "" %></td>
+	          <td><%= m.fecha_termina %></td>
+	          <td><%= m.porc_terminado%></td>
+	          <td><%= m.fecha_procesado%></td>
+	          <td><%= link_to 'Editar', {controller: 'homereportes', action: 'edit_taskuser', id: m['id'].to_i}, class: "btn btn-info btn-xs" %></td>
+	          <td><%= link_to 'Borrar', {controller: 'homereportes', action: 'delete_taskuser', id: m['id'].to_i},  data: { confirm: 'Está seguro?' }, class: "btn btn-danger btn-xs" %></td>
+	        </tr>
+	      <% end %>
+	    </tbody>
+		 </table>
+  </div>
+</div>
+
+<style type="text/css">
+		.scroller { 
+		border:2px solid #ccc; 
+		height: 100px; 
+		overflow-y: scroll;
+	}
+</style>

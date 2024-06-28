@@ -1,0 +1,2 @@
+module ReporteSucursalesHelper
+end

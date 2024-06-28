@@ -1,0 +1,7 @@
+$('#div-cats').animate({
+    opacity: 0,
+  }, 100, function() {
+    $('#div-cats').html('<%= j render partial: "load_cats" %>').animate({
+        opacity: 1,
+      }, 300);
+  });

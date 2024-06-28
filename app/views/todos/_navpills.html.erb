@@ -1,0 +1,8 @@
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" <%= raw "class='active'" if controller.action_name.start_with?('todos') and controller.action_name != 'todos_new' %>><a href="/todos">Administrar To-Dos</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.action_name == 'todos_new' %>><a href="/todos_new">Crear To-Do</a></li>
+  <% if current_user.has_role? :admin %>
+	<li role="presentation" <%= raw "class='active'" if controller.action_name == 'grupos' %>><a href="/grupos">Grupos</a></li>
+  <% end %>
+</ul>
+<br>

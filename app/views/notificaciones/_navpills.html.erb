@@ -1,0 +1,9 @@
+<ul class="nav nav-pills nav-fill" role="tablist">
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'notificaciones' %>><a href="/notificaciones/notificaciones">Notificaciones</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'autorizaciones' %>><a href="/notificaciones/autorizaciones">Autorizaciones</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'auth_logs' %>><a href="/notificaciones/auth_logs">Log de Autorizaciones</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'mails' %>><a href="/notificaciones/mails">Usuarios a Notificar</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'push_tokens' %>><a href="/notificaciones/push_tokens">Push Tokens</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name == 'webhooks' %>><a href="/notificaciones/webhooks">Webhooks</a></li>
+  <li role="presentation" ><a href="/webservices/">Webservices</a></li>
+</ul>

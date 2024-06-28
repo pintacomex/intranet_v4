@@ -1,0 +1,35 @@
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
+<%= link_to "Ir al Index", {controller: "homereportes", action: "index"}, class: "btn btn-primary" %>
+<%= link_to "Regresar", {controller: "homereportes", action: "edit_task", task_id: @task.id }, class: "btn btn-primary" %>
+<div class="container">
+  <div>
+  	<h2 class="text-center"><%= @task.descripcion %></h2>
+  	<div class="modal-body mx-3">
+	    <%= form_tag :action => 'update_taskuser' do |f| %>
+	      <%= hidden_field_tag "id", @task_user.id %>
+	      <div class="form-group">
+	        <label class="control-label">Fecha Inicio</label>
+	        <%= date_field_tag 'fecha_inicio', nil, value: "#{@task_user.fecha_inicio}", class: 'form-control' %>
+	      </div>
+	      <div class="form-group">
+	        <label class="control-label">Fecha Lìmite</label>
+	        <%= date_field_tag 'fecha_limite', nil, value: "#{@task_user.fecha_limite}", class: 'form-control' %>
+	      </div>
+	      <div class="form-group">
+	        <%= submit_tag "Guardar Cambios", class: 'btn btn-primary' %>
+	      </div>
+	    <% end %>
+	  </div>
+  </div>
+</div>
+
+<style type="text/css">
+		.scroller { 
+		border:2px solid #ccc; 
+		height: 100px; 
+		overflow-y: scroll;
+	}
+</style>

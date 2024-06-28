@@ -1,0 +1,142 @@
+<%= render(partial: '/supervisiones/navpills') %>
+
+<div class="col-sm-9">
+
+	<h2>Supervisión Realizada</h2>
+
+	<h4>Sucursal: <%= @sucursal %> - <%= @supervision['Nombre'] %> - <%= @supervision['ckNombre'] %> - Calificación: <%= @supervision['Calificacion'] %> / 10</h4>
+	<h4>To-Dos Generados: <%= @supervision['ToDosCreados'].to_i > 1 ? raw(getTodos(@supervision['ToDosCreados'])) : "Ninguno" %></h4>
+
+	<% options = [ [ "No", 0 ], [ "Sí", 1 ], [ "No Aplica", 3 ] ] %>
+	<% options_nna = [ [ "No", 0 ], [ "Sí", 1 ] ] %>
+	<%= form_for supervisiones_supervision_por_aprobar_path do |f| %>
+
+      <%= hidden_field_tag 'sucursal', @sucursal %>
+      <%= hidden_field_tag 'id_visita', @id_visita %>
+
+	  <div class="form-inputs">
+
+		<% categoria = "" %>
+		<% @dsupervisiones.each do |d| %>
+
+		  <% if categoria != d['catNombre'] %>
+			<% categoria = d['catNombre'] %>
+	        <div class="col-md-12">
+			  <h3> Categoría: <%= d['catNombre'] %></h3>
+	        </div>
+		  <% end %>
+
+	      <div class="form-group">
+	        <div class="col-md-10 col-md-offset-1">
+	          <br>
+	      	  <h4>- <%= d['fldNombre'] %> <%= d['fldDescripcion'] %></h4>
+	          <div class="col-md-3 col-md-offset-2">
+	            <%= select_tag "#{d['IdChecklist']}-#{d['IdCatChecklist']}-#{d['IdCampo']}", options_for_select( d['fldOpcionNA'] == 0 ? options_nna : options, d['Respuesta']), class: 'form-control', placeholder: "Selecciona Opción", data: { placeholder: "Selecciona Opción" }, disabled: true %>
+	          	<br>
+	          </div>
+
+	          <% if @chat_comments["#{d['IdChecklist']}-#{d['IdCatChecklist']}-#{d['IdCampo']}"].count > 0 %>
+			    <div class="col-md-10 col-sm-10">
+			      <div class="panel panel-default">
+			        <div class="panel-heading">
+			          <h3 class="panel-title">Comentarios</h3>
+			        </div>
+			        <div class="panel-body">
+			          <div id="message-history">
+			            <% @chat_comments["#{d['IdChecklist']}-#{d['IdCatChecklist']}-#{d['IdCampo']}"].each do |comment| %>
+			              <div class="message">
+			                  <% if !comment['userName'].nil? %>
+			                    <a href="mailto:<%= comment['userEmail'] %>" class="message_username"><%= comment['userName'].to_s.gsub(" - ", " ") %></a>
+			                  <% end %>
+			                  <span class="message_timestamp"><%= comment['FechaHora'].to_s(:db)[0..19] %></span>
+			                  <span class="message_content"><%= comment['Comentario'] %></span>
+			              </div>                
+			            <% end %>
+			          </div>	          
+			        </div>	          
+			      </div>	          
+			    </div>	
+			  <% end %>
+
+	          <% if @imgs["#{d['IdChecklist']}-#{d['IdCatChecklist']}-#{d['IdCampo']}"].count > 0 %>
+			    <div class="col-md-10 col-sm-10">
+			      <div class="panel panel-default">
+			        <div class="panel-heading">
+			          <h3 class="panel-title">Imágenes</h3>
+			        </div>
+			        <div class="panel-body">
+			          <div id="message-history">
+			            <% @imgs["#{d['IdChecklist']}-#{d['IdCatChecklist']}-#{d['IdCampo']}"].each do |img| %>
+			              <div class="message">
+			                  <% if !img['Usuario'].nil? %>
+			                    <a href="mailto:<%= getEmail(img['Usuario']) %>" class="message_username"><%= getUser(img['Usuario']) %></a>
+			                  <% end %>
+			                  <span class="message_timestamp"><%= img['updated_at'].to_s(:db)[0..19] %></span>
+			                  <%= link_to image_tag(img.img.url(:medium)), img.img.url, target: "_blank" %>
+			              </div>                
+			            <% end %>			          	
+			          </div>	          
+			        </div>	          
+			      </div>	          
+			    </div>	
+			  <% end %>
+
+	        </div>
+	      </div>
+
+		<% end %>
+
+	  </div>
+
+	<% end %>
+</div>
+
+<style>
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+
+</style>

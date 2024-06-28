@@ -1,0 +1,494 @@
+<% if params.has_key?(:region) %>
+  <% if @tablaregion && @tablaregion.count > 0 %>
+    <% if @region.to_i == 0 %>
+      <% @nomRegion = "Dirección" %>
+    <% else %>
+      <% @tablaregion.each do |a| %>
+        <% @nomRegion = "Región " + a['Nombre'] if a['IdAgrupa'] == @region.to_i and @nivelopc != "ObjReg" %>
+        <% @nomRegion = "Objetivos " + a['Nombre'] if a['IdAgrupa'] == @region.to_i and @nivelopc == "ObjReg"%>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% @titulo = ". ( " + @nomRegion + " -- " + params[:nivelopc].to_s + " )" if params.has_key?(:nivelopc) and @nivelopc != "ObjReg"%>
+<% @titulo = ". ( " + @nomRegion + " )" if @nivelopc == "ObjReg"%>
+
+<h3>Cálculo de Objetivos <%= params[:anosel].to_s%> <medium><%= @titulo %></medium></h3>
+
+<% if !params.has_key?(:anosel) %>
+  <div class="loader-form">
+    <form class="form" role="form">
+      <div class="form-group">
+
+        
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Objetivos</h3>
+          </div>
+          <div class="panel-body">
+            <div class="control-group">
+              <label class="control-label col-md-2" id="labanosel" name="labanosel" align=right>Año:</label>
+              <div class="controls">
+                <select class="combobox" name="anosel" id="idanosel">
+                  <% @tablaanosel.each do |a| %>
+                    <option value="<%= a['Año'] %>"><%=h(a['Año']) %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+            <br>
+            <div class="control-group">
+              <label class="control-label col-md-2" id="labregion" name="labregion" align=right>Entidad:</label>
+              <div class="controls">
+                <select class="combobox" name="region" id="idregion">
+                  <option value="0">Dirección</option>
+                  <% @tablaregion.each do |a| %>
+                    <option value="<%= a['IdAgrupa'] %>"><%=h(a['Nombre']) %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+
+            <br>
+
+            <div class="panel panel-default">
+              <div class="panel-body">
+
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_0" value="ObjetivoINPC" checked> Objetivo INPC
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_1" value="AcumuladosINPC"> Acumulados INPC
+                </label>
+                <br>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_2" value="CreciEspSuc" disabled> Participación y Creci. Esp. Suc.
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="nivelopc" id="idnivelo_3" value="CreciEspCd" disabled> Participación y Creci. Esp. Cd.
+                </label>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary go-to-filter">Consultar</button>
+      </div>
+    </form>
+  </div>
+
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <% if @antvtaneta.count > 0 %>
+
+      <% if @nivelopc == "CreciEspSuc" || @nivelopc == "CreciEspCd" %>
+
+        <ul class="nav nav-tabs">
+           <li class="active"><a href="#tab1" data-toggle="tab">Enero</a></li>
+           <li><a href="#tab2" data-toggle="tab">Febrero</a></li>
+           <li><a href="#tab3" data-toggle="tab">Marzo</a></li>
+           <li><a href="#tab4" data-toggle="tab">Abril</a></li>
+           <li><a href="#tab5" data-toggle="tab">Mayo</a></li>
+           <li><a href="#tab6" data-toggle="tab">Junio</a></li>
+           <li><a href="#tab7" data-toggle="tab">Julio</a></li>
+           <li><a href="#tab8" data-toggle="tab">Agosto</a></li>
+           <li><a href="#tab9" data-toggle="tab">Septiembre</a></li>
+           <li><a href="#tab10" data-toggle="tab">Octubre</a></li>
+           <li><a href="#tab11" data-toggle="tab">Noviembre</a></li>
+           <li><a href="#tab12" data-toggle="tab">Diciembre</a></li>
+        </ul>
+
+
+        <div class="tab-content">
+          <% if @nivelopc == "CreciEspSuc" %>
+            <% gridcreci = "gridcrecisuc" %>
+          <% else %>
+            <% gridcreci = "gridcrecicd" %>
+          <% end %>
+          <% anosel = @anosel.to_s %>
+          <% anoant = @anoant.to_s %>
+          <% anosig = (@anosel.to_i + 1).to_s %>
+          <div class="tab-pane active" id="tab1">
+            <h5>Objetivos Enero, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucene, :datoscd => @objcdene, :datostotsuc => @objsuctotene, :datostotcd => @objcdtotene, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Ene", :mesant => "Dic", :messig => "Feb", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab2">
+            <h5>Objetivos Febrero, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucfeb, :datoscd => @objcdfeb, :datostotsuc => @objsuctotfeb, :datostotcd => @objcdtotfeb, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Feb", :mesant => "Ene", :messig => "Mar", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab3">
+            <h5>Objetivose Marzo, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucmar, :datoscd => @objcdmar, :datostotsuc => @objsuctotmar, :datostotcd => @objcdtotmar, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Mar", :mesant => "Feb", :messig => "Abr", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab4">
+            <h5>Objetivos Abril, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucabr, :datoscd => @objcdabr, :datostotsuc => @objsuctotabr, :datostotcd => @objcdtotabr, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Abr", :mesant => "Mar", :messig => "May", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab5">
+            <h5>Objetivos Mayo, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucmay, :datoscd => @objcdmay, :datostotsuc => @objsuctotmay, :datostotcd => @objcdtotmay, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "May", :mesant => "Abr", :messig => "Jun", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab6">
+            <h5>Objetivos Junio, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucjun, :datoscd => @objcdjun, :datostotsuc => @objsuctotjun, :datostotcd => @objcdtotjun, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Jun", :mesant => "May", :messig => "Jul", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab7">
+            <h5>Objetivos Julio, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucjul, :datoscd => @objcdjul, :datostotsuc => @objsuctotjul, :datostotcd => @objcdtotjul, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Jul", :mesant => "Jun", :messig => "Ago", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab8">
+            <h5>Objetivos Agosto, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucago, :datoscd => @objcdago, :datostotsuc => @objsuctotago, :datostotcd => @objcdtotago, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Ago", :mesant => "Jul", :messig => "Sep", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab9">
+            <h5>Objetivos Septiembre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucsep, :datoscd => @objcdsep, :datostotsuc => @objsuctotsep, :datostotcd => @objcdtotsep, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Sep", :mesant => "Ago", :messig => "Oct", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab10">
+            <h5>Objetivos Octubre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucoct, :datoscd => @objcdoct, :datostotsuc => @objsuctotoct, :datostotcd => @objcdtotoct, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Oct", :mesant => "Sep", :messig => "Nov", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab11">
+            <h5>Objetivos Noviembre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucnov, :datoscd => @objcdnov, :datostotsuc => @objsuctotnov, :datostotcd => @objcdtotnov, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Nov", :mesant => "Oct", :messig => "Dic", :anosig => anosig.at(2..3)} %> 
+          </div>
+          <div class="tab-pane" id="tab12">
+            <h5>Objetivos Diciembre, Año ( <%= params[:anosel].to_s %> )</h5>
+            <%= render :partial => gridcreci, :locals => { :datossuc => @objsucdic, :datoscd => @objcddic, :datostotsuc => @objsuctotdic, :datostotcd => @objcdtotdic, :ano => anosel.at(2..3), :anoant => anoant.at(2..3), :mes => "Dic", :mesant => "Nov", :messig => "Ene", :anosig => anosig.at(2..3)} %> 
+          </div>
+        </div>
+
+      <% else %>
+
+        <ul class="nav nav-tabs">
+           <% if @nivelopc == "ObjetivoINPC" %>
+             <li class="active"><a href="#tab1" data-toggle="tab">Venta Año Anterior</a></li>
+             <li><a href="#tab2" data-toggle="tab">Venta Ant. Precios Actuales</a></li>
+             <li><a href="#tab3" data-toggle="tab">Objetivo Crecimiento Real</a></li>
+           <% end %>
+           <% if @nivelopc == "ObjetivoINPC" %>
+             <li><a href="#tab4" data-toggle="tab">Objetivo</a></li>
+           <% else %>
+             <li class="active"><a href="#tab4" data-toggle="tab">Objetivo</a></li>
+           <% end %>
+           <li><a href="#tab5" data-toggle="tab">Venta Real</a></li>
+           <li><a href="#tab6" data-toggle="tab">Variación vs. Objetivo ($)</a></li>
+           <li><a href="#tab7" data-toggle="tab">Variación vs. Objetivo (%)</a></li>
+           <% if @nivelopc == "AcumuladosINPC" %>
+             <li><a href="#tab8" data-toggle="tab">Crecimiento Real Vs. Año Ant.</a></li>
+             <li><a href="#tab9" data-toggle="tab">Crecimiento Nominal Vs. Año Ant.</a></li>
+           <% end %>
+           <li><a href="#tab10" data-toggle="tab">Resumen</a></li>
+           <% if @nivelopc == "ObjetivoINPC" %>
+             <li><a href="#tab11" data-toggle="tab">Supuestos</a></li>
+           <% end %>
+        </ul>
+
+        <div class="tab-content">
+
+          <% if @region.to_i == 0 %>
+            <% entidadSel = "Ciudad" %>
+          <% else %>
+            <% entidadSel = "Sucursal" %>
+          <% end %>
+
+          <div class="tab-pane active" id="tab1">
+           <% if @nivelopc == "ObjetivoINPC" %>
+            <h5>Ventas Año ( <%= params[:anosel].to_i - 1 %> )</h5>
+            <%= render :partial => "gridmeses", :locals => {:datos => @antvtaneta, :entidad => entidadSel, :tipodato => "$"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab2">
+           <% if @nivelopc == "ObjetivoINPC" %>
+            <h5>Ventas Año ( <%= params[:anosel].to_i - 1 %> ) Precios Actuales</h5>
+            <%= render :partial => "gridmeses", :locals => {:datos => @antvtanetaact, :entidad => entidadSel, :tipodato => "$"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab3">
+           <% if @nivelopc == "ObjetivoINPC" %>
+            <h5>Objetivo Crecimiento Real Año ( <%= params[:anosel].to_i %> )</h5>
+
+            <div class="col-xs-12">
+              <div class="col-xs-2">
+                <button  class="btn btn-primary btn-sm" type="submit" id="botonGuardarPorce">Guardar Datos</button>
+              </div>
+              <div class="col-xs-10">
+                <h4><div id="div-junto-al-guardar-porce"></div></h4>
+              </div>
+            </div>
+
+            <div id="gridcrecireal">
+              <%= render(partial: "gridcrecireal") %>
+            </div>
+
+           <% end %>
+
+          </div>
+            <% if @nivelopc == "ObjetivoINPC" %>
+             <div class="tab-pane" id="tab4">
+              <h5>Objetivos Año ( <%= params[:anosel].to_i %> )</h5>
+
+              <div class="col-xs-12">
+                <div class="col-xs-2">
+                  <button  class="btn btn-primary btn-sm" type="submit" id="botonGuardarObj">Guardar Datos</button>
+                </div>
+                <div class="col-xs-10">
+                  <h4><div id="div-junto-al-guardar-obj"></div></h4>
+                </div>
+              </div>
+
+              <div id="gridobjetivo">
+                <%= render(partial: "gridobjetivo") %>
+              </div>
+             </div>  
+            <% else %>
+             <div class="tab-pane active" id="tab4">
+              <h5>Objetivos Año ( <%= params[:anosel].to_i %> )</h5>
+              <%= render :partial => "gridmeses", :locals => {:datos => @objetivoacum, :entidad => entidadSel, :tipodato => "$"} %>
+             </div> 
+            <% end %>
+
+          <div class="tab-pane" id="tab5">
+            <h5>Venta Real Año ( <%= params[:anosel].to_s %> )</h5>
+            <% if @nivelopc == "ObjetivoINPC" %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @vtanetareal, :entidad => entidadSel, :tipodato => "$"} %> 
+            <% else %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @vtanetarealacum, :entidad => entidadSel, :tipodato => "$"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab6">
+            <h5>Variación vs. Objetivo ($) Año ( <%= params[:anosel].to_i %> )</h5>
+            <% if @nivelopc == "ObjetivoINPC" %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @varvsobjetivo, :entidad => entidadSel, :tipodato => "$"} %> 
+            <% else %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @varvsobjetivoacum, :entidad => entidadSel, :tipodato => "$"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab7">
+            <h5>Variación vs. Objetivo (%) Año ( <%= params[:anosel].to_i %> )</h5>
+            <% if @nivelopc == "ObjetivoINPC" %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @varvsobjporce, :entidad => entidadSel, :tipodato => "%"} %> 
+            <% else %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @varvsobjporceacum, :entidad => entidadSel, :tipodato => "%"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab8">
+            <% if @nivelopc == "AcumuladosINPC" %>
+              <h5>Crecimiento Real Vs. Año ( <%= params[:anosel].to_i - 1 %> )</h5>
+              <%= render :partial => "gridmeses", :locals => {:datos => @crecirealvsanoantacum, :entidad => entidadSel, :tipodato => "%"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab9">
+            <% if @nivelopc == "AcumuladosINPC" %>
+              <h5>Crecimiento Nominal Vs.  Año ( <%= params[:anosel].to_i - 1 %> )</h5>
+              <%= render :partial => "gridmeses", :locals => {:datos => @crecinomivsanoantacum, :entidad => entidadSel, :tipodato => "%"} %> 
+            <% end %>
+          </div>
+
+          <div class="tab-pane" id="tab10">
+            <h5>Resumen Año ( <%= params[:anosel].to_i %> )</h5>
+            <% if @nivelopc == "ObjetivoINPC" %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @totales, :entidad => "Nombre", :tipodato => "$"} %> 
+            <% else %>
+              <%= render :partial => "gridmeses", :locals => {:datos => @totalesacum, :entidad => "Nombre", :tipodato => "$"} %> 
+            <% end %>
+          </div>
+          <div class="tab-pane" id="tab11">
+            <% if @nivelopc == "ObjetivoINPC" %>
+              <h5>Supuestos Año ( <%= params[:anosel].to_i %> )</h5>
+              <%= render :partial => "gridmeses", :locals => {:datos => @supuestos, :entidad => "Nombre", :tipodato => "%"} %> 
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <br />
+
+      <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+      <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+      <%= javascript_include_tag "/dt_v3" %>
+
+      <%# raise @antsaldos.to_json.inspect raw(@antsaldos.to_json) %>
+
+    <% else %>
+
+      Sin Datos.
+
+    <% end %>
+  <% end %>
+
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#idregion').change(function() {
+      idregion_val = $('#idregion').val();
+  //alert("Cambia Región "+idregion_val);
+      if (idregion_val == 0) {
+        if ($('#idnivelo_2:checked').val() == "CreciEspSuc" || $('#idnivelo_3:checked').val() == "CreciEspCd") {
+          $('#idnivelo_0').prop('checked','checked');
+        }
+        $('#idnivelo_2').prop('disabled','disabled');
+        $('#idnivelo_3').prop('disabled','disabled');
+        return;
+      }
+      else
+      {
+        $('#idnivelo_2').prop('disabled',false);
+        $('#idnivelo_3').prop('disabled',false);
+      }
+    });
+    idregion_val = $('#idregion').val();
+//  alert("Cambia Región "+idregion_val);
+    if (idregion_val == 0) {
+      if ($('#idnivelo_2:checked').val() == "CreciEspSuc" || $('#idnivelo_3:checked').val() == "CreciEspCd") {
+        $('#idnivelo_0').prop('checked','checked');
+      }
+      $('#idnivelo_2').prop('disabled','disabled');
+      $('#idnivelo_3').prop('disabled','disabled');
+      return;
+    }
+    else
+    {
+      $('#idnivelo_2').prop('disabled',false);
+      $('#idnivelo_3').prop('disabled',false);
+    }
+
+    var tablePorce = $('#crecimiento').DataTable( {
+        "columnDefs": [ {
+            "searchable": true,
+            "orderable": true,
+            "targets": 0
+        } ],
+        "order": [[ 1, 'asc' ]],
+        "paging":         false
+    } );
+    tablePorce.rows( {order:'index', search:'applied'} ).nodes();
+
+//    tablePorce.on( 'order.dt search.dt', function () {
+//        tablePorce.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+//            cell.innerHTML = i+1;
+//        } );
+//    } ).draw();
+
+    var datosInicialesPorce = tablePorce.$('input').serialize();
+    // console.log("datosInicialesPorce");
+    // console.log(datosInicialesPorce);
+    $('#botonGuardarPorce').click( function() {
+      var datosActualesPorce = tablePorce.$('input').serialize();
+      // console.log("datosActuales");
+      // console.log(datosActuales);
+      // Aqui deberia armarse un arreglo con los cambios a enviar
+      $( "#div-junto-al-guardar-porce" ).html( "" );
+      var datosAEnviar = [];
+      if (datosInicialesPorce != datosActualesPorce) {
+        // Se comparan ambos arreglos
+        arrDatosIniciales = datosInicialesPorce.split("&");
+        arrDatosActuales  = datosActualesPorce.split("&");
+        var i = 0;
+        arrDatosActuales.forEach(function(item) {
+          if (item != arrDatosIniciales[i]) {
+            // Cuando hay un cambio, se escribe algo como: 
+            //["cd-2016-51-4-Enero=4.00", "cd-2016-52-1-Febrero=6.00", "cd-2016-50-1-Enero=4.00"]
+            datosAEnviar.push(item.replace("gcrr_", ""));
+          }
+          i++;
+        });
+      } else {
+        $( "#div-junto-al-guardar-porce" ).html( "No hay nada que guardar" );
+      }
+      // En este arreglo estan todos los datos a enviar al servidor para hacer update
+      //console.log("datosAEnviar");
+      //console.log(datosAEnviar);
+      // Se reemplazan los datosIniciales con los datosActuales por si se siguen cambiando y guardando datos
+      if (datosAEnviar.length > 0) {
+        datosInicialesPorce = datosActualesPorce;
+        var request = $.ajax({
+           url: "/calc_objetivos_gridcrecireal_porce_update",
+           method: "GET",
+           data: { datosAEnviar : datosAEnviar },
+           dataType: "json"
+         });
+         request.done(function( msg ) {
+          $( "#div-junto-al-guardar-porce" ).html( msg.info );
+          location.reload(true);
+         });
+         request.fail(function( jqXHR, textStatus ) {
+           $( "#div-junto-al-guardar-porce" ).html( "Error al guardar: " + textStatus );
+         });             
+      }
+    } );
+
+    var tableObj = $('#objetivo').DataTable( {
+        "columnDefs": [ {
+            "searchable": true,
+            "orderable": true,
+            "targets": 0
+        } ],
+        "order": [[ 1, 'asc' ]],
+        "paging":         false
+    } );
+    tableObj.rows( {order:'index', search:'applied'} ).nodes();
+
+    var datosInicialesObj = tableObj.$('input').serialize();
+    // console.log("datosInicialesObj");
+    // console.log(datosInicialesObj);
+    $('#botonGuardarObj').click( function() {
+      var datosActualesObj = tableObj.$('input').serialize();
+      // console.log("datosActualesObj");
+      // console.log(datosActualesObj);
+      // Aqui deberia armarse un arreglo con los cambios a enviar
+      $( "#div-junto-al-guardar-obj" ).html( "" );
+      var datosAEnviar = [];
+      if (datosInicialesObj != datosActualesObj) {
+        // Se comparan ambos arreglos
+        arrDatosIniciales = datosInicialesObj.split("&");
+        arrDatosActuales  = datosActualesObj.split("&");
+        var i = 0;
+        arrDatosActuales.forEach(function(item) {
+          if (item != arrDatosIniciales[i]) {
+            // Cuando hay un cambio, se escribe algo como: 
+            //["cd-2016-51-4-Enero=4.00", "cd-2016-52-1-Febrero=6.00", "cd-2016-50-1-Enero=4.00"]
+            datosAEnviar.push(item.replace("gcrr_", ""));
+          }
+          i++;
+        });
+      } else {
+        $( "#div-junto-al-guardar-obj" ).html( "No hay nada que guardar" );
+      }
+      // En este arreglo estan todos los datos a enviar al servidor para hacer update
+      //console.log("datosAEnviar");
+      //console.log(datosAEnviar);
+      // Se reemplazan los datosIniciales con los datosActuales por si se siguen cambiando y guardando datos
+      if (datosAEnviar.length > 0) {
+        datosInicialesObj = datosActualesObj;
+        var request = $.ajax({
+           url: "/calc_objetivos_gridcrecireal_obj_update",
+           method: "GET",
+           data: { datosAEnviar : datosAEnviar },
+           dataType: "json"
+         });
+         request.done(function( msg ) {
+          $( "#div-junto-al-guardar-obj" ).html( msg.info );
+          location.reload(true);
+         });
+         request.fail(function( jqXHR, textStatus ) {
+           $( "#div-junto-al-guardar-obj" ).html( "Error al guardar: " + textStatus );
+         });             
+      }
+    } );
+} );
+</script>

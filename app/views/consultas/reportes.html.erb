@@ -1,0 +1,105 @@
+
+<br>
+
+<div class="pull-right text-right">
+  <small>
+    <a href="/consultas/" class="btn btn-primary btn-xs">Ver Reportes</a>
+  </small>
+</div>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <div class="col-md-10 col-md-offset-1 well">
+      <h3><center>Nota</center></h3>
+      <p>Para editar abrir con MySql Workbench la tabla ReportesIntranet en la BD EstaPinta o la de la empresa del servidor 14. El campo "Restringido a Roles" todavia no se usa. Cualquier error en el query deberia mostrarse como una consulta sin datos.</p>
+  </div>
+  <% if @reportes.count > 0 %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <% @reportes.first.keys.each do |k| %>
+            <th><%= k.underscore.titleize %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody >
+        <% @reportes.each do |m| %>
+          <tr>
+            <% m.keys.each do |k| %>
+              <% if k.include?("fecha") %>
+                <td><%= fix_show_date_int(m[k]) %></td>
+              <% else %>
+                <td><%= m[k] %></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <th>Sin Datos</th>
+        </tr>
+      </thead>
+    </table>
+  <% end %>
+
+<br />
+</div>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({
+    "order": [],
+    "pageLength": 100
+     });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>

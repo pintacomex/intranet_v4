@@ -1,0 +1,371 @@
+<h1 class="text-center">Detalle del Movimiento</h1>
+
+<br>
+
+<% if @bajas.count > 0 %>
+
+  <div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+    <small>
+      <%= link_to "Regresar", "/bajas/" %>
+    </small>
+    <br />
+
+    <% @bajas.each do |m| %>
+      <% if m['cliNombre'].to_s.length > 0 %>
+        <h4>Cliente: <%= m['cliNombre'] %>, RFC: <%= m['Rfc'] %></h4>
+        <h5><%= "#{m['Callenum']} #{m['NumExt']} #{m['NumInt']} #{m['Colonia']} #{m['Delemuni']}" %></h5>
+      <% end %>
+    <% end %>
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Zona y Número de la Sucursal">Zona-Suc</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre de la Sucursal">Sucursal</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha de la Baja">Fecha</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">Mov</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total">Total</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total Valuado">Valuado</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Identificador de la Obra">Obra</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Tipo Subtipo o Tipo de Baja">TipoSubt/Baja</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Observaciones">Observaciones</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Autorización del Regional">R</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Autorización del Contralor">C</a></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% @bajas.each do |m| %>
+          <tr>
+            <td><%= m['ZonaAsig'] %>-<%= m['Sucursal'] %></td>
+            <td><%= m['Nombre'] %></td>
+            <td><%= fix_show_date(m['Fecha']) %></td>
+            <td><%= m['Nummov'] %></td>
+            <td><%= number_to_currency(m['Total'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(m['Totvaluado'], :locale => :mx, :precision => 2) %></td>
+            <td><%= m['IdObra'].to_i > 0 ? m['IdObra'] : "" %></td>
+            <td><%= m['Tipo_subt'] == "B" ? "#{m['Tipo_subt']}-#{m['Folioinfo']}-#{m['Descrip']}" : "#{m['Tipo_subt']}-#{m['NomTipoSubTipo']}" %></td>
+            <td><%= m['Observac'] %></td>
+            <td><%= m['baRegAutorizacion'] == 1 ? raw("<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>") : "" %></td>
+            <td><%= m['baCtlAutorizacion'] == 1 ? raw("<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>") : "" %></td>            
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br />
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Clave Asociada">Clave</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Descripción">Descripción</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Precio de Lista de Precios">Precio</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Costo de Lista de Precios">Costo</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Cantidad">Cant</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Precio por Cantidad">PrexC</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Costo por Cantidad">CosxC</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Precio Final">PrecioFin</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Tipo de Descuento">Desc</a></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% @bajas_dmov.each do |m| %>
+          <tr>
+            <td><%= m['Cveasoc'] %></td>
+            <td><%= m['Descrip'] %></td>
+            <td><%= number_to_currency(m['Preciolp'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(m['Costolp'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(m['Cantidad'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %></td>
+            <td><%= number_to_currency(m['Preciolp']*m['Cantidad'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(m['Costolp']*m['Cantidad'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(m['Preciofin'], :locale => :mx, :precision => 2) %></td>
+            <td><%= m['Tipodesc'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br />    
+
+
+    <h3 class="text-center">Movimientos Anteriores/Posteriores</h3>
+
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Zona y Número de la Sucursal">Zona-Suc</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre de la Sucursal">Sucursal</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha de la Baja">Fecha</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">NumMov</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total">Total</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total Valuado">Valuado</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Identificador de la Obra">Obra</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Tipo Subtipo o Tipo de Baja">TipoSubt/Baja</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Observaciones">Observaciones</a></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% @bajas_antpos.each do |m| %>
+          <tr <%= @nummov == m['Nummov'].to_i ? raw("class='success'") : "" %>>
+            <td><%= link_to "#{m['ZonaAsig']}-#{m['Sucursal']}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{m['Nombre']}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{fix_show_date(m['Fecha'])}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{m['Nummov']}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{number_to_currency(m['Total'], :locale => :mx, :precision => 2)}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= link_to "#{number_to_currency(m['Totvaluado'], :locale => :mx, :precision => 2)}", "/bajas_detalle?sucursal=#{m['Sucursal']}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %></td>
+            <td><%= m['IdObra'].to_i > 0 ? link_to("#{m['IdObra']}", "/bajas_obra?idobra=#{m['IdObra']}") : "" %></td>
+            <td><%= m['Tipo_subt'] == "B" ? "#{m['Tipo_subt']}-#{m['Folioinfo']}-#{m['Descrip']}" : "#{m['Tipo_subt']}-#{m['NomTipoSubTipo']}" %></td>
+            <td><%= m['Observac'] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+
+    <% if @bajas[0]['Tipo_subt'] == 'B' %>
+
+      <div class="col-md-6 col-sm-6">
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Comentarios</h3>
+          </div>
+          <div class="panel-body">
+            <div id="message-history">
+              <% @chat_comments.each do |comment| %>
+                <div class="message">
+                    <% if !comment['userName'].nil? %>
+                      <a href="mailto:<%= comment['userEmail'] %>" class="message_username"><%= comment['userName'].to_s.gsub(" - ", " ") %></a>
+                    <% end %>
+                    <span class="message_timestamp"><%= comment['FechaHora'].to_s(:db)[0..19] %></span>
+                    <span class="message_content"><%= comment['Comentario'] %></span>
+                </div>                
+              <% end %>
+            </div>
+            <form class="form-horizontal">
+              <%= hidden_field_tag 'sucursal', @sucursal %>
+              <%= hidden_field_tag 'fecha', @fecha %>
+              <%= hidden_field_tag 'nummov', @nummov %>
+              <div class="form-group">
+                <div class="col-md-6 col-sm-6">
+                  <br>
+                  <%= text_area_tag 'nuevo_comentario', nil, size: "50x3", class: "form-control", placeholder: "Nuevo Comentario" %>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-info">Agregar Comentario</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-6 col-sm-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Autorizaciones</h3>
+          </div>
+          <div class="panel-body">
+            <center>
+              <% if @bajas[0]['baRegAutorizacion'] == 1 %>
+                <h4>Regional: <span class="label label-success">Autorizada</span></h4>
+                <p><%= @bajas[0]['baRegComentario'].to_s.length > 0 ? "Nota de Autorización: #{@bajas[0]['baRegComentario']}" : "Sin Nota." %></p>
+                <small>
+                  <b>Por: <a href="mailto:<%= @bajas[0]['baRegUserEmail'] %>"><%= @bajas[0]['baRegUserName'].gsub(" - ", " ") %></a> (<%= @bajas[0]['baRegFechaHora'].to_s(:db)[0..9] %>)</b>
+                </small><br>
+                <% if @es_regional or @es_contralor %>
+                  <br>
+                  <a href="/bajas_detalle?sucursal=<%= @sucursal %>&fecha=<%= @fecha%>&nummov=<%= @nummov %>&borrar_auth=reg" class="btn btn-danger btn-sm">Borrar</a>
+                  <br>
+                <% end %>   
+                <br>             
+              <% else %>
+                <h4>Regional: <span class="label label-danger">No Autorizada</span></h4>
+                <% if @es_regional %>
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                    Autorizar
+                  </button>
+                <% end %>
+              <% end %>
+              <% if @bajas[0]['baCtlAutorizacion'] == 1 %>
+                <h4>Contralor: <span class="label label-success">Autorizada</span></h4>
+                <p><%= @bajas[0]['baCtlComentario'].to_s.length > 0 ? "Nota de Autorización: #{@bajas[0]['baCtlComentario']}" : "Sin Nota." %></p>
+                <small>
+                  <b>Por: <a href="mailto:<%= @bajas[0]['baCtlUserEmail'] %>"><%= @bajas[0]['baCtlUserName'].gsub(" - ", " ") %></a> (<%= @bajas[0]['baCtlFechaHora'].to_s(:db)[0..9] %>)</b>
+                </small><br>
+                <% if @es_contralor %>
+                  <br>
+                  <a href="/bajas_detalle?sucursal=<%= @sucursal %>&fecha=<%= @fecha%>&nummov=<%= @nummov %>&borrar_auth=ctl" class="btn btn-danger btn-sm">Borrar</a>
+                  <br>
+                <% end %>  
+                <br>                 
+              <% else %>
+                <h4>Contralor: <span class="label label-danger">No Autorizada</span></h4>
+                <% if @es_contralor %>
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                    Autorizar
+                  </button>
+                <% end %>
+              <% end %>
+            </center>
+          </div>
+        </div>                
+      </div>
+
+      <% if ( @es_regional or @es_contralor ) %>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Autorizar Baja</h4>
+              </div>
+
+              <form class="form-horizontal">
+                <div class="modal-body">
+                  <div class="ref-group">
+
+                    <%= hidden_field_tag 'sucursal', @sucursal %>
+                    <%= hidden_field_tag 'fecha', @fecha %>
+                    <%= hidden_field_tag 'nummov', @nummov %>
+                    <%= hidden_field_tag 'auth', '1' %>
+
+                    <div class="form-group">
+                      <label class="col-sm-4 control-label">Nota de Autorización</label>
+                      <div class="col-md-6 col-sm-6">
+                        <% field = @es_regional ? 'baRegComentario' : 'baCtlComentario' %>
+                        <%= text_area_tag 'comentario', @bajas[0][field] ? @bajas[0][field] : "", size: "25x3", class: "form-control", placeholder: "Agregar nota" %>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+      
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-primary">Autorizar</button>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+    
+      <% end %>
+
+    <% end %>
+
+  </div> 
+
+<% else %>
+
+  Sin Datos.
+
+<% end %>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+
+</style>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

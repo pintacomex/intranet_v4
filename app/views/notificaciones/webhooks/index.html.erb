@@ -1,0 +1,104 @@
+
+<%= render(partial: '/notificaciones/navpills') %>
+<br><br><br>
+<h1 class="text-center">Webhooks</h1>
+
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+
+  <div class="pull-right">
+    <%= paginate @webhooks %>
+  </div>
+
+  <br>
+  <br>
+
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Webhook</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody >
+      <% @webhooks.each do |webhook| %>
+        <tr>
+          <td><%= webhook.name %></td>
+          <td><%= webhook.value %></td>
+          <td>
+            <%= link_to 'Editar', edit_notificaciones_webhook_path(webhook), class: "btn btn-xs btn-info" %>
+            <%= link_to 'Borrar', notificaciones_webhook_path(webhook), method: :delete, data: { confirm: 'Esta seguro?' }, class: "btn btn-xs btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="pull-right">
+    <%= paginate @webhooks %>
+  </div>
+
+  <br>
+
+  <%= link_to 'Crear Webhook', new_notificaciones_webhook_path, class: "btn btn-primary" %>
+
+  <br>
+  <br>
+
+  <div class="well">
+    <p>
+      <b>Nota:</b> Esta tabla es para las notificaciones a Slack a através de un webhook. Como funciona es que el nombre contiene zona y nivel a dos digitos.<br>Por ejemplo: 0206 para zona 2, nivel 6.<br>Al llegar una solicitud de autorización, si existe un webhook para esa zona y nivel, se envía la notificación también por ese webhook. Los usuarios pueden suscribirse a los canales de Slack según prefieran para recibir esas notificaciones.
+    </p>
+  </div>
+
+</div>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>

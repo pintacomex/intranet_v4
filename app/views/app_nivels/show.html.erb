@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>App:</strong>
+  <%= @app_nivel.app %>
+</p>
+
+<p>
+  <strong>Nivel:</strong>
+  <%= @app_nivel.nivel %>
+</p>
+
+<p>
+  <strong>Descripcion:</strong>
+  <%= @app_nivel.descripcion %>
+</p>
+
+<%= link_to 'Edit', edit_app_nivel_path(@app_nivel) %> |
+<%= link_to 'Back', app_nivels_path %>

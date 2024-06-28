@@ -1,0 +1,46 @@
+<h3>Detalle de Llamada</h3>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <small>
+    <%= link_to "Regresar", "/ecommerce/webservices" %>
+  </small>
+
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+	  <thead>
+      <tr>
+        <th>Pedido</th>
+        <th>Operacion</th>
+        <th>Created</th>
+        <th>Updated</th>
+	    </tr>
+	  </thead>
+    <tbody>
+        <tr>
+          <td><%= @pedido['idPedido'] %></td>
+          <td><%= @pedido['operacion'] %></td>
+          <td><%= @pedido['created_at'] %></td>
+          <td><%= @pedido['updated_at'] %></td>
+        </tr>
+	  </tbody>
+	</table>
+
+  <table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+	  <thead>
+      <tr>
+        <th>Request</th>
+	    </tr>
+	  </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre class="text-left">
+<%= JSON.pretty_generate(JSON.parse(@pedido['request'].to_s)) rescue @pedido['request'].to_s %>
+          </pre>
+        </td>
+      </tr>
+	  </tbody>
+	</table>
+</div>

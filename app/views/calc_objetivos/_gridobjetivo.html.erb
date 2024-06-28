@@ -1,0 +1,69 @@
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="objetivo">
+	<thead>
+	  <tr>
+      <% if @region.to_i == 0 %>
+        <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+      <% else %>
+        <th><a href="#" data-toggle="tooltip" title="Sucursal">Sucursal</a></th>
+      <% end %>
+	    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+	  </tr>
+	</thead>
+	<tfoot>
+	  <tr>
+      <% if @region.to_i == 0 %>
+        <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+      <% else %>
+        <th><a href="#" data-toggle="tooltip" title="Sucursal">Sucursal</a></th>
+      <% end %>
+	    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+	  </tr>
+	</tfoot>
+	<tbody>
+	  <% @objetivo.each do |m| %>
+      <tr>
+        <% if @region.to_i == 0 %>
+          <td><%= m['Ciudad'] %></td>
+          <% llave = "gcrr_cd_#{m['Ano']}_#{m['IdRegion']}_#{m['IdCiudad']}_" %>
+        <% else %>
+          <td><%= m['Sucursal'] %></td>
+          <% llave = "gcrr_suc_#{m['Ano']}_#{m['IdRegion']}_#{m['IdSucursal']}_" %>
+        <% end %>
+        <td><input name="<%= "#{llave}Enero" %>" id="<%= "#{llave}ene" %>" type="text" size="12" value=<%= number_to_currency(m['Enero'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Febrero" %>" id="<%= "#{llave}feb" %>" type="text" size="12" value=<%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Marzo" %>" id="<%= "#{llave}mar" %>" type="text" size="12" value=<%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Abril" %>" id="<%= "#{llave}abr" %>" type="text" size="12" value=<%= number_to_currency(m['Abril'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Mayo" %>" id="<%= "#{llave}may" %>" type="text" size="12" value=<%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Junio" %>" id="<%= "#{llave}jun" %>" type="text" size="12" value=<%= number_to_currency(m['Junio'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Julio" %>" id="<%= "#{llave}jul" %>" type="text" size="12" value=<%= number_to_currency(m['Julio'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Agosto" %>" id="<%= "#{llave}ago" %>" type="text" size="12" value=<%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Septiembre" %>" id="<%= "#{llave}sep" %>" type="text" size="12" value=<%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Octubre" %>" id="<%= "#{llave}oct" %>" type="text" size="12" value=<%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Noviembre" %>" id="<%= "#{llave}nov" %>" type="text" size="12" value=<%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+        <td><input name="<%= "#{llave}Diciembre" %>" id="<%= "#{llave}dic" %>" type="text" size="12" value=<%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "", :precision => 2) %>></td>
+      </tr>
+    <% end %>
+	</tbody>
+</table>

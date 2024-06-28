@@ -1,0 +1,32 @@
+<br>
+<%= render(partial: '/auths/navpills') %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <p>
+    <strong>Tipo de Solicitud:</strong>
+    <strong><%= get_tipo_solicitud(@flujo['IdTipoSolicitud']) %></strong>
+  </p>
+
+  <p>
+    <strong>Nivel Actual:</strong>
+    <strong><%= get_nivel(@flujo['NivelActual']) %></strong>
+  </p>
+
+  <p>
+    <strong>Usuario:</strong>
+    <strong><%= @flujo['NombreUsuario'] %></strong>
+  </p>
+
+  <% debe_autorizar = @flujo['DebeAutorizar'] == 0 ? "No" : "Sí" %>
+  <p>
+    <strong>Debe Autorizar:</strong>
+    <strong><%= debe_autorizar %></strong>
+  </p>
+
+  <p>
+    <strong>Nivel Futuro:</strong>
+    <strong><%= get_nivel(@flujo['NivelFuturo']) %></strong>
+  </p>
+
+</div>

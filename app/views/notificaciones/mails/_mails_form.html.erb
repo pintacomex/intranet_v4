@@ -1,0 +1,89 @@
+<hr>
+  <%= form_tag('/notificaciones/mails', class: 'form-horizontal' )  do |f| %>
+
+    <div class="form-inputs loader-form ">
+
+      <br>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Tipo de Notificaciones</label>
+        <div class="col-md-5">
+          <% @tipos_mail = [ { "id" => 0, "tipo" => "Todas las Notificaciones" } ] %> 
+          <%= select_tag 'TipoNotificacion', options_for_select(@tipos_mail.collect{|t| [ t['tipo'], t['id'] ]}, @notificaciones_mail ? @notificaciones_mail['TipoNotificacion'] : nil), label: false, placeholder: "Tipo de Notificacion", autofocus: true, class: 'form-control'  %>
+          <p class="help-block">Ingrese el Tipo de las Notificaciones a Enviar</p>
+        </div>
+      </div>
+      <br>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Email</label>
+        <div class="col-md-5">
+          <% @dest_users = User.joins("LEFT JOIN permisos ON users.id = permisos.idUsuario").where("permisos.id > 0").order(:name).map{|u| ["#{u.name.to_s.gsub(" - ", " ")} - #{u.email}", "#{u.email}"]}.uniq %>"]}.uniq %>
+          <% @dest_users = @dest_users.select { |u| u.last == params[:Email] } if !@new %>
+          <%= select_tag 'Email', options_for_select(@dest_users), class: 'form-control', placeholder: "Seleccione Usuario", data: { placeholder: "Selecciona Grupos, Usuarios o Sucursales..." } %>
+          <p class="help-block">Ingrese el Email del Usuario que Recibirá la Notificación</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Zona</label>
+        <div class="col-md-5">
+          <% @zonas = @dbComun.connection.select_all("SELECT * FROM zonas ORDER BY NumZona").collect{|t| [ t['NomZona'], t['NumZona'] ]}.unshift(["Todas",-1]) %> 
+          <% @zonas = @zonas.select { |u| u.last.to_i == params[:Zona].to_i } if !@new %>
+          <%= select_tag 'Zona', options_for_select(@zonas), label: false, placeholder: "Zona", class: 'form-control'  %>
+          <p class="help-block">Ingrese la Zona de la que Recibirá las Notificaciones</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Sucursal</label>
+        <div class="col-md-5">
+          <% @sucursales = @dbComun.connection.select_all("SELECT * FROM sucursal ORDER BY Num_suc").collect{|t| [ t['Nombre'], t['Num_suc'] ]}.unshift(["Todas",-1]) %> 
+          <% @sucursales = @sucursales.select { |u| u.last.to_i == params[:Sucursal].to_i } if !@new %>
+          <%= select_tag 'Sucursal', options_for_select(@sucursales), label: false, placeholder: "Sucursal", class: 'form-control' %>        
+          <p class="help-block">Ingrese la Sucursal de la que Recibirá las Notificaciones</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Niveles de Escritura</label>
+        <div class="col-md-5">
+          <% @niveles = (1..9) %> 
+          <%= select_tag 'NivelEscritura', options_for_select(@niveles.collect{|t| [ t, t ]}, @new ? nil : params[:NivelEscritura].split(",") || nil), label: false, placeholder: "Seleccione los Niveles...", class: 'form-control', multiple: true, data: { placeholder: "Seleccione los Niveles..." } %>  
+          <p class="help-block">Seleccione los Niveles que Pueden Aprobar o Desaprobar</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Niveles de Lectura</label>
+        <div class="col-md-5">
+          <% @niveles = (1..9) %> 
+          <%= select_tag 'NivelLectura', options_for_select(@niveles.collect{|t| [ t, t ]}, @new ? nil : params[:NivelLectura].split(",") || nil), label: false, placeholder: "Seleccione los Niveles...", class: 'form-control', multiple: true, data: { placeholder: "Seleccione los Niveles..." } %>  
+          <p class="help-block">Seleccione los Niveles que Sólo Pueden Ver</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Pdv de Prueba</label>
+        <div class="col-md-5">
+          <% @pdv = [ ["No", 0], ["Sí", 1] ] %> 
+          <%= select_tag 'PdvPrueba', options_for_select(@pdv, @new ? nil : params[:PdvPrueba] || nil), label: false, placeholder: "Seleccione si el Usuario Recibirá las Notificaciones del PDV de Prueba...", class: 'form-control', multiple: false, data: { placeholder: "Seleccione si el Usuario Recibirá las Notificaciones del PDV de Prueba..." } %>  
+          <p class="help-block">Seleccione si el Usuario Recibirá las Notificaciones del PDV de Prueba</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-actions loader-form text-center">
+      <%= submit_tag "Enviar", class: "btn btn-primary btn-lg" %>
+    </div>
+  <% end %>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
+
+<script type="text/javascript">
+  $('#NivelEscritura').chosen();
+  $('#NivelLectura').chosen();
+  $('#PdvPrueba').chosen();
+</script>

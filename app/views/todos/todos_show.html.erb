@@ -1,0 +1,212 @@
+<%= render(partial: 'navpills') %>
+<br><br><br><br>
+<div class="col-sm-2">
+
+    <%= render(partial: 'busqueda') %>
+
+    <div class="card">
+	  <div class="card-header">
+	    <h6 class="card-title">Información</h6>
+	  </div>
+	  <div class="card-body">
+	  	<h5>Todo ID</h5>
+	  	<p><%= @todo[0]['IdHTodo'] %></p>
+	  	<hr>
+	  	<h5>Usuario</h5>
+	  	<p><%= getUser(@todo.last['Usuario']) %></p>
+	  </div>
+    </div>
+
+    <%= render(partial: 'filtros') %>
+
+</div>
+
+<div class="col-sm-10">
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs text-center" role="tablist">
+		<li role="presentation" class="nav-item"><a href="#general" aria-controls="general" role="tab" data-toggle="tab" class="nav-link active">General</a></li>
+		<!-- <li role="presentation"><a href="#responder" aria-controls="responder" role="tab" data-toggle="tab">Responder</a></li> -->
+		<li role="presentation" class="nav-item"><a href="#log" aria-controls="log" role="tab" data-toggle="tab" class="nav-link">Log</a></li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+      <br><br><br><br>
+      <%= render(partial: 'panel_general') %>
+
+      <% #= render(partial: 'panel_responder') %>
+      
+      <%= render(partial: 'panel_log') %>
+
+	</div>
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="agregarQuitarInvolucrados" tabindex="-1" role="dialog" aria-labelledby="agregarQuitarInvolucradosLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Editar Involucrados</h4>
+      </div>
+      <div class="modal-body">
+
+	    <div class="">
+	        <div class="panel-body">
+
+			<%= form_tag("/todos_involucrados_edit_post") do %>
+        <br><br><br><br><br><br>
+				<%= hidden_field_tag 'id', @todo[0]['IdHTodo'] %>
+
+				<div class="form-inputs loader-form">
+				    <div class="form-group col-md-12">
+				      <div class="">
+				        <%= select_tag 'involucrados', options_for_select(@involucrados.reject{ |i| i[1].include?("g") || i[1].include?("-") || @todo[0]['Involucrados'].split(",").include?(i[1]) } ), class: 'form-control involucrados', multiple: true, placeholder: "Agregar...", data: { placeholder: "Agregar..." } %>
+				        <p class="help-block">Agrega a los Involucrados que deberían estar en el To-Do</p>
+				      </div>
+				    </div>
+				</div>
+
+				<div class="form-inputs loader-form">
+				    <div class="form-group">
+				      <div class="col-md-12">
+    		            <a class="btn btn-default" href="/todos_involucrados_edit?id=<%= @todo[0]['IdHTodo'] %>&remove_me=1">Removerme a mí mismo como involucrado del To-Do</a>
+				      </div>
+				    </div>
+				</div>
+
+		      </div>
+		    </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+	        <%= submit_tag "Guardar", class: "btn btn-primary " %>
+		<% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="agregarFiles" tabindex="-1" role="dialog" aria-labelledby="agregarFilesLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Subir Archivo</h4>
+      </div>
+      <div class="modal-body">
+
+	    <div class="panel panel-primary">
+	        <div class="panel-body">
+
+			<%= form_for @todosRespuestasFile, url: todos_respuestas_files_path, html: { multipart: true } do |form| %>
+				<%= hidden_field_tag 'IdHTodo', @todo[0]['IdHTodo'] %>
+				<%= hidden_field_tag 'IdRespuesta', Time.now.to_i %>
+				<%= hidden_field_tag 'Usuario', current_user.id %>
+
+			  	<%= form.file_field :file %>
+				 <p class="help-block">Sólo imágenes (JPEG, JPG, PNG o GIF) o documentos (PDF, DOC, XLS, PPT)</p>
+				 <p class="help-block">Tamaño máximo: 2 MB</p>
+
+		      </div>
+		    </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+	        <%= submit_tag "Subir", class: "btn btn-primary " %>
+		<% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+
+/*	.chosen-container {
+		width: 100% !important;
+	}
+	.tab-content {
+	    border-left: 1px solid #ddd;
+	    border-right: 1px solid #ddd;
+	    border-bottom: 1px solid #ddd;
+	    padding: 10px;
+	}
+	.nav-tabs {
+	    margin-bottom: 0;
+	}
+
+	.respuestas_container {
+		background-color: #ECEDEF;
+		padding: 5px;
+		margin: 10px 0px;
+	    border: 1px solid #ddd;
+	}
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+  .message_content img {
+    margin: 0 0;
+  }
+  .message_content span.small {
+    font-size: 12px;
+  }
+  .message_content span.glyphicon {
+    font-size: 2em;
+  }*/
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>
+
+<script type="text/javascript">
+  $('.involucrados').chosen();
+</script>
+
+

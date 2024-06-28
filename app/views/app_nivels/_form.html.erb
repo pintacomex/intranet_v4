@@ -1,0 +1,34 @@
+
+    <div class="row justify-content-center  col-md-12">
+      <%= simple_form_for(@app_nivel, html: { class: 'form-horizontal' }) do |f| %>
+        <%= f.error_notification %>
+
+
+          <br>
+
+          <div class="form-group text-right">
+            <label >App</label>
+          	<%= f.input :app, as: :select, collection: @apps, class: 'form-control', include_blank: false, label: false %>
+            <p class="help-block">Selecciona la App</p>
+          </div>
+
+          <div class="form-group text-right">
+            <label>Nivel</label>
+            	<%= f.input :nivel, as: :select, collection: 0..10, class: 'form-control', include_blank: false, label: false %>
+              <p class="help-block">Selecciona el Nivel</p>
+          </div>
+
+          <div class="form-group text-right">
+            <label>Descripción</label>
+            	<%= f.input :descripcion, class: 'form-control', label: false %>
+              <p class="help-block">Ingrese una Descripción</p>
+          </div>    
+
+          <div class="form-group text-right">
+      	    <%= f.button :submit, class: "btn btn-primary btn-block" %>
+          </div>    
+
+      <% end %>
+    </div>
+
+

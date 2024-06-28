@@ -1,0 +1,110 @@
+<br><br><br>
+<%= render(partial: 'app_rol_nivel/navpills') %>
+
+<h1 class="text-center">App Niveles Especiales</h1>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <div class="pull-right">
+    <%= paginate @app_nivels %>
+  </div>
+  <div class="row col-md-12">
+   
+    <div class="col-md-3 ">
+      <%= link_to 'Nueva App con Niveles Especiales', new_app_nivel_path, class: "btn btn-primary " %>
+    </div>
+  </div>
+
+  <br><br><br><br><br>
+
+
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+    <thead>
+      <tr>
+        <th><a href="#" data-toggle="tooltip" title="Nombre de la Aplicación o Módulo">App</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Nivel Especial">Nivel</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Descripción Corta">Descripción</a></th>
+        <th class="no-sort"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @app_nivels.each do |app_nivel| %>
+        <tr>
+          <td><%= get_app_nombre(app_nivel.app) %></td>
+          <td><%= app_nivel.nivel %></td>
+          <td><%= app_nivel.descripcion %></td>
+          <td>
+            <%= link_to 'Editar', edit_app_nivel_path(app_nivel), class: "btn btn-xs btn-info" %>
+            <%= link_to 'Borrar', app_nivel, method: :delete, data: { confirm: 'Esta seguro?' }, class: "btn btn-xs btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="pull-right">
+    <%= paginate @app_nivels %>
+  </div>
+
+
+  <br>
+  <br>
+
+  <div class="well">
+    <p>
+      <b>Nota:</b> Esta tabla es para los niveles especiales para alguna app. Por ejemplo, si en una app sólo el Contralor puede cambiar un valor, se puede crear un nivel para ese tipo de autorización y modificar la app para que revise si el usuario tiene el nivel especificado. Se recomienda que el 0 siga siendo el que no tiene acceso a la app, para que no se muestre en el Menú Principal.
+    </p>
+  </div>
+
+</div>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+
+

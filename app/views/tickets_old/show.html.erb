@@ -1,0 +1,269 @@
+<% require 'base64' %>
+<div class="col-md-2">
+ <%= render partial: 'menu' %>
+</div>
+  <div class="col-md-8 conversation">
+    <div class="row">
+      <h1 class="text-center col-md-9"># de ticket: <%= @ticket.title %></h1>
+      <div class="col-md-3">
+        <p>Fecha: <%= @ticket.created_at[0..9] %></p>
+        <p># <%= @ticket.number %></p>
+        <p>Propietario: <%= @ticket.owner %></p>
+      </div>
+    </div> 
+    <hr> 
+    <% email = "" %>
+    <% if !current_user.email.include?("@pintacomex.mx") then email = "#{current_user[:email]}" + "@pintacomex.mx" else email = current_user[:email]  end %>   
+      <% @articles.each do |article| %>
+          <% if article.created_by == email %>
+            <div class="arrow_box col-md-7 float-left">
+                <p class="text-left"><b><%=  article.body.gsub(' src="', ' src="http://pintacomex.dyndns.org:8088').html_safe%></b></p><br><hr>
+                <p class="text-left"><%= article.created_by %></p>
+                <p class="text-left"><%= article.created_at[0..9] %></p>
+               <!--  <% article.attachments.each do |attachment| %>
+                  <a href='<%= "http://pintacomex.dyndns.org:8088/api/v1/ticket_attachment/#{@ticket.id}/#{article.id}/#{attachment.id}?disposition=attachment" %>'><%= attachment.filename %></a>
+                <% end %> -->
+            </div><br>
+          <% else %>  
+            <div class="arrow_box_left col-md-7 float-right">
+                <p class="text-right"><b><%= article.body.gsub(' src="', ' src="http://pintacomex.dyndns.org:8088').html_safe %></b></p><br><hr>
+                <p class="text-right"><%= article.created_by %></p>
+                <p class="text-right"><%= article.created_at[0..9] %></p>
+               <!--  <% article.attachments.each do |attachment| %>
+                  <a href='<%= "http://pintacomex.dyndns.org:8088/api/v1/ticket_attachment/#{@ticket.id}/#{article.id}/#{attachment.id}?disposition=attachment" %>' target="_blank"><%= attachment.filename %></a>
+                <% end %> -->
+            </div><br>
+          <% end %>
+      <% end %>
+    <div class="carta col-md-12">
+       <%= form_tag(action: "create") do %>
+        <div class="form-group">
+          <%= hidden_field_tag 'ticket_id', @ticket.id  %>
+         <h3><b><%= label_tag 'Escribe un mensaje' %></b></h3>
+         <%= text_area_tag 'message', '', class: "form-control" %>
+        </div>  
+       <!--  <div class="form-group text-right col-md-12">
+         <p><b><%= label_tag 'Archivo' %></b></p>
+         <div class="">
+          <%= file_field_tag :archivo, accept: @mimes %>
+         </div>
+         <div class="">
+          <p class="help-block">Sólo archivos o imágenes < 2 MB</p>
+        </div>
+       </div> -->
+        <div class="form-group">
+          <%= submit_tag 'Enviar', class: 'btn btn-primary' %> 
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="col-md-2" id="wrapper">
+    <% if @agente == true %>
+      <%= link_to "Ver Index", {:controller => "tickets", :action => "dashboard_tickets"}, class: "btn btn-primary"%>
+    <% end %>
+    <h1>Configuración</h1><hr>
+    <div class="text-right">
+      <% if @agente == true %>
+        <h5>Grupo:</h5>
+        <div class="dropdown">
+          <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= @ticket.group %>
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <% @grupos.each do |g| %>
+              <%= link_to "#{g.name}", {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "#{@ticket.state}", :group => "#{g.name}", :owner => "#{@ticket.email}", :priority => "#{@ticket.priority}"}, class: "dropdown-item text-right"%>
+            <% end %>
+          </div>
+        </div>
+        <h5>Propietario:</h5>
+        <div class="dropdown">
+          <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= @ticket.owner %>
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <% @agents.each do |agent| %>
+              <%= link_to agent.email, {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "#{@ticket.state}", :group => "#{@ticket.group}", :owner => "#{agent.email}", :priority => "#{@ticket.priority}"}, class: "dropdown-item text-right"%>
+            <% end %>
+          </div>
+        </div>
+        <h5>Prioridad:</h5>
+        <div class="dropdown">
+          <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= if @ticket.priority == "1 low" then  "1 bajo" elsif @ticket.priority == "2 normal" then  "2 normal" elsif @ticket.priority == "3 high" then  "3 alto"  end %>
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <%= link_to "1 bajo", {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "#{@ticket.state}", :group => "#{@ticket.group}", :owner => "#{@ticket.owner}", :priority => "1"}, class: "dropdown-item text-right"%>
+            <%= link_to "2 normal", {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "#{@ticket.state}", :group => "#{@ticket.group}", :owner => "#{@ticket.owner}", :priority => "2"}, class: "dropdown-item text-right"%>
+            <%= link_to "3 alto", {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "#{@ticket.state}", :group => "#{@ticket.group}", :owner => "#{@ticket.owner}", :priority => "3"}, class: "dropdown-item text-right"%>
+          </div>
+        </div>
+      <% end %>
+      <h5>Estatus:</h5>
+      <div class="dropdown">
+        <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <%= if @ticket.state == "open" then "Abierto" elsif @ticket.state == "closed" then "Cerrado" end %>
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <%= link_to "Abierto", {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "open", :group => "#{@ticket.group}", :owner => "#{@ticket.owner}", :priority => "#{@ticket.priority}"}, class: "dropdown-item text-right"%>
+          <%= link_to "Cerrado", {:controller => "tickets", :action => "change_settings", :id => @ticket.id, :state => "closed", :group => "#{@ticket.group}", :owner => "#{@ticket.owner}", :priority => "#{@ticket.priority}"}, class: "dropdown-item text-right"%>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<style type="text/css">
+  .card{
+    padding-top: 20px; 
+    margin: 30px 0;
+
+  }
+  h6 {
+    margin: 10px; 
+  }
+  .menu ul{
+    height:100vh;
+  }
+  .menu ul{
+    height:100vh;
+    overflow:hidden; 
+    overflow-y:scroll;
+  }
+  .conversation{
+    height:100vh;
+  }
+  .conversation{
+    height:100vh;
+    overflow:hidden; 
+    overflow-y:scroll;
+  }
+
+#wrapper{
+ height:100vh;
+ border-left:  1px solid grey;
+}
+
+.arrow_box {
+  position: relative;
+  background: white;
+  border: 2px solid #3dcaf5;
+  margin: 10px 25px 10px 0;
+  padding-top: 20px;
+}
+.arrow_box:after, .arrow_box:before {
+  left: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrow_box:after {
+  border-color: rgba(247, 247, 247, 0);
+  border-left-color: #f7f7f7;
+  border-width: 30px;
+  margin-top: -30px;
+}
+.arrow_box:before {
+  border-color: rgba(61, 202, 245, 0);
+  border-left-color: #3dcaf5;
+  border-width: 33px;
+  margin-top: -33px;
+}
+
+
+.arrow_box_left {
+  position: relative;
+  background: white;
+  border: 2px solid #3dcaf5;
+  margin: 10px 0 10px 025px;
+  padding-top: 20px;
+}
+.arrow_box_left:after, .arrow_box_left:before {
+  right: 100%;
+  top: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrow_box_left:after {
+  border-color: rgba(247, 247, 247, 0);
+  border-right-color: #f7f7f7;
+  border-width: 30px;
+  margin-top: -30px;
+}
+.arrow_box_left:before {
+  border-color: rgba(61, 202, 245, 0);
+  border-right-color: #3dcaf5;
+  border-width: 33px;
+  margin-top: -33px;
+}
+
+.carta {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    background-color: white;
+    margin-bottom: 25px;
+}
+
+</style>
+
+
+<!-- client = ZammadAPI::Client.new(
+  url:      'http://localhost:3000/',
+  user:     'user',
+  password: 'some_pass'
+)
+
+ticket = client.ticket.find(123)
+
+article = ticket.article(
+  type: 'note',
+  subject: 'some subject 2',
+  body: 'some body 2',
+  # attachments can be optional, data needs to be base64 encoded
+  attachments: [
+    'filename' => 'some_file.txt',
+    'data' => 'dGVzdCAxMjM=',
+    'mime-type' => 'text/plain',
+  ],
+)
+
+article.id # id of record
+article.from # creator of article
+article.to # recipients of article
+article.subject # article subject
+article.body # text of message
+article.content_type # text/plain or text/html of .body
+article.type # 'note'
+article.sender # 'Customer'
+article.created_at # '2022-01-01T12:42:01Z'
+article.attachments.each { |attachment|
+  attachment.filename # 'some_file.txt'
+  attachment.size # 1234
+  attachment.preferences # { :"Mime-Type"=>"image/jpeg" }
+  attachment.download # content of attachment / extra REST call will be executed
+}
+
+p "article: #{article.from} - #{article.subject}"
+
+
+ -->
+
+
+
+
+
+
+

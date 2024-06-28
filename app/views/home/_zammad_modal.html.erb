@@ -1,0 +1,53 @@
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#zammadModal">
+  Crear Ticket de Soporte
+</button>
+
+<div class="modal fade" id="zammadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-center" id="myModalLabel">Crear Ticket de Soporte</h4>
+      </div>
+
+      <%= form_tag('/zammad_create', class: 'form-horizontal', method: :post, multipart: true )  do |f| %>
+        <div class="modal-body">
+          <div class="ref-group">
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Grupo: </label>
+              <div class="col-md-9 col-sm-9">
+		            <% grupos = [ ['Soporte Técnico', 'Soporte Tecnico'], ['Soporte Acapulco', 'Soporte Acapulco'], ['Soporte Chilpo', 'Soporte Chilpo'], ['Soporte Coatza', 'Soporte Coatza'], ['Soporte Taxco', 'Soporte Taxco'], ['Soporte Sistemas', 'Soporte Sistemas'] ] %>
+		            <% grupos = [ ['Test', 'Test'] ] if @modo_local || current_user.id == 633 %>
+		            <%= select_tag 'grupo', options_for_select(grupos, nil), autofocus: true, class: 'form-control', include_blank: false %>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Mensaje: *</label>
+              <div class="col-md-9 col-sm-9">
+								<%= text_area_tag 'mensaje', nil, size: "50x3", class: "form-control", placeholder: "Mensaje..." %>
+              </div>
+            </div>
+            <div class="form-group">
+               <label class="col-sm-3 control-label">Archivo</label>
+               <div class="col-md-6 col-sm-6">
+ 			          <%= file_field_tag :archivo, accept: "image/*" %>
+               </div>
+               <div class="col-md-offset-3 col-md-6 col-sm-6">
+ 			          <p class="help-block">Sólo archivos o imágenes < 2 MB</p>
+ 	            </div>
+             </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-info">Crear</button>
+        </div>
+
+      <% end %>
+    </div>
+  </div>
+</div>

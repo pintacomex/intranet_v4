@@ -1,0 +1,66 @@
+<%= form_tag('/auths/flujos', class: 'form-horizontal' ) do |f| %>
+  <div class="form-inputs loader-form ">
+    <%= hidden_field_tag 'new', @new %>
+
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">Tipo de Solicitud</label>
+      <div class="col-md-4 text-right">
+        <p><%= select_tag 'idtiposolicitud', options_for_select(@tipo_solicitudes, @flujo['IdTipoSolicitud']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Tipo de Solicitud del Flujo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nivel Actual</label>
+      <div class="col-md-4 text-right">
+        <p><%= select_tag 'nivelactual', options_for_select(@niveles, @flujo['NivelActual']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Nivel Actual del Flujo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Usuario</label>
+      <div class="col-md-4 text-right">
+        <p><%= select_tag 'idusuario', options_for_select(@usuarios, @flujo['IdUsuario']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Usuario del Flujo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Debe Autorizar</label>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'debeautorizar', options_for_select([["Sí", "1"], ["No", "0"]], @flujo['DebeAutorizar']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este Indica si Debe Autorizar para Aprobar o Rechazar</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nivel Futuro</label>
+      <div class="col-md-4 text-right">
+        <p><%= select_tag 'nivelfuturo', options_for_select(@niveles, @flujo['NivelFuturo']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Nivel Futuro del Flujo</p>
+      </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", auths_flujos_path, class: "btn btn-default" %>
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+<% end %>

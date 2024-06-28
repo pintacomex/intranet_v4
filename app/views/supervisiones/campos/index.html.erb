@@ -1,0 +1,105 @@
+<br><br>
+<%= render(partial: '/supervisiones/navpills') %>
+
+<div class="col-sm-9">
+
+	<h3 class="text-center"><small>Campos de Checklist y Categoría:</small><br><%= @checklist[0]['Nombre'] %> - <%= @category[0]['Nombre'] %>  <a href="/supervisiones/category_edit?id=<%= "#{@checklist[0]['IdChecklist']}-#{@category[0]['IdCatChecklist']}" %>" class="btn btn-info btn-xs">Cambiar</a></h3>
+
+	<br>
+
+  <br><br>
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+	  <thead>
+	    <tr>
+	      <th>Orden-Id</th>
+	      <th>Nombre</th>
+		  <th>Descripcion</th>
+		  <th>OpcionNA</th>
+		  <th>PuntosSi</th>
+		  <th>ToDoSi</th>
+		  <th>PuntosNo</th>
+		  <th>ToDoNo</th>
+		  <th>Activo</th>
+	      <th></th>
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	    <% @campos.each do |i| %>
+	      <tr>
+	      	<% id = "#{i['IdChecklist']}-#{i['IdCatChecklist']}-#{i['IdFldChecklist']}" %>
+	        <td><%= "#{i['Orden']}-#{i['IdFldChecklist']}" %></td>
+	        <td><%= i['Nombre'] %></td>
+	        <td><%= i['Descripcion'] %></td>
+	        <td><%= i['OpcionNA'].to_i > 0 ? "Sí" : "No" %></td>
+	        <td><%= i['PuntosSi'] %></td>
+	        <td><small><span class="text-info"><%= get_roles_names(i['ToDoSi']) %></span></small></td>
+	        <td><%= i['PuntosNo'] %></td>
+	        <td><small><span class="text-info"><%= get_roles_names(i['ToDoNo']) %></span></small></td>
+	        <td><%= i['Activo'].to_i > 0 ? "Activo" : "Inactivo" %></td>
+	        <td>
+	        	<%= link_to 'Editar', "/supervisiones/campo_edit?id=#{id}", class: "btn btn-xs btn-primary" %>
+	        	<%= link_to 'Borrar', "/supervisiones/campo_destroy?id=#{id}", method: :delete, data: { confirm: 'Está seguro?' }, class: "btn btn-xs btn-danger" %>
+	        </td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+	</table>
+
+	<br>
+	<%= link_to "Crear Campo", "/supervisiones/campo_new?id=#{@checklist[0]['IdChecklist']}-#{@category[0]['IdCatChecklist']}", class: "btn btn-primary" %></td>
+
+	<br>
+	<br>
+	<%= link_to 'Regresar', "/supervisiones/categories?id=#{@checklist[0]['IdChecklist']}-#{@category[0]['IdCatChecklist']}" %>
+
+</div>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

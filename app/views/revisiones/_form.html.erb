@@ -1,0 +1,47 @@
+<%= form_tag("/revisiones_create_preview", html: { class: 'form-horizontal' }) do %>
+
+  <div class="form-inputs loader-form">
+
+    <br>
+
+    <div class="row">
+      <div class="form-group">
+        <label class="control-label col-md-2">
+          <p class="pull-right">Sucursal</p>
+        </label>
+        <div class="col-md-4">
+          <%= select_tag "sucursal", options_for_select(@sucursales), class: 'form-control' %>
+          <p class="help-block">Selecciona la Sucursal</p>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <% @checklist_items.each do |i| %>
+
+      <div class="row">
+        <div class="form-group">
+          <div class="col-md-2">
+            <p class="pull-right">
+              <%= check_box_tag "cbi-#{i.id}", "1", false %>
+            </p>
+          </div>
+          <label class="control-label col-md-10"><%= i.texto %></label>
+        </div>
+      </div>
+  
+      <br>
+
+    <% end %>
+
+
+    <div class="col-md-7 col-md-offset-3">
+      <div class="form-actions loader-form">
+        <%= submit_tag "Enviar", class: "btn btn-primary " %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>

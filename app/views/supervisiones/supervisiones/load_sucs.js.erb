@@ -1,0 +1,7 @@
+$('#div-sucs').animate({
+    opacity: 0,
+  }, 100, function() {
+    $('#div-sucs').html('<%= j render partial: "load_sucs" %>').animate({
+        opacity: 1,
+      }, 300);
+  });

@@ -1,0 +1,47 @@
+<h2 class="text-center">De <%= @week_start %> A <%= @week_finish %></h2>
+<hr>
+<div class="col-md-12">
+	<%= link_to raw("<i class='fas fa-chevron-circle-left fa-2x'></i>"), {controller: 'homereportes', action: 'new', view: 'week', week: @week_start-6, user_id: @user } ,class: 'btn btn-primary float-right' %>
+	<%= link_to raw("<i class='fas fa-chevron-circle-right fa-2x'></i>"), {controller: 'homereportes', action: 'new', view: 'week', week: @week_start+7, user_id: @user },class: 'btn btn-primary float-right' %>
+	<div class="pull-right">
+		<%= link_to "Día", {controller: 'homereportes', action: 'new', view: 'day', day: "#{DateTime.now.strftime("%Y%m%d")}", user_id: @user} ,class: 'btn btn-primary float-left' %>
+		<%= link_to "Semana", {controller: 'homereportes', action: 'new', view: 'week', week: "#{Date.today}", user_id: @user } ,class: 'btn btn-primary float-left' %>
+		<%= link_to "Mes", {controller: 'homereportes', action: 'new', view: 'month', month: "#{Date.today}", user_id: @user} ,class: 'btn btn-primary float-left' %>
+	</div>
+	<br><br><br><br>
+	<div class="table-responsive">
+		<table class="table table-hover table-bordered text-center">
+			<thead>
+				<tr>
+					<th >Hora</th>
+					<th>Domingo</th>
+					<th>Lunes</th>
+					<th>Martes</th>
+					<th>Miercoles</th>
+					<th>Jueves</th>
+					<th>Viernes</th>
+					<th>Sabado</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% (7..21).each do |hora|%>
+					<tr>
+						<td class="text-center"><%= hora %>:00</td>
+						<% (@week_start..@week_finish).each do |d|%>
+
+							<% days_reports = "" %>
+							<% days_reports = Homereporte.where("user_id = #{@user} and fecha = '#{d}' and (start <=#{hora}  and finish > #{hora}) ") %>
+							<td>
+								<ol>
+									<% days_reports.each do |report|%>
+										<li class="text-right"><%= link_to "#{ report.descripcion[0..15] }", {controller: 'homereportes', action: 'new', view: 'day', user_id: @user, day: d.to_s.gsub("-", "") }  %></li>
+									<% end %>
+								</ol>	
+					  	</td>
+					  <% end %>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>

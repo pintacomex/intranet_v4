@@ -1,0 +1,50 @@
+<%= form_tag('/auths/solicitudes', multipart: true, class: 'form-horizontal' ) do |f| %>
+  <div class="form-inputs loader-form ">
+    <%= hidden_field_tag 'new', @new %>
+
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">Tipo de Solicitud</label>
+      <div class="col-md-4 text-right">
+        <p><%= select_tag 'idtiposolicitud', options_for_select(@tipo_solicitudes, @solicitud['IdTipoSolicitud']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Seleccione el Tipo de Solicitud a Crear</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Mensaje *</label>
+      <div class="col-md-7 text-right">
+        <%= text_area_tag 'texto', nil, size: "50x10", class: "form-control", placeholder: "Mensaje" %>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Ingrese el Mensaje de la Solicitud</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">&nbsp;</label>
+      <div class="col-md-7 text-right">
+        <hr>
+        <%= file_field_tag :file, disabled: true %>
+        <p class="help-block">Sólo imágenes (JPEG, JPG, PNG o GIF) o documentos (PDF, DOC, XLS, PPT)</p>
+        <p class="help-block">Tamaño máximo: 2 MB (Opcional)</p>
+      </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", auths_solicitudes_path, class: "btn btn-default" %>
+        <%= submit_tag "Enviar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+<% end %>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>

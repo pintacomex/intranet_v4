@@ -1,0 +1,117 @@
+<div class="cabecera">
+  <p align=center class="titulo1">Stock en Sucursales</p>
+  <p align=center class="titulo2"><%= @nomZona %></p>
+</div>
+<br>
+
+<p>
+  <a class="btn pull-left btn-primary btn-xs" href="/stock_sucursales?q=<%=params[:q]%>" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+</p>
+<br>
+
+<% if @acordado && @acordado.count > 0 %>
+  <div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <p align=center class="titulo3"><%= params[:descrip] %></p>
+        </div>
+        <div class="panel-body fixed-panel">
+
+          <div class="row">
+
+            <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="example">
+
+              <thead>
+                <tr>
+                  <th>Zona</th>
+                  <th>Sucursal</th>
+                  <th>Nombre</th>
+                  <th>Existencia</th>
+                  <% if (@fechaHoy.to_i >= @fechaIniTemp.to_i && @fechaHoy.to_i <= @fechaFinTemp.to_i) %>
+                    <th>Proyección Temporada</th>
+                    <th>Acordado</th>
+                  <% else %>
+                    <th>Acordado</th>
+                  <% end %>
+                  <th>Sobra</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% @acordado.each do |m| %>
+                  <tr>
+                    <td><%= m['Zona'] %></td>
+                    <td><%= m['Sucursal'] %></td>
+                    <td><%= m['Nombre'] %></td>
+                    <td><P align=right><%= number_to_currency(m['Existencia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <% if (@fechaHoy.to_i >= @fechaIniTemp.to_i && @fechaHoy.to_i <= @fechaFinTemp.to_i) %>
+                      <td><P align=right><%= number_to_currency(m['Temporada'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                      <td><P align=right><%= number_to_currency(m['Acordado'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <% else %>
+                      <td><P align=right><%= number_to_currency(m['Acordado'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                    <% end %>
+                    <td><P align=right><%= number_to_currency(m['Sobran'], :locale => :mx, :unit => "", :precision => 2) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <p align=center class="titulo2"><%= params[:descrip] %></p>
+  <p align=center class="titulo2">No hay sucursales con existencias</p>
+<% end %>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

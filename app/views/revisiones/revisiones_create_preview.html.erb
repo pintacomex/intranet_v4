@@ -1,0 +1,44 @@
+<div class="col-md-12">
+
+	<h1>Crear Revisión</h1>
+
+		<%= form_tag("/revisiones_create", html: { class: 'form-horizontal' }) do %>
+
+		  <%= hidden_field_tag('sucursal', @sucursal) %>
+		  <% @checklist_items.each do |i| %>
+              <%= hidden_field_tag "cbi-#{i.id}", params["cbi-#{i.id}"] %>
+		  <% end %>
+		  <div class="form-inputs loader-form">
+
+		    <br>
+
+		    <div class="row">
+		      <div class="form-group">
+		        <label class="control-label col-md-2">
+		          <p class="pull-right">Revisión</p>
+		        </label>
+		        <div class="col-md-10">
+	                <%= text_area_tag 'reporte', @reporte, size: "50x20", class: "form-control", disabled: true %>
+		        </div>
+		      </div>
+		    </div>
+		  
+		    <br>
+
+		    <div class="col-md-7 col-md-offset-3">
+		      <div class="form-actions loader-form">
+		        <%= submit_tag "Confirmar", class: "btn btn-primary " %>
+		      </div>
+		    </div>
+
+		  </div>
+
+		<% end %>
+
+
+	<div class="col-md-12">
+
+		<%= link_to 'Regresar', '/revisiones_new' %>
+
+	</div>
+</div>

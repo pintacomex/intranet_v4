@@ -1,0 +1,226 @@
+<center>
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <h3>Sucursal: <%= @suc + "-" + @nomsuc[0]['Nombre'] %></h3>
+    <br>
+    <% if @objventasdetsuc.count > 0 %>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="example">
+
+        <thead>
+          <tr>
+          <th bgcolor="FFCC99" colspan=10><a><P align=Center>COMPARATIVO DEL MES DE <%=@nommes%> </a></th>
+          </tr>
+          <tr>
+          <th><a> </a></th>
+          <th bgcolor="CCCCCC" colspan=4><a href="#" data-toggle="tooltip" title="Año actual"><P align=Center>Año <%=@anoactual%></a></th>
+          <th><a> </a></th>
+          <th bgcolor="CCCCCC" colspan=4><a href="#" data-toggle="tooltip" title="Año anterior"><P align=Center>Año <%=@anoanterior%></a></th>
+          </tr>
+          <tr>
+          <th><a> </a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total"><P align=Center>Total</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Público en General"><P align=Center>Público en Gral.</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Cliente con Descto."><P align=Center>Cliente c/Descto.</a></th>
+          <th><a href="#" data-toggle="tooltip" title="a Crédito"><P align=Center>a Crédito</a></th>
+          <th><a> </a></th>
+          <th><a href="#" data-toggle="tooltip" title="Total"><P align=Center>Total</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Público en General"><P align=Center>Público en Gral.</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Cliente con Descto."><P align=Center>Cliente c/Descto.</a></th>
+          <th><a href="#" data-toggle="tooltip" title="a Crédito"><P align=Center>a Crédito</a></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% vtaNetaAct=0, vtaNetaContGralAct=0, vtaNetaContCliDesAct=0, vtaNetaCreditoAct=0 %>
+          <% vtaCostoAct=0, vtaCostoContGralAct=0, vtaCostoContCliDesAct=0, vtaCostoCreditoAct=0 %>
+          <% mUtilAct=0, mUtilContGralAct=0, mUtilContCliDesAct=0, mUtilCreditoAct=0 %>
+          <% ticketsAct=0, ticketsContGralAct=0, ticketsContCliDesAct=0, ticketsCreditoAct=0 %>
+          <% renglonesAct=0, renglonesContGralAct=0, renglonesContCliDesAct=0, renglonesCreditoAct=0 %>
+          <% articulosAct=0, articulosContGralAct=0, articulosContCliDesAct=0, articulosCreditoAct=0 %>
+          <% vtaNetaAnt=0, vtaNetaContGralAnt=0, vtaNetaContCliDesAnt=0, vtaNetaCreditoAnt=0 %>
+          <% vtaCostoAnt=0, vtaCostoContGralAnt=0, vtaCostoContCliDesAnt=0, vtaCostoCreditoAnt=0 %>
+          <% mUtilAnt=0, mUtilContGralAnt=0, mUtilContCliDesAnt=0, mUtilCreditoAnt=0 %>
+          <% ticketsAnt=0, ticketsContGralAnt=0, ticketsContCliDesAnt=0, ticketsCreditoAnt=0 %>
+          <% renglonesAnt=0, renglonesContGralAnt=0, renglonesContCliDesAnt=0, renglonesCreditoAnt=0 %>
+          <% articulosAnt=0, articulosContGralAnt=0, articulosContCliDesAnt=0, articulosCreditoAnt=0 %>
+          <% @objventasdetsuc.each do |m| %>
+            <% if m['mes'] == @anomesactual %>
+              <% vtaNetaAct = m['vtaNeta'] %>
+              <% vtaNetaContGralAct = m['vtaNetaContGral'] %>
+              <% vtaNetaContCliDesAct = m['vtaNetaContCliDes'] %>
+              <% vtaNetaCreditoAct = m['vtaNetaCredito'] %>
+              <% vtaCostoAct = m['vtaCosto'] %>
+              <% vtaCostoContGralAct = m['vtaCostoContGral'] %>
+              <% vtaCostoContCliDesAct = m['vtaCostoContCliDes'] %>
+              <% vtaCostoCreditoAct = m['vtaCostoCredito'] %>
+              <% mUtilAct = m['mUtil'] %>
+              <% mUtilContGralAct = m['mUtilContGral'] %>
+              <% mUtilContCliDesAct = m['mUtilContCliDes'] %>
+              <% mUtilCreditoAct = m['mUtilCredito'] %>
+              <% ticketsAct = m['tickets'] %>
+              <% ticketsContGralAct = m['ticketsContGral'] %>
+              <% ticketsContCliDesAct = m['ticketsContCliDes'] %>
+              <% ticketsCreditoAct = m['ticketsCredito'] %>
+              <% renglonesAct = m['renglones'] %>
+              <% renglonesContGralAct = m['renglonesContGral'] %>
+              <% renglonesContCliDesAct = m['renglonesContCliDes'] %>
+              <% renglonesCreditoAct = m['renglonesCredito'] %>
+              <% articulosAct = m['articulos'] %>
+              <% articulosContGralAct = m['articulosContGral'] %>
+              <% articulosContCliDesAct = m['articulosContCliDes'] %>
+              <% articulosCreditoAct = m['articulosCredito'] %>
+            <% else %>
+              <% vtaNetaAnt = m['vtaNeta'] %>
+              <% vtaNetaContGralAnt = m['vtaNetaContGral'] %>
+              <% vtaNetaContCliDesAnt = m['vtaNetaContCliDes'] %>
+              <% vtaNetaCreditoAnt = m['vtaNetaCredito'] %>
+              <% vtaCostoAnt = m['vtaCosto'] %>
+              <% vtaCostoContGralAnt = m['vtaCostoContGral'] %>
+              <% vtaCostoContCliDesAnt = m['vtaCostoContCliDes'] %>
+              <% vtaCostoCreditoAnt = m['vtaCostoCredito'] %>
+              <% mUtilAnt = m['mUtil'] %>
+              <% mUtilContGralAnt = m['mUtilContGral'] %>
+              <% mUtilContCliDesAnt = m['mUtilContCliDes'] %>
+              <% mUtilCreditoAnt = m['mUtilCredito'] %>
+              <% ticketsAnt = m['tickets'] %>
+              <% ticketsContGralAnt = m['ticketsContGral'] %>
+              <% ticketsContCliDesAnt = m['ticketsContCliDes'] %>
+              <% ticketsCreditoAnt = m['ticketsCredito'] %>
+              <% renglonesAnt = m['renglones'] %>
+              <% renglonesContGralAnt = m['renglonesContGral'] %>
+              <% renglonesContCliDesAnt = m['renglonesContCliDes'] %>
+              <% renglonesCreditoAnt = m['renglonesCredito'] %>
+              <% articulosAnt = m['articulos'] %>
+              <% articulosContGralAnt = m['articulosContGral'] %>
+              <% articulosContCliDesAnt = m['articulosContCliDes'] %>
+              <% articulosCreditoAnt = m['articulosCredito'] %>
+            <% end %>
+          <% end %>
+
+          <tr>
+          <td bgcolor="CCCCCC" ><P align=Center>Venta Neta </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaContGralAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaContCliDesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaCreditoAct, :locale => :mx, :precision => 2) %> </td>
+          <td> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaContGralAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaContCliDesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaNetaCreditoAnt, :locale => :mx, :precision => 2) %> </td>
+          </tr>
+          <tr>
+          <td bgcolor="CCCCCC" ><P align=Center>Costo </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoContGralAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoContCliDesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoCreditoAct, :locale => :mx, :precision => 2) %> </td>
+          <td> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoContGralAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoContCliDesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_currency(vtaCostoCreditoAnt, :locale => :mx, :precision => 2) %> </td>
+          </tr>
+          <tr>
+          <td bgcolor="CCCCCC" ><P align=Center>Margen util. </td>
+          <td><P align=Center><%= number_to_percentage(mUtilAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilContGralAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilContCliDesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilCreditoAct, :locale => :mx, :precision => 2) %> </td>
+          <td> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilContGralAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilContCliDesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_to_percentage(mUtilCreditoAnt, :locale => :mx, :precision => 2) %> </td>
+          </tr>
+          <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          </tr>
+          <tr>
+          <td bgcolor="CCCCCC" ><P align=Center>Tickets </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsContGralAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsContCliDesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsCreditoAct, :locale => :mx, :precision => 2) %> </td>
+          <td> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsContGralAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsContCliDesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(ticketsCreditoAnt, :locale => :mx, :precision => 2) %> </td>
+          </tr>
+          <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          </tr>
+          <tr>
+          <td bgcolor="CCCCCC" ><P align=Center>Renglones </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesContGralAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesContCliDesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesCreditoAct, :locale => :mx, :precision => 2) %> </td>
+          <td> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesContGralAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesContCliDesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(renglonesCreditoAnt, :locale => :mx, :precision => 2) %> </td>
+          </tr>
+          <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          </tr>
+          <tr>
+          <td bgcolor="CCCCCC" ><P align=Center>Artículos </td>
+          <td><P align=Center><%= number_with_delimiter(articulosAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosContGralAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosContCliDesAct, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosCreditoAct, :locale => :mx, :precision => 2) %> </td>
+          <td> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosContGralAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosContCliDesAnt, :locale => :mx, :precision => 2) %> </td>
+          <td><P align=Center><%= number_with_delimiter(articulosCreditoAnt, :locale => :mx, :precision => 2) %> </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br>
+      <%= link_to "Descargar para Excel", repobjetivos_det_suc_path(zona: @zona, suc: @suc, periodo: @anomesactual, format: "csv") %>
+
+      <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+      <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+      <%= javascript_include_tag "/dt_v3" %>
+
+    <% else %>
+      <br>
+      Sin Datos.
+    <% end %>
+  <% end %>
+
+</div>
+</center>

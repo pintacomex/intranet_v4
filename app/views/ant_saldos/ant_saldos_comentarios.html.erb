@@ -1,0 +1,76 @@
+<h1 class="text-center">Antigüedad de Saldos con Comentarios</h1>
+
+<div class="pull-right text-right">
+  <small>
+    <a href="/ant_saldos/" class="btn btn-primary btn-xs">Ver Tabla</a>
+    <br>      
+
+    <%=@ver_dias_comentarios == 7 ? "Ver facturas con comentarios en los ultimos 7 días" : raw("<a href='/ant_saldos_comentarios/'>Ver facturas con comentarios en los ultimos 7 días</a>")%> |
+    <%=@ver_dias_comentarios == 30 ? "Ver 30 días" : raw("<a href='/ant_saldos_comentarios/?ver_dias_comentarios=30'>Ver 30 días</a>")%> |
+    <%=@ver_dias_comentarios == 90 ? "Ver 90 días" : raw("<a href='/ant_saldos_comentarios/?ver_dias_comentarios=90'>Ver 90 días</a>")%> |
+    <%=@ver_dias_comentarios == 365 ? "Ver 365 días" : raw("<a href='/ant_saldos_comentarios/?ver_dias_comentarios=365'>Ver 365 días</a>")%>      
+  </small>
+</div>
+
+<% if @antsaldos && @antsaldos.count > 0 %>
+
+  <div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+    <br />
+
+    <% @ultimo_control = 0 %>
+
+    <% @antsaldos.each do |m| %>
+
+      <% if @ultimo_control != m['ControlFac'] %>
+        
+        <% @ultimo_control = m['ControlFac'] %>
+
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered text-center" >
+
+          <thead>
+            <tr>
+              <th><a href="#" data-toggle="tooltip" title="Zona de la Sucursal">Zona</a></th>
+              <th><a href="#" data-toggle="tooltip" title="Nombre de la Sucursal">Sucursal</a></th>
+              <th><a href="#" data-toggle="tooltip" title="Nombre del Cliente">Cliente</a></th>
+              <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+              <th><a href="#" data-toggle="tooltip" title="Importe de Ventas">Ventas</a></th>
+              <th><a href="#" data-toggle="tooltip" title="Importe de Saldo">Saldo</a></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['ZonaAsig'] %> <%= m['FechaAcl'] ? raw(" <span class='glyphicon glyphicon-calendar' aria-hidden='true'> </span>") : "" %></a></td>
+              <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['Sucursal'] %> <%= m['NombreSuc'] %></a></td>
+              <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['Idcliente'] %> <%= m['NombreCli'] %></a></td>
+              <td><a href='<%="/ant_saldos_detalle?suc_origen=#{m['SucOrigen']}&control_fac=#{m['ControlFac']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaración: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['ControlFac'] %></a></td>
+              <td><%= m['Ventas'] > 0 ? number_to_currency(m['Ventas'], :locale => :mx, :precision => 2) : "" %></td>
+              <td><%= m['Ventas'] - m['Pagos'] > 0 ? number_to_currency(m['Ventas'] - m['Pagos'], :locale => :mx, :precision => 2) : "" %></td>
+            </tr>
+          </tbody>
+        </table>
+
+      <% end %>
+
+
+      <blockquote class="text-right">
+        <p><%= m['ascComentario'] %></p>
+        <small>
+          <% if !m['userName'].nil? %>
+            <a href="mailto:<%= m['userEmail'] %>"><%= m['userName'] %></a> (<%= m['ascFechaHora'].to_s(:db)[0..19] %>)
+          <% end %>
+        </small>
+      </blockquote>
+
+    <% end %>
+
+    <br />
+
+  <% else %>
+
+    Sin Datos por Mostrar.
+
+  <% end %>
+
+</div>

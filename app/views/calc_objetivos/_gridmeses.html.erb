@@ -1,0 +1,77 @@
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="meses">
+	<thead>
+	  <tr>
+		  <% if entidad == "Region" %>
+		    <th><a href="#" data-toggle="tooltip" title="Región">Región</a></th>
+		  <% else %>
+			  <% if entidad == "Ciudad" %>
+			    <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+			  <% else %>
+				  <% if entidad == "Sucursal" %>
+				    <th><a href="#" data-toggle="tooltip" title="Sucursal">Sucursal</a></th>
+				  <% else %>
+				    <th><a href="#" data-toggle="tooltip" title="Nombre">Nombre</a></th>
+				  <% end %>
+			  <% end %>
+		  <% end %>
+	    <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+	    <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <% datos.each do |m| %>
+	    <tr>
+			  <% if entidad == "Region" %>
+		      <td><%= m['Region'] %></td>
+			  <% else %>
+				  <% if entidad == "Ciudad" %>
+		      	<td><%= m['Ciudad'] %></td>
+				  <% else %>
+					  <% if entidad == "Sucursal" %>
+		  			    <td><%= m['Sucursal'] %></td>
+					  <% else %>
+					      <td><%= m['Nombre'] %></td>
+					  <% end %>
+				  <% end %>
+			  <% end %>
+		    <% if tipodato == "$" %>
+		      <td><P align=right><%= number_to_currency(m['Enero'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Febrero'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Marzo'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Abril'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Mayo'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Junio'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Julio'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Agosto'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Septiembre'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Octubre'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Noviembre'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		      <td><P align=right><%= number_to_currency(m['Diciembre'],:locale => :mx,:unit => "",:precision => 2) %></td>
+		    <% else %>
+	          <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+	          <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+		    <% end %>
+	    </tr>
+	  <% end %>
+	</tbody>
+</table>

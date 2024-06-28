@@ -1,0 +1,45 @@
+
+<h1 class="text-center">Medidores</h1>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+	<br>
+	<br>
+	<br>
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+
+	  <thead>
+      <tr>
+        <th>Empresa</th>
+        <th>Nivel/Zona</th>
+        <th>Nombre</th>
+        <th>Roles</th>
+        <th>Tipo</th>
+        <th></th>
+	    </tr>
+	  </thead>
+
+    <tbody>
+      <% @medidores.each do |medidor| %>
+        <% url = "/medidores/#{medidor['IdEmpresa']}-#{medidor['NivelZona']}" %>
+        <tr>
+          <td><%= link_to medidor['IdEmpresa'], url, title: medidor['IdEmpresa'], data: { toggle: "tooltip" } %></td>
+          <td><%= link_to medidor['NivelZona'], url, title: medidor['NivelZona'], data: { toggle: "tooltip" } %></td>
+          <td><%= link_to medidor['NombreMedidor'].to_s.truncate(15), url, title: medidor['NombreMedidor'], data: { toggle: "tooltip" } %></td>
+          <td><%= link_to medidor['Roles'], url %></td>
+          <td><%= link_to get_tipo_medidor(medidor['TipoMedidor']), url %></td>
+          <td>
+            <%= link_to 'Ver', url, class: 'btn btn-xs btn-primary' %>
+            <%= link_to 'Editar', "#{url}/edit", class: 'btn btn-xs btn-default' %>
+            <%= link_to 'Borrar', url, method: :delete, class: 'btn btn-xs btn-danger', data: { confirm: 'Esta seguro?' } %>
+          </td>
+        </tr>
+      <% end %>    
+	  </tbody>
+	</table>
+
+  <%= link_to 'Crear Medidor', new_medidore_path, class: "btn btn-primary" %>
+
+</div>

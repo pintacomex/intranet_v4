@@ -1,0 +1,90 @@
+<h1 class="text-center">Lista Negra Club Comex</h1>
+
+<div class="pull-right text-right">
+  <small>
+    <br>
+    <br>
+  </small>
+</div>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+    <thead>
+      <tr>
+        <th><a href="#" data-toggle="tooltip" title="Id de la Tarjeta Club Comex">Tarjeta</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Status de la Tarjeta Club Comex">Status</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Observaciones de Actualización">Observaciones de Actualización</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Fecha de Actualización">Fecha</a></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <% @datos.each do |m| %>
+        <tr>
+          <% url = "/bloqueo_tarjetas_club_comex_detalle?id=#{m['Idtc']}" %>
+          <td><%= link_to "#{m['Idtc']}", url %></td>
+          <td><%= m['StatusBloqueo'].to_i > 0 ? "Bloqueada" : "Desbloqueada" %></td>
+          <td><%= m['Observaciones'].to_s.present? ? m['Observaciones'].to_s.truncate(60) : "Sin observaciones" %></td>
+          <td><%= m['FechaActualizacion'].to_s[0..10] %></td>
+          <td>
+            <%= link_to 'Ver', url, class: 'btn btn-xs btn-primary' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <br />
+
+  <a href="/bloqueo_tarjetas_club_comex_new/" class="btn btn-primary">Agregar Nueva Tarjeta a la Lista</a>
+
+</div>
+
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>

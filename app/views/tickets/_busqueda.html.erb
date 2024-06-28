@@ -1,0 +1,6 @@
+<%= form_tag("/todos", method: :get) do %>
+  <div class="form-group has-feedback">
+      <%= text_field_tag 's', params[:s], class: 'form-control', placeholder: "Buscar" %>
+      <i class="form-control-feedback glyphicon glyphicon-search"></i>
+  </div>
+<% end %>

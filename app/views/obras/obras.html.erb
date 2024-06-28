@@ -1,0 +1,113 @@
+<h1 class="text-center">Obras</h1>
+
+<div class="pull-right text-right">
+  <small>
+    <% if @puede_editar %>
+      <%= form_tag(obra_porc_desc_script_path) do |f| %>
+        <button type="submit" class="btn btn-xs btn-primary" data-confirm='Está seguro que desea ejecutar el script para el Porcentaje de Descuento Calculado?'>Calcular Porcentaje de Descuento</button>
+      <% end %>
+    <% end %>
+      <%= @ver_activas_abiertas == false ? "Todas" : raw("<a href='/obras/?ver_activas_abiertas=2'>Todas</a>") %> |
+      <%= @ver_activas_abiertas == "1" ? "Ver Activas" : raw("<a href='/obras/'>Ver Activas</a>") %> |
+      <%= @ver_activas_abiertas == "0" ? "Ver Inactivas" : raw("<a href='/obras/?ver_activas_abiertas=0'>Ver Inactivas</a>") %> |
+      <%= @ver_activas_abiertas == "3" ? "Ver Abiertas" : raw("<a href='/obras/?ver_activas_abiertas=3'>Ver Abiertas</a>") %> |
+      <%= @ver_activas_abiertas == "4" ? "Ver Cerradas" : raw("<a href='/obras/?ver_activas_abiertas=4'>Ver Cerradas</a>") %>
+    <br>
+    <br>
+  </small>
+</div>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+    <thead>
+      <tr>
+        <th><a href="#" data-toggle="tooltip" title="Número de la Sucursal">Suc</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Nombre de la Sucursal">Sucursal</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Id de la Obra">Obra</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Nombre de la Obra">Nombre</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Fecha de Inicio de la Obra">Inicio</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Fecha del Último Movimiento">Ult Mov</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Fecha de Cierre de la Obra">Cierre</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Porcentaje de Descuento Calculado">% Calc</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Porcentaje de Descuento Negociado">% Neg</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Calificación de la Obra">Calif</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Status de la Obra Activa o Inactiva">Status</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Status de la Obra Abierta o Cerrada">Cerrada</a></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <% @obras.each do |m| %>
+        <tr>
+          <% url = "/obra?sucursal=#{m['Sucursal']}&idobra=#{m['IdObra']}" %>
+          <td><%= link_to "#{m['Sucursal']}", url %></td>
+          <td><%= link_to "#{m['sNombre']}", url %></td>
+          <td><%= link_to "#{m['IdObra']}", url %></td>
+          <td><%= link_to "#{m['Nombre']}", url %></td>
+          <td><%= "#{fix_show_date(m['FechaIni'])}" %></td>
+          <td><%= "#{fix_show_date(m['FechaUltMov'])}" %></td>
+          <td><%= "#{fix_show_date(m['FecUltMovCierre'])}" %></td>
+          <td><%= number_to_currency(m['PorcDescCalculado'], :locale => :mx, :precision => 2).gsub("$","") %>%</td>
+          <td><%= number_to_currency(m['PorcDescNegociado'], :locale => :mx, :precision => 2).gsub("$","") %>%</td>
+          <td><%= m['Calificación'].to_s != "" ? m['Calificación'] : "" %></td>
+          <td><%= m['Activa'].to_i > 0 ? "Activa" : "Inactiva" %></td>
+          <td><%= m['Cerrada'].to_i > 0 ? "Cerrada" : "Abierta" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <br />
+
+
+</div>
+
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>

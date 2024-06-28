@@ -1,0 +1,42 @@
+<br>
+<%= render(partial: '/auths/navpills') %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+
+	  <thead>
+      <tr>
+        <th>Tipo Solicitud</th>
+        <th>Nivel Actual</th>
+        <th>Usuario</th>
+        <th>Debe Autorizar</th>
+        <th>Nivel Futuro</th>
+        <th></th>
+	    </tr>
+	  </thead>
+
+    <tbody>
+      <% @flujos.each do |item| %>
+        <% url = "/auths/flujos/#{item['IdTipoSolicitud']}-#{item['NivelActual']}-#{item['IdUsuario']}" %>
+        <tr>
+          <td><%= link_to get_tipo_solicitud(item['IdTipoSolicitud']), url, title: get_tipo_solicitud(item['IdTipoSolicitud']), data: { toggle: "tooltip" } %></td>
+          <td><%= link_to get_nivel(item['NivelActual']), url, title: get_nivel(item['NivelActual']), data: { toggle: "tooltip" } %></td>
+          <td><%= link_to item['NombreUsuario'], url, title: item['NombreUsuario'], data: { toggle: "tooltip" } %></td>
+          <% debe_autorizar = item['DebeAutorizar'] == 0 ? "No" : "Sí" %>
+          <td><%= link_to debe_autorizar, url, title: debe_autorizar, data: { toggle: "tooltip" } %></td>
+          <td><%= link_to get_nivel(item['NivelFuturo']), url, title: get_nivel(item['NivelFuturo']), data: { toggle: "tooltip" } %></td>
+          <td>
+            <%= link_to 'Ver', url, class: 'btn btn-xs btn-primary' %>
+            <%= link_to 'Borrar', url, method: :delete, class: 'btn btn-xs btn-danger', data: { confirm: 'Esta seguro?' } %>
+          </td>
+        </tr>
+      <% end %>
+	  </tbody>
+	</table>
+
+  <%= link_to 'Crear Flujo', new_auths_flujo_path, class: "btn btn-primary" %>
+
+</div>

@@ -1,0 +1,214 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.mi/n.css">
+<h1 class="text-center">Reportes de Vendedores</h1>
+<hr><br><br>
+
+<div class="container">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= "#{@month.to_s[0..3]}-#{@month.to_s[4..5]}" %>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <li><%= link_to DateTime.now.to_s[0..6], {:controller => "reportes_vendedores", :action => "index", :filter => 1, :month => "#{DateTime.now.to_s[0..3]}#{DateTime.now.to_s[5..6]}" } %></li>
+      <li><%= link_to DateTime.now.prev_month.to_s[0..6], {:controller => "reportes_vendedores", :action => "index", :filter => 1, :month => "#{DateTime.now.prev_month.to_s[0..3]}#{DateTime.now.prev_month.to_s[5..6]}" } %></li>
+      <li><%= link_to DateTime.now.prev_month(2).to_s[0..6], {:controller => "reportes_vendedores", :action => "index", :filter => 1, :month => "#{DateTime.now.prev_month(2).to_s[0..3]}#{DateTime.now.prev_month(2).to_s[5..6]}"  } %></li>
+    </ul>
+  </div>
+  <div class="pull-right text-right">
+  
+  <%= link_to 'Todos los vendedores', {:controller => "reportes_vendedores", :action => "index", :filter => 1, :month => "#{@month}" }, class: "btn btn-primary btn-xs" %>
+  <%= link_to 'Ventas que hizo en fechas que estaba con excepción', {:controller => "reportes_vendedores", :action => "index", :filter => 2, :month => "#{@month}"  }, class: "btn btn-primary btn-xs" %>
+  <%= link_to 'Vendio menos del 20%', {:controller => "reportes_vendedores", :action => "index", :filter => 3, :month => "#{@month}"  }, class: "btn btn-primary btn-xs" %>
+  <%= link_to 'Incidencias duplicadas ', {:controller => "reportes_vendedores", :action => "index", :filter => 4, :month => "#{@month}"  }, class: "btn btn-primary btn-xs" %>
+  <%= link_to 'Días teoricos vs reales', {:controller => "reportes_vendedores", :action => "index", :filter => 5, :month => "#{@month}"  }, class: "btn btn-primary btn-xs" %>
+  <%= link_to "Descargar Excel", {:controller => "reportes_vendedores", :action => 'exportar_excel', :month => "#{@month}", format: "xlsx"}, class: "btn btn-success btn-xs " %> 
+
+</div>
+<br><br><br>
+  <% if @filter == 1 %>
+    <h3 class="text-center">Todos los vendedores</h3>
+    <br>
+    <table class="table table-responsive"  id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">UltFechaProcesada</th>
+          <th scope="col">Dias</th>
+          <th scope="col">NumIncidencias</th>
+          <th scope="col">Ver</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @sellers.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller[1][:id_vendedor] %></td>
+            <td><%= seller[1][:nombre] %></td>
+            <td><%= seller[1][:sucursal] %></td>
+            <td><%= "#{seller[1][:ult_fecha][0..3]}-#{seller[1][:ult_fecha][4..5]}-#{seller[1][:ult_fecha][-2..-1]}" %></td>
+            <td><%= seller[1][:dias] %></td>
+            <td><span class="badge badge-info"><%= seller[1][:num_incidencias] %></span></td>
+            <td><%= link_to 'Ver', {:controller => "reportes_vendedores", :action => "show", :id => seller[1][:id_vendedor], :month => @month }, class: "btn btn-primary" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% elsif @filter == 2 %>
+    <h3 class="text-center">Ventas fechas con excepción</h3>
+    <br>
+    <table class="table table-responsive"  id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">SucOrigen</th>
+          <th scope="col">Del</th>
+          <th scope="col">Al</th>
+          <th scope="col">Fechas con venta</th>
+          <th scope="col">Ver</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendedores_ventas.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller[:IdVendedor] %></td>
+            <td><%= seller[:Nombre] %></td>
+            <td><%= seller[:Sucursal] %></td>
+            <td><%= seller[:SucOrigen] %></td>
+            <td><%= "#{seller[:Del][0..3]}-#{seller[:Del][4..5]}-#{seller[:Del][6..7]}" %></td>
+            <td><%= "#{seller[:Al][0..3]}-#{seller[:Al][4..5]}-#{seller[:Al][6..7]}" %></td>
+            <td><%= seller[:Dias] %></td>
+            <td><%= link_to 'Ver', {:controller => "reportes_vendedores", :action => "show", :id => seller[:IdVendedor], :month => @month }, class: "btn btn-primary" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% elsif @filter == 3 %>
+    <h3 class="text-center">Vendedores con menos del 20% de las ventas </h3>
+    <br>
+    <table class="table table-responsive"  id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">Mes</th>
+          <th scope="col">Obj.Venta</th>
+          <th scope="col">Venta Neta</th>
+          <th scope="col">Porc.Venta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendedores_porcentaje_bajo.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller['Idvendedor'] %></td>
+            <td><%= "#{seller['Fecha'][0..3]}-#{seller['Fecha'][4..5]}-#{seller['Fecha'][-2..-1]}" %></td>
+            <td><%= seller['Nombre'] %></td>
+            <td><%= seller['Sucursal'] %></td>
+            <td><%= seller['Mes'] %></td>
+            <td><%= number_to_currency(seller['objetivoVenta'], :locale => :mx, :precision => 2) %></td>
+            <td><%= number_to_currency(seller['VentaNeta'], :locale => :mx, :precision => 2) %></td>
+            <td><%= seller['porcentajeVenta'] rescue 0 %> %</td>
+            <td><%= link_to 'Ver', {:controller => "reportes_vendedores", :action => "show", :id => seller['Idvendedor'], :month => @month }, class: "btn btn-primary" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% elsif @filter == 4 %>
+    <h3 class="text-center">Incidencias duplicadas</h3>
+    <br>
+    <table class="table table-responsive" id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">Del</th>
+          <th scope="col">Al</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Ver</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @excepciones_duplicados.each_with_index do |seller, i| %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= seller['Idvendedor'] %></td>
+            <td><%= seller['Nombre'] %></td>
+            <td><%= seller['Sucursal'] %></td>
+            <td><%= "#{seller['Del'][0..3]}-#{seller['Del'][4..5]}-#{seller['Del'][6..7]}" %></td>
+            <td><%= "#{seller['Al'][0..3]}-#{seller['Al'][4..5]}-#{seller['Al'][6..7]}" %></td>
+            <td><%= seller['Nombre'] %></td>
+            <td><%= link_to 'Ver', {:controller => "reportes_vendedores", :action => "show", :id => seller['Idvendedor'], :month => @month }, class: "btn btn-primary" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% elsif @filter == 5 %>
+    <h3 class="text-center">Días de venta teoricos vs reales</h3>
+    <br>
+    <table class="table table-responsive" id="example">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">IdVendedor</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Sucursal</th>
+          <th scope="col">Mes</th>
+          <th scope="col">UltFechaProcesada</th>
+          <th scope="col">Dias Operados</th>
+          <th scope="col">Dias con incidencias</th>
+          <th scope="col">Dias Por Transcurrir</th>
+          <th scope="col">Dias Habiles Suc</th>
+          <th scope="col">Dias de Diferencia</th>
+          <th scope="col">Ver</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vendedores_diferencias.each_with_index do |seller, i| %>
+          <% if seller[:Diferencia].to_i != 0 %>
+            <tr>
+              <td><%= i+1 %></td>
+              <td><%= seller[:IdVendedor] %></td>
+              <td><%= seller[:Nombre] %></td>
+              <td><%= seller[:Sucursal] %></td>
+              <td><%= seller[:Mes] %></td>
+              <td><%= "#{seller[:ultFechaProcesada][0..3]}-#{seller[:ultFechaProcesada][4..5]}-#{seller[:ultFechaProcesada][-2..-1]}" %></td>
+              <td><%= seller[:Dias] %></td>
+              <td><%= seller[:DiasIncidencias] %></td>
+              <td><%= seller[:DiasPorTranscurrir].nil?  ? 0 : seller[:DiasPorTranscurrir]  %></td>
+              <td><%= seller[:DiasHabilesSuc] %></td>
+              <td><%= seller[:Diferencia] %></td>
+              <td><%= link_to 'Ver', {:controller => "reportes_vendedores", :action => "show", :id => seller[:IdVendedor], :month => @month }, class: "btn btn-primary" %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% elsif @filter == 6 %>
+
+  <% end %>
+
+</div>
+<script>
+$(document).ready(function() {
+    $('#example').DataTable( {
+        "paging":   false,
+        "ordering": false,
+        "info":     false
+    } );
+} );
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>

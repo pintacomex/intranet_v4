@@ -1,0 +1,136 @@
+<h1 class="text-center">Réplica de las Sucursales</h1>
+
+<br>
+
+<div class="container-fluid text-center">
+
+  <% if @antsaldos.count > 0 %>
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="replicasuc">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Numero de la Sucursal">Sucursal</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre de la Sucursal">Nombre</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Region Geografica">Region</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Replica">Fecha-Rep</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Version Replica">Version-Rep</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Version PDV">Version-Pdv</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Version LP">Version-LP</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Ultima Fecha Replica">Ult-Fecha-Rep</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Conexion">Fecha-Conex</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Hora Inicio Conexion">Hora-Ini-Conex</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Hora Fin Conexion">Hora-Fin-Conex</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Registro">Fecha-Reg</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Hora Registro">Hora-Reg</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Version Monitor de Facturas">Version-Mon_fac</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Version Gestor Facturas Electronias">Version-GFE</a>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% @antsaldos.each do |m| %>
+          <tr>
+            <td><%= m['Num_suc'] %></td>
+            <td><%= m['NomSuc'] %></td>
+            <td><%= m['NomZona'] %></td>
+            <td><%= 
+            @fechar = Date.parse(m['FechaReplica']) rescue nil
+	      	if @fechar == Date.today
+	      	   raw("<span class='label label-info'>") + m['FechaReplica'] + raw("</span>") 
+	      	else 
+	      	  if @fechar == Date.today - 1.day
+	      	     raw("<span class='label label-success'>") + m['FechaReplica'] + raw("</span>") 
+	      	  else 
+	      		  if @fechar == Date.today - 2.day
+	      	       raw("<span class='label label-warning'>") + m['FechaReplica'] + raw("</span>")
+	      	    else
+	      	       raw("<span class='label label-danger'>") + m['FechaReplica'] + raw("</span>")
+	      	    end
+	      	  end
+	      	end
+            %></td>
+            <td><%= m['VersionReplica'] %></td>
+            <td><%= m['VersionPdv'] %></td>
+            <td><%= m['VersionLP'] %></td>
+            <td><%= m['UltimaFechaReplica'] %></td>
+            <td><%= m['FechaConexion'] %></td>
+            <td><%= m['HoraInicioConexion'] %></td>
+            <td><%= m['HoraFinConexion'] %></td>
+            <td><%= m['FechaRegistro'] %></td>
+            <td><%= m['HoraRegistro'] %></td>
+            <td><%= m['VersionMonFac'] %></td>
+            <td><%= m['VersionGFE'] %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <br />
+      <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+      <%= javascript_include_tag "/dt_v3" %>
+
+    </div> 
+
+  <% else %>
+
+    Sin Datos.
+
+  <% end %>
+
+</div>
+
+<style type="text/css">
+  #example_filter{
+    width: 50%;
+    text-align: left;
+    margin: 25px 0;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#replicasuc').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

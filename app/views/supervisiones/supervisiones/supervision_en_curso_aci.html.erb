@@ -1,0 +1,172 @@
+<%= render(partial: '/supervisiones/navpills') %>
+
+<div class="col-sm-9">
+
+	<h2>Supervisión en Curso</h2>
+
+	<h4>Sucursal: <%= @sucursal %> - <%= @supervision['Nombre'] %> - <%= @supervision['ckNombre'] %></h4>
+
+	<small>
+	    <%= link_to "Regresar", "/supervisiones/supervision_en_curso?sucursal=#{@sucursal}&id_visita=#{@id_visita}" %>
+	</small>
+
+	<% options = [ [ "No", 0 ], [ "Sí", 1 ], [ "No Aplica", 3 ] ] %>
+	<% options_nna = [ [ "No", 0 ], [ "Sí", 1 ] ] %>
+    <div class="form-inputs">
+
+		<% categoria = "" %>
+		<% @dsupervisiones.each do |d| %>
+
+		  <% if categoria != d['catNombre'] %>
+			<% categoria = d['catNombre'] %>
+	        <div class="col-md-12">
+			  <h3> Categoría: <%= d['catNombre'] %></h3>
+	        </div>
+		  <% end %>
+
+	      <div class="form-group">
+	        <div class="col-md-10 col-md-offset-1">
+	      	  <h4>- <%= d['fldNombre'] %> <%= d['fldDescripcion'] %> Respuesta actual: <%= options.select{ |o| o.last == d['Respuesta'].to_i }.first.first rescue "No Encontrada" %></h4>
+	          <br>
+	        </div>
+	      </div>
+
+		<% end %>
+
+	</div>
+
+    <div class="col-md-5 col-sm-5">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Comentarios</h3>
+        </div>
+        <div class="panel-body">
+          <div id="message-history">
+            <% @chat_comments.each do |comment| %>
+              <div class="message">
+                  <% if !comment['userName'].nil? %>
+                    <a href="mailto:<%= comment['userEmail'] %>" class="message_username"><%= comment['userName'].to_s.gsub(" - ", " ") %></a>
+                  <% end %>
+                  <span class="message_timestamp"><%= comment['FechaHora'].to_s(:db)[0..19] %></span>
+                  <span class="message_content"><%= comment['Comentario'] %></span>
+              </div>                
+            <% end %>
+          </div>
+	        <%= form_for supervisiones_supervision_en_curso_aci_path, html: { class: 'form-horizontal' } do |f| %>
+
+            <%= hidden_field_tag 'tipo', 'comentario' %>
+            <%= hidden_field_tag 'sucursal', @sucursal %>
+            <%= hidden_field_tag 'id_visita', @id_visita %>
+            <%= hidden_field_tag 'id_checklist', @id_checklist %>
+            <%= hidden_field_tag 'id_cat_checklist', @id_cat_checklist %>
+            <%= hidden_field_tag 'id_campo', @id_campo %>
+
+            <div class="form-group">
+              <div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1">
+                <br>
+                <%= text_area_tag 'nuevo_comentario', nil, size: "50x3", class: "form-control", placeholder: "Nuevo Comentario" %>
+              </div>
+            </div>
+            <%= submit_tag "Agregar Comentario", class: "btn btn-default " %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>	
+
+    <div class="col-md-5 col-sm-5">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Imágenes</h3>
+        </div>
+        <div class="panel-body">
+          <div id="message-history">
+            <% @imgs.each do |img| %>
+              <div class="message">
+                  <% if !img['Usuario'].nil? %>
+                    <a href="mailto:<%= getEmail(img['Usuario']) %>" class="message_username"><%= getUser(img['Usuario']) %></a>
+                  <% end %>
+                  <span class="message_timestamp"><%= img['updated_at'].to_s(:db)[0..19] %></span>
+                  <%= link_to image_tag(img.img.url(:medium)), img.img.url, target: "_blank" %>
+              </div>                
+            <% end %>
+          </div>          
+
+
+          <%= form_for @sup_imagen, html: { class: 'form-horizontal' } do |f| %>
+
+            <%= hidden_field_tag 'sup_imagen[Sucursal]', @sucursal %>
+            <%= hidden_field_tag 'sup_imagen[IdVisita]', @id_visita %>
+            <%= hidden_field_tag 'sup_imagen[IdChecklist]', @id_checklist %>
+            <%= hidden_field_tag 'sup_imagen[IdCatChecklist]', @id_cat_checklist %>
+            <%= hidden_field_tag 'sup_imagen[IdCampo]', @id_campo %>
+            <%= hidden_field_tag 'sup_imagen[Usuario]', current_user.id %>
+
+            <div class="form-group">
+              <div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1">
+                <br>
+                <%= f.file_field :img %>
+                <p class="help-block">Sólo imágenes (JPEG, JPG, PNG o GIF)</p>
+                <p class="help-block">Tamaño máximo: 2 MB</p>                
+              </div>
+            </div>
+            <%= submit_tag "Subir Imagen", class: "btn btn-default " %>
+
+          <% end %>
+        </div>
+      </div>
+
+    </div>      
+</div>
+
+<style>
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+
+</style>

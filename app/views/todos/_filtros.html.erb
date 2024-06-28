@@ -1,0 +1,22 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h6 class="panel-title">Filtros</h6>
+  </div>
+  <div class="panel-body panel-filtros">
+    <a href="/todos" data-toggle="tooltip" title="Ver Todos los To-Dos"><i class="fas fa-inbox"></i> Inbox</a>
+    <br>
+    <a href="/todos?filtro=mis-to-dos" data-toggle="tooltip" title="Ver los To-Dos asignados a mí o de los que soy responsable"><i class="fas fa-user"></i> Mis To-Dos</a>
+    <br>
+    <a href="/todos?filtro=sin-asignar" data-toggle="tooltip" title="Ver los To-Dos que todavía están sin asignar o los que no tienen ningún responsable"><i class="fas fa-bars"></i> Sin Asignar</a>
+    <br>
+    <a href="/todos?filtro=desechados" data-toggle="tooltip" title="Ver los To-Dos desechados"><i class="fas fa-trash-alt"></i> Desechados</a>
+    <% @tipos.each do |a| %>
+	    <br>
+	    <a href="/todos?tipo=<%= sanitize_link(a[0]) %>"><i class="fas fa-folder-open"></i> <%= a[0] %></a>
+    	<% @status.each do |s| %>
+		    <br>
+		    &nbsp;&nbsp;<small><a href="/todos?tipo=<%= sanitize_link(a[0]) %>&status=<%= sanitize_link(s[0]) %>"><i class="fas fa-chevron-circle-right"></i> <%= s[0] %></a></small>
+    	<% end %>
+    <% end %>
+  </div>
+</div>

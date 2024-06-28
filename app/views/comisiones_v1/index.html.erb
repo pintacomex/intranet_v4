@@ -1,0 +1,57 @@
+<% if @meses_vendedor.nil? and @level <= 5  %>
+	<%= form_tag("/search_empleado/:id", method: "post", class: "col-sm-4") do %>
+		<%= label_tag "id_vendedor", "Selecciona Vendedor:", class: "col-sm-12 col-form-label" %>
+		<%= select_tag "id_vendedor", options_for_select(@cat_vendedores, "id_vendedor"), class: "form-control col-sm-2" %>
+		<%= submit_tag "Buscar Vendedor", class: "btn btn-primary btn-submit" %>
+	<% end %>
+	<%= form_tag("/search_empleado/:id", method: "post", class: "col-sm-4") do %>
+		<%= label_tag "id_vendedor", "Selecciona Encargado de Sucursal:", class: "col-sm-12 col-form-label" %>
+		<%= select_tag "id_vendedor", options_for_select(@cat_sucursales, "id_vendedor"), class: "form-control col-sm-2" %>
+		<%= submit_tag "Buscar Encargado", class: "btn btn-primary btn-submit" %>
+	<% end %>
+	<%= form_tag("/search_empleado/:id", method: "post", class: "col-sm-4") do %>
+	  <div class="form-group">
+			<%= label_tag "id_vendedor", "Selecciona Regional:", class: "col-sm-12 col-form-label" %>
+			<%= select_tag "id_vendedor", options_for_select(@cat_subzona, "id_vendedor"), class: "form-control col-sm-2" %>
+		</div>
+		<%= submit_tag "Buscar Regional", class: "btn btn-primary btn-submit" %>
+	<% end %>
+<% else %>
+<% if  @level <= 5  %>
+	<%= link_to "Regresar", {:controller => "comisiones_v1", :action => "index"}, class: "btn  btn-primary btn-sm"%>
+<% end %>
+	<h1 class="text-center">Nombre: <%= @current_vendedor_name%> </h1>
+	<br>
+	<hr>
+	<br><br><br>
+	<div class="container">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Sucursal/Zona</th>
+					<th scope="col">Mes</th>
+					<th scope="col">Última Fecha Procesada</th>
+					<th scope="col">Días Operados</th>
+					<th scope="col">Ver</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @meses_vendedor.each do |mes|%>
+					<tr>
+						<td><%= mes['Sucursal'].to_s %></td>
+						<th scope="row"><%= mes['Mes'][0..3] %>-<%= mes['Mes'][4..-1] %></th>
+						<td><%= mes['ultFechaProcesada'][0..3] %>-<%= mes['ultFechaProcesada'][4..5] %>-<%= mes['ultFechaProcesada'][-2..-1] %></td>
+            <td><%= number_to_currency(mes['DiasOperados'], :locale => :mx, :precision => 2).gsub("$","").gsub(".00","") %> Días</td>
+						<th><%= link_to "Ver", {:controller => "comisiones_v1", :action => "show_report", :mes => mes['Mes'], :sucursal => mes['Sucursal'], :tipo => mes['Tipo'], :categoria => @categoria, :id_vendedor => mes['IdEmpleado'] }, class: "btn btn-primary btn-sm"%></th>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+<% end %>
+
+<style>
+	.btn-submit{
+		margin-top: 20px
+	}
+</style>

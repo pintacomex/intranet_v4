@@ -1,0 +1,30 @@
+<%= link_to "Ir al Index", {controller: "homereportes", action: "index"}, class: "btn btn-primary" %>
+<h1 class="text-center">Log Home Office</h1>
+<hr>
+<div class="container">
+	<div class="col-sm-12">
+		<table class="table table-bordered table-hover table-responsive">
+			<thead>
+				<tr>
+					<th>IDUsuario</th>
+					<th>Nombre Usuario</th>
+					<th>Accion</th>
+					<th>Descripcion</th>
+					<th>Fecha</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @log.reverse_each do |l| %>
+					<tr>
+						<th><%= l['id_user'] %></th>
+						<% user = @users.select {|e| e.id.to_i == l['id_user'].to_i }.first %>
+						<th><%= user.name %></th>
+						<th><%= l['accion'] %></th>
+						<th><%= l['descripcion'] %></th>
+						<th><%= l['created_at'] %></th>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,124 @@
+<% tareas = [] %>
+<% @taskusers.each do |t| %>
+	<% x = @tasks.select {|e| e.id == t['id_task'].to_i }.first  %>
+	<% description =  x.descripcion rescue  "" %>
+	<% id =  x.id rescue  "" %>
+	<% tareas << [description, "#{id}-#{description}"]%>
+<% end %>
+<% cal = @calificacion.rating  rescue nil %>
+<%= link_to "Ir al Index", {controller: "homereportes", action: "index"}, class: "btn btn-primary" %>
+<h1 class="text-center">Reportes Home Office<%= " #{@user_selected.name rescue ''}"%></h1>
+<div class="fluid-container">
+	<div class="col-md-12">
+		<% if @type == "day" && cal == nil && current_user.id == @user.to_i %>
+			<% if @show_activities %>
+			<div class="col-md-4 card">
+				<h2 class="text-center">Registrar Actividad</h2>
+				<hr>
+				<ul class="nav nav-tabs">
+			    <li class="active"><a data-toggle="tab" href="#home">Por Objetivo</a></li>
+			    <li><a data-toggle="tab" href="#menu1">Por Actividad</a></li>
+			  </ul>
+				<br><br>
+			  <div class="tab-content">
+			    <div id="home" class="tab-pane fade in active">
+						<%= form_tag  :action => 'create', html: { class: 'form-horizontal ' } do |f| %>
+							<div class="form-group  col-md-12">
+								<label class="control-label">Elige Objetivo</label>
+								<%= select_tag 'descripcion', options_for_select(tareas), label: false, placeholder: "Tareas", autofocus: true, class: 'form-control '  %>
+							</div>
+							<div class="form-group  col-md-12 ">
+								<label class="control-label">Elige El Porcentaje que lleva tu actividad</label>
+								<%= range_field_tag 'porc_terminado', in: 1...100, step: 1, class: "form-control" %>
+								<p><span id="demo"></span>%</p>
+							</div>
+
+							<%= hidden_field_tag 'date', @fecha %>		
+
+							<div class="form-group text-right col-md-12">
+								<%= label_tag 'Comenzó', nil, class: 'col-md-2' %>
+								<%= select_tag "start", raw("<option>07:00</option><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option>"), class: 'form-control' %>
+							</div>
+							<div class="form-group text-right col-md-12">
+								<%= label_tag 'Terminó', nil, class: 'col-md-2' %>
+								<%= select_tag "finish", raw("<option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option><option>22:00</option>"), class: 'form-control' %>
+							</div>
+							<%= hidden_field_tag 'obj', true %>
+							<div class="form-group text-center col-md-12">
+								<%= submit_tag 'Guardar', class: "btn btn-primary " %>
+							</div>
+						<% end %>
+			    </div>
+			    <div id="menu1" class="tab-pane fade">
+						<%= form_tag  :action => 'create', html: { class: 'form-horizontal ' } do |f| %>
+							
+							<%= hidden_field_tag 'date', @fecha %>
+
+							<div class="form-group text-right col-md-12">
+								<%= label_tag 'Comenzó', nil, class: 'col-md-2' %>
+								<%= select_tag "start", raw("<option>07:00</option><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option>"), class: 'form-control col-md-9' %>
+							</div>
+							<div class="form-group text-right col-md-12">
+								<%= label_tag 'Terminó', nil, class: 'col-md-2' %>
+								<%= select_tag "finish", raw("<option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option><option>22:00</option>"), class: 'form-control col-md-9' %>
+							</div>
+							<div class="form-group text-right col-md-12">
+								<%= label_tag 'Descripción', nil, class: 'col-md-2' %>
+								<%= text_area_tag 'descripcion', nil, class: 'form-control col-md-9' %>
+							</div>
+							<div class="form-group text-center col-md-12">
+								<%= submit_tag 'Guardar', class: "btn btn-primary " %>
+							</div>
+						<% end %>
+			    </div>
+			  </div>
+				
+			  <br><br><br><br>
+			  <div class=" col-md-12">
+			  	<h3 class="text-center">Mis Actividades Pendientes</h3>
+			  	<% @taskusers.each do |t| %>
+						<p><b>* <%= @tasks.select {|e| e.id == t['id_task'].to_i }.first.descripcion rescue "" %></b></p>
+						<p>Fecha Inicio: <%= t['fecha_inicio'] %></p>
+						<p>Fecha Limite: <%= t['fecha_limite'] %></p>
+						<p>Ùlt.Fec.Proc: <%= t['fecha_procesado'] %></p>
+						<div class="progress">
+						  <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: <%= t['porc_terminado'] == nil ? 0 : t['porc_terminado'] %>%;">
+						    <%= t['porc_terminado'] == nil ? 0 : t['porc_terminado'] %>%
+						  </div>
+						</div>
+						<hr>
+					<% end %>
+			  </div>
+
+			</div>
+			<% end %>
+		<% end %>
+		<div class="<%= @type != 'day' || cal != nil || !@show_activities || current_user.id != @user.to_i ? 'col-md-12' : 'col-md-8' %>">
+			
+			<% if @type == "month" %>
+				<%= render(partial: 'month') %>
+			<% elsif @type == "week" %>
+				<%= render(partial: 'week') %>
+			<% else %>
+				<%= render(partial: 'day') %>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<style type="text/css">
+	.card {
+	    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	    transition: 0.3s;
+	    border-radius: 5px;
+	    margin: 50px 0px;
+	}
+</style>
+<script type="text/javascript">
+var slider = document.getElementById("porc_terminado");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+</script>

@@ -1,0 +1,7 @@
+$('#historial-cliente').animate({
+    opacity: 0,
+  }, 100, function() {
+    $('#historial-cliente').html('<%= j render partial: "ant_saldos_cliente_anyo" %>').animate({
+        opacity: 1,
+      }, 300);
+  });

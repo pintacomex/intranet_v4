@@ -1,0 +1,127 @@
+<h1 class="text-center">Antigüedad de Saldos por Sucursal</h1>
+<% if @antsaldos && @antsaldos.count > 0 %>
+  <p>Zona: <%= @antsaldos[0]['ZonaAsig'] %> - Sucursal: <%= @antsaldos[0]['Sucursal'] %> - <%= @antsaldos[0]['NombreSuc'] %>  <%= "al #{@ultimaAct.to_s}" if @ultimaAct %></p>
+<% end %>
+
+<% if @antsaldos && @antsaldos.count > 0 %>
+
+  <div class="pull-right text-right">
+    <small>
+      <% if @ver_sin_aclarar %>
+        <a href="/ant_saldos_sucursal/?suc=<%=@antsaldos[0]['Sucursal']%>">Ver todas</a> |
+        Ver sin Aclarar
+      <% else %>
+        Ver todas |
+        <a href="/ant_saldos_sucursal/?suc=<%=@antsaldos[0]['Sucursal']%>&sin_aclarar=1">Ver sin Aclarar</a>
+      <% end %>
+      <br>
+      <%=@ver_dias == 0 ? "Ver En Plazo" : raw("<a href='/ant_saldos_sucursal/?suc=#{@antsaldos[0]['Sucursal']}&ver_dias=0'>Ver En Plazo</a>")%> |
+      <%=@ver_dias == 30 ? "Ver 1-30" : raw("<a href='/ant_saldos_sucursal/?suc=#{@antsaldos[0]['Sucursal']}&ver_dias=30'>Ver 1-30</a>")%> |
+      <%=@ver_dias == 60 ? "Ver 31-60" : raw("<a href='/ant_saldos_sucursal/?suc=#{@antsaldos[0]['Sucursal']}&ver_dias=60'>Ver 31-60</a>")%> |
+      <%=@ver_dias == 90 ? "Ver 61-90" : raw("<a href='/ant_saldos_sucursal/?suc=#{@antsaldos[0]['Sucursal']}&ver_dias=90'>Ver 61-90</a>")%> |
+      <%=@ver_dias == 120 ? "Ver 91+" : raw("<a href='/ant_saldos_sucursal/?suc=#{@antsaldos[0]['Sucursal']}&ver_dias=120'>Ver 91+</a>")%>      
+      </small>
+  </div>
+
+  <div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+    <small><%= link_to "Regresar", "/ant_saldos_clientes?suc=#{@antsaldos[0]['Sucursal']}" %></small>
+
+    <br />
+
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+      <thead>
+        <tr>
+          <th><a href="#" data-toggle="tooltip" title="Id del Cliente">Id</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Nombre del Cliente">Cliente</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Fecha Estimada de Pago o Fecha de Aclaración">FechaEst</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Importe de Ventas">Ventas</a></th>
+          <th><a href="#" data-toggle="tooltip" title="Importe de Pagos">Pagos</a></th>
+          <%=@ver_dias > 0 ? "" : raw('<th><a href="#" data-toggle="tooltip" title="Ventas dentro del Plazo">En Plazo</a></th>')%>
+          <%=@ver_dias > 30 ? "" : raw('<th><a href="#" data-toggle="tooltip" title="Ventas vencidas de 1-30 Días">1-30</a></th>')%>
+          <%=@ver_dias > 60 ? "" : raw('<th><a href="#" data-toggle="tooltip" title="Ventas vencidas de 31-60 Días">31-60</a></th>')%>
+          <%=@ver_dias > 90 ? "" : raw('<th><a href="#" data-toggle="tooltip" title="Ventas 61-90 Días">61-90</a></th>')%>
+          <th><a href="#" data-toggle="tooltip" title="Ventas Más de 91 Días">91+</a></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @antsaldos.each do |m| %>
+          <tr>
+            <td><a href='<%="/ant_saldos_cliente?suc=#{m['Sucursal']}&idc=#{m['Idcliente']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaracion: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['Idcliente'] %><%= m['FechaAcl'] ? raw(" <span class='glyphicon glyphicon-calendar' aria-hidden='true'></span>") : "" %><%= m['ascFechaHora'] ? raw(" <span class='glyphicon glyphicon-comment' aria-hidden='true'></span>") : "" %></a></td>
+            <td><a href='<%="/ant_saldos_cliente?suc=#{m['Sucursal']}&idc=#{m['Idcliente']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaracion: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['NombreCli'] %></a></td>
+            <td><a href='<%="/ant_saldos_cliente?suc=#{m['Sucursal']}&idc=#{m['Idcliente']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaracion: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= fix_show_date( m['FechaFac']) %></a></td>
+            <td><a href='<%="/ant_saldos_cliente?suc=#{m['Sucursal']}&idc=#{m['Idcliente']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaracion: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= fix_show_date( ( m['FechaAcl'].to_s.length > 0 ? m['FechaAcl'] : m['FechaEstPago'] ) ) %></a></td>
+            <td><a href='<%="/ant_saldos_cliente?suc=#{m['Sucursal']}&idc=#{m['Idcliente']}"%>' data-toggle="tooltip" title='<%="#{m['FechaAcl'] ? "Fecha Límite de Aclaracion: #{fix_show_date(m['FechaAcl'])}" : ""}"%>'><%= m['ControlFac'] %></a></td>
+            <td><%= m['Ventas'] > 0 ? number_to_currency(m['Ventas'], :locale => :mx, :precision => 2) : "" %></td>
+            <td><%= m['Pagos'] > 0 ? number_to_currency(m['Pagos'], :locale => :mx, :precision => 2) : "" %></td>
+            <%=@ver_dias > 0 ? "" : m['Ventas0_30'] > 0 ? raw("<td><span class='label label-default'>") + number_to_currency(m['Ventas0_30'], :locale => :mx, :precision => 2) + raw("</span></td>") : raw("<td></td>") %>
+            <%=@ver_dias > 30 ? "" : m['Ventas31_60'] > 0 ? raw("<td><span class='label label-success'>") + number_to_currency(m['Ventas31_60'], :locale => :mx, :precision => 2) + raw("</span></td>") : raw("<td></td>") %>
+            <%=@ver_dias > 60 ? "" : m['Ventas61_90'] > 0 ? raw("<td><span class='label label-warning'>") + number_to_currency(m['Ventas61_90'], :locale => :mx, :precision => 2) + raw("</span></td>") : raw("<td></td>") %>
+            <%=@ver_dias > 90 ? "" : m['Ventas91_120'] > 0 ? raw("<td><span class='label label-info'>") + number_to_currency(m['Ventas91_120'], :locale => :mx, :precision => 2) + raw("</span></td>") : raw("<td></td>") %>
+            <td><%= m['Ventas121_'] > 0 ? raw("<span class='label label-danger'>") + number_to_currency(m['Ventas121_'], :locale => :mx, :precision => 2) + raw("</span>") : "" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br />
+    <%= link_to "Descargar para Excel", "/ant_saldos_sucursal.csv?suc=#{@antsaldos[0]['Sucursal']}&ver_dias=#{@ver_dias}&sin_aclarar=#{@ver_sin_aclarar ? 1 : 0}" %>
+
+  <% else %>
+
+    Sin Datos.
+
+  <% end %>
+
+</div>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

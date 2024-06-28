@@ -1,0 +1,6 @@
+<%= select_tag 'categoria', options_for_select(@categorias), class: 'form-control', placeholder: "Seleccione Categoría", data: { placeholder: "Seleccione Categoría" } %>
+<% if @categorias.count < 1 %>
+	<p class="help-block">Nota: No hay Categorías Activas con Campos Activos para el Checklist. Favor de arreglar en la Administración de Checklists.</p>
+<% else %>
+	<p class="help-block">Seleccione la Categoría a Supervisar</p>
+<% end %>

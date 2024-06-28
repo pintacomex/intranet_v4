@@ -1,0 +1,122 @@
+<%= render(partial: 'navpills') %>
+
+<div class="col-sm-12">
+
+	<div class="btn-toolbar" role="toolbar">
+		<% responsable = "" %>
+		<% responsable = "responsable=#{@filtro_responsable}" if @filtro_responsable > 0 %>
+		<% status = "" %>
+		<% status = "status=#{@filtro_status}" if @filtro_status > 0 %>
+		<% grupo = "" %>
+		<% grupo = "grupo=#{@filtro_grupo}" if @filtro_grupo > 0 %>
+		<% dias = "" %>
+		<% dias = "dias=#{@filtro_dias}" if @filtro_dias > 0 %>
+
+		<% if @es_agente %>
+			<div class="btn-group dropdown text-right bm-3">
+				<button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<%= @filtros_responsable[@filtro_responsable] %>
+						<span class="caret"></span>
+					</button>
+				<div class="dropdown-menu">
+					<% filtro_param = [""] %>
+					<% filtro_param << status unless status.empty? %>
+					<% filtro_param << grupo unless grupo.empty? %>
+					<% filtro_param << dias unless dias.empty? %>
+					<% @filtros_responsable.each do |key, value| %>
+						<li><%= link_to "#{value}", "/tickets?responsable=#{key}#{filtro_param.join("&")}", class: "dropdown-item" %></li>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+		<div class="btn-group dropdown text-right bm-3">
+			<button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			    <%= @filtros_status[@filtro_status] %>
+			    <span class="caret"></span>
+		    </button>
+			<div class="dropdown-menu">
+				<% filtro_param = [""] %>
+				<% filtro_param << responsable unless responsable.empty? %>
+				<% filtro_param << grupo unless grupo.empty? %>
+				<% filtro_param << dias unless dias.empty? %>
+				<% @filtros_status.each do |key, value| %>
+					<li><%= link_to "#{value}", "/tickets?status=#{key}#{filtro_param.join("&")}", class: "dropdown-item" %></li>
+				<% end %>
+			</div>
+		</div>
+		<% if @grupos_del_que_es_parte.count > 1 %>
+			<div class="btn-group dropdown text-right bm-3">
+				<button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<%= @filtros_grupos[@filtro_grupo] %>
+						<span class="caret"></span>
+					</button>
+				<div class="dropdown-menu">
+					<% filtro_param = [""] %>
+					<% filtro_param << status unless status.empty? %>
+					<% filtro_param << responsable unless responsable.empty? %>
+					<% filtro_param << dias unless dias.empty? %>
+					<% @filtros_grupos.each do |key, value| %>
+						<li><%= link_to "#{value}", "/tickets?grupo=#{key}#{filtro_param.join("&")}", class: "dropdown-item" %></li>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+		<% if @es_agente %>
+			<div class="btn-group dropdown text-right bm-3">
+				<button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<%= @filtros_dias[@filtro_dias] %>
+						<span class="caret"></span>
+					</button>
+				<div class="dropdown-menu">
+					<% filtro_param = [""] %>
+					<% filtro_param << status unless status.empty? %>
+					<% filtro_param << responsable unless responsable.empty? %>
+					<% filtro_param << grupo unless grupo.empty? %>
+					<% @filtros_dias.each do |key, value| %>
+						<li><%= link_to "#{value}", "/tickets?dias=#{key}#{filtro_param.join("&")}", class: "dropdown-item" %></li>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+<br>
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+	  <thead>
+	    <tr>
+				<th><a href="#" data-toggle="tooltip" title="Fecha de Creación del Ticket">Fecha</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Asunto del Ticket">Asunto</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Persona que Solicita el Ticket">Solicita</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Responsable del Ticket">Responsable</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Grupo">Grupo</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Porcentaje de Avance del Ticket">%</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Días para Vencimiento del Ticket (En caso de tener)">Días</a></th>
+	    </tr>
+		</thead>
+
+	  <tbody>
+	    <% @tickets.each do |ticket| %>
+				<% url = "/tickets_show?id=#{ticket['IdHTodo']}" %>
+				<tr>
+	        <td><%= link_to ticket['FechaCreacion'].to_s[0..10], url, title: "Fecha de Creación: #{ticket['FechaCreacion'].to_s[0..10]} - Fecha de Última Actualización: #{ticket['FechaActualizacion'].to_s[0..10]}", data: { toggle: "tooltip" }  %></td>
+          <td><%= link_to ticket['Asunto'].to_s.truncate(50), url, title: ticket['Asunto'].to_s, data: { toggle: "tooltip" } %></td>
+	        <td><%= getUser(ticket['CreadoPor'], "Ninguno") %></td>
+	        <td><%= getUser(ticket['Responsable'], "Ninguno") %></td>
+	        <td><%= getTipoGrupo(ticket['Tipo']).truncate(30) %></td>
+	        <td><%= ticket['Porcentaje'] %>%</td>
+					<td>
+						<% fecha_limite = Date.parse(ticket['FechaLimite'].to_s[0..10]) rescue false %>
+						<% if fecha_limite %>
+							<% dias = (fecha_limite - Date.today).to_i rescue 0 %>
+							<%= dias %> Días
+							<% if dias < 0 %>
+							 <span class="badge badge-error">Vencido</span>
+						 <% end %>
+						<% else %>
+							N/A
+						<% end %>
+					</td>
+				</tr>
+	    <% end %>
+	  </tbody>
+	</table>
+</div>

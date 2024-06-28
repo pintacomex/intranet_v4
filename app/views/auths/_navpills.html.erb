@@ -1,0 +1,6 @@
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('solicitud') %>><a href="/auths/solicitudes">Solicitudes</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('flujo') %>><a href="/auths/flujos">Flujos</a></li>
+  <li role="presentation" <%= raw "class='active'" if controller.controller_name.start_with?('tipo') %>><a href="/auths/tipo_solicitudes">Tipos de Solicitudes</a></li>
+</ul>
+<br>

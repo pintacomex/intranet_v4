@@ -1,0 +1,37 @@
+<br>
+<%= render(partial: '/ecommerce/navpills') %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class=" text-center table table-hover table-bordered table-striped">
+
+	  <thead>
+      <tr>
+        <th>Pedido</th>
+        <th>Request</th>
+        <th>Request</th>
+        <th>Created</th>
+        <th></th>
+	    </tr>
+	  </thead>
+
+    <tbody>
+      <% @pedidos.each do |item| %>
+        <% url = "/ecommerce/webservices/show?idPedido=#{item['idPedido'].to_i}" %>
+        <tr>
+          <td><%= item['idPedido'] %></td>
+          <td><%= item['operacion'] %></td>
+          <td><%= item['request'].to_s.truncate(80) %></td>
+          <td><%= item['created_at'] %></td>
+          <td>
+            <% if item['idPedido'].to_i > 0 %>
+              <%= link_to 'Ver', url, class: 'btn btn-xs btn-primary' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+	  </tbody>
+	</table>
+</div>

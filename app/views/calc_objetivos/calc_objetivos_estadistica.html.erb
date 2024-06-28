@@ -1,0 +1,381 @@
+<h3>Cálculo de Objetivos <%= params[:anosel].to_s %></h3>
+
+<% if !params.has_key?(:agrupa) %>
+        
+  <div class="loader-form">
+    <form class="form" role="form">
+      <div class="form-group">
+
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Estadística de Ventas</h3>
+          </div>
+          <div class="panel-body">
+
+            <div class="control-group">
+              <label class="control-label col-md-2" id="labanosel" name="labanosel" align=right>Año:</label>
+              <div class="controls">
+                <select class="combobox" name="anosel" id="idanosel">
+                  <% @tablaanosel.each do |a| %>
+                    <option value="<%= a['Año'] %>"><%=h(a['Año']) %></option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+
+            <br>
+
+            <label for="selagrupa">Seleccionar Agrupación</label>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="control-group">
+                  <label class="control-label col-md-2" id="labempresa" name="labempresa"  align=right>Empresa:</label>
+                  <div class="controls">
+                    <select class="combobox" name="empresa" id="idempresa">
+                      <option value="<%= '0' %>"><%=h('Empresa') %></option>
+                    </select>
+                  </div>
+                </div>
+                <br>
+                <div class="control-group">
+                  <label class="control-label col-md-2" id="labagrupa" name="labagrupa"  align=right>Región:</label>
+                  <div class="controls">
+                    <select class="combobox" name="agrupa" id="idagrupa">
+                      <option value="<%= '' %>"><%=h('') %></option>
+                      <% @region.each do |a| %>
+                        <option value="<%= a['IdAgrupa'] %>"><%=h(a['Nombre']) %></option>
+                      <% end %>
+                    </select>
+                  </div>
+                </div>
+                <br>
+                <div class="control-group">
+                  <label class="control-label col-md-2" id="labsubagrupa" name="labsubagrupa"  align=right>Ciudad:</label>
+                  <div class="controls">
+                    <select class="combobox" name="subagrupa" id="idsubagrupa" disabled="disabled">
+                      <option value="<%= '' %>"><%=h('') %></option>
+                      <% @subagrupa.each do |a| %>
+                        <option value="<%= a['IdSubAgrupa'] %>"><%=h(a['Nombre']) %></option>
+                      <% end %>
+                    </select>
+                    <script>
+                      $('#idsubagrupa').val( <%= 0 %> )
+                    </script>
+                  </div>
+                </div>
+                <br>
+                <div class="control-group">
+                  <label class="control-label col-md-2" id="labagrupasuc" name="labagrupasuc "  align=right>Sucursal:</label>
+                  <div class="controls">
+                    <select class="combobox" name="agrupasuc" id="idagrupasuc" disabled="disabled">
+                      <option value="<%= '' %>"><%=h('') %></option>
+                      <% @agrupasuc.each do |a| %>
+                        <option value="<%= a['IdSucursal'] %>"><%=h(a['Nombre']) %></option>
+                      <% end %>
+                    </select>
+                    <script>
+                      $('#idagrupasuc').val( <%= 0 %> )
+                    </script>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <label for="selagrupa">Seleccionar Nivel de Detalle de la Agrupación</label>
+            <div class="panel panel-default">
+              <div class="panel-body">
+
+                <label class="radio-inline">
+                  <input type="radio" name="niveldetalle" id="idniveld_0" value="Región" checked> Región
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="niveldetalle" id="idniveld_1" value="Ciudad"> Ciudad
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="niveldetalle" id="idniveld_2" value="Sucursal"> Sucursal 
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="niveldetalle" id="idniveld_3" value="Anual"> Anual/Meses    
+                </label>
+
+              </div>
+            </div>
+
+            <label for="selagrupa">Seleccionar Indice para Deflactar</label>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <label class="radio-inline">
+                  <input type="radio" name="deflactar" id="iddef_0" value="nodefinido"> No Deflactar
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="deflactar" id="iddef_1" value="I.N.P.C." checked> I.N.P.C.
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="deflactar" id="iddef_2" value="I.I.P."> Interno de Pintura 
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="deflactar" id="iddef_3" value="I.C."> Competitividad    
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="form-actions">
+          <input class="btn btn-primary go-to-filter" type="button" value="Graficar"
+           onclick="windowOpen()" />
+           <script>
+            function windowOpen() {
+              parametros = "?anosel=" + $('#idanosel').val();
+              if ($('#idniveld_0:checked').val() == "Región") {
+                parametros += "&niveldetalle=" + $('#idniveld_0').val();
+              } else {
+                if ($('#idniveld_1:checked').val() == "Ciudad") {
+                  parametros += "&niveldetalle=" + $('#idniveld_1').val();
+                } else {
+                  if ($('#idniveld_2:checked').val() == "Sucursal") {
+                    parametros += "&niveldetalle=" + $('#idniveld_2').val();
+                  } else {
+                    
+                    if ($('#idniveld_3:checked').val() == "Anual") {
+                      parametros += "&niveldetalle=" + $('#idniveld_3').val();
+                    }
+                  }
+                }
+              }
+              parametros += "&agrupa=" + $('#idagrupa').val();
+              parametros += "&subagrupa=" + $('#idsubagrupa').val();
+              parametros += "&agrupasuc=" + $('#idagrupasuc').val();
+              if ($('#iddef_0:checked').val() == "nodefinido") {
+                parametros += "&deflactar=" + $('#iddef_0').val();
+              } else {
+                if ($('#iddef_1:checked').val() == "I.N.P.C.") {
+                  parametros += "&deflactar=" + $('#iddef_1').val();
+                } else {
+                  if ($('#iddef_2:checked').val() == "I.I.P.") {
+                    parametros += "&deflactar=" + $('#iddef_2').val();
+                  } else {
+                    
+                    if ($('#iddef_3:checked').val() == "I.C.") {
+                      parametros += "&deflactar=" + $('#iddef_3').val();
+                    }
+                  }
+                }
+              }
+
+              parametros += "&sin_navegador=1";
+    //          alert(parametros);
+              var myWindow = window.open(parametros,'_blank','height=700,scrollbars=yes,menubar=no');
+            }
+           </script>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+<% end %>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <% if @estadistica && @estadistica.count > 0 %>
+      <% @descdato = @descdato + " -- " + params[:deflactar].to_s if params[:deflactar].to_s != "nodefinido" %>
+      <% @descdato = @descdato + "    Año " + params[:anosel].to_s if params[:niveldetalle].to_s != "Anual" %>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          <%= despliega_grafica2("lineas",{ series: @series, categorias: @categorias, titulo: @nomCia, subtitulo: @tituloAgrupa + " ( " + @descdato + " )", ytitulo: @ytitulo, tultip: @tultip }) %>
+        </div>
+      </div>
+
+      <%# raise @estadistica.to_json.inspect raw(@estadistica.to_json) %>
+
+
+      <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="example">
+
+        <thead>
+          <tr>
+            <% if params[:niveldetalle].to_s == "Región" %>
+              <% if params[:agrupa].to_i == 0 %>
+                <th><a href="#" data-toggle="tooltip" title="Región">Region</a></th>
+              <% else %>
+                <% if params[:subagrupa].to_i > 0 %>
+                  <th><a href="#" data-toggle="tooltip" title="Sucursal">Sucursal</a></th>
+                <% else %>
+                  <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+                <% end %>
+              <% end %>
+            <% else %>
+              <% if params[:niveldetalle].to_s == "Ciudad" %>
+                <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+              <% else %>
+                <% if params[:niveldetalle].to_s == "Sucursal" %>
+                  <th><a href="#" data-toggle="tooltip" title="Sucursal">Sucursal</a></th>
+                <% else %>
+                  <th><a href="#" data-toggle="tooltip" title="Año">Año</a></th>
+                <% end %>
+              <% end %>
+            <% end %>
+            <th><a href="#" data-toggle="tooltip" title="Enero">Enero</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Febrero">Febrero</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Marzo">Marzo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Abril">Abril</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Mayo">Mayo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Junio">Junio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Julio">Julio</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Agosto">Agosto</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Septiembre">Septiembre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Octubre">Octubre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Noviembre">Noviembre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Diciembre">Diciembre</a></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% @estadistica.each do |m| %>
+            <tr>
+              <% if params[:niveldetalle].to_s == "Región" %>
+                <% if params[:agrupa].to_i == 0 %>
+                  <td><%= m['Región'] %></td>
+                <% else %>
+                  <% if params[:subagrupa].to_i > 0 %>
+                    <td><%= m['Sucursal'] %></td>
+                  <% else %>
+                    <td><%= m['Ciudad'] %></td>
+                  <% end %>
+                <% end %>
+              <% else %>
+                <% if params[:niveldetalle].to_s == "Ciudad" %>
+                  <td><%= m['Ciudad'] %></td>
+                <% else %>
+                  <% if params[:niveldetalle].to_s == "Sucursal" %>
+                    <td><%= m['Sucursal'] %></td>
+                  <% else %>
+                    <td><%= m['Año'] %></td>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <td><P align=right><%= number_to_currency(m['Enero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Febrero'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Marzo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Abril'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Mayo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Junio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Julio'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Agosto'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Septiembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Octubre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Noviembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+              <td><P align=right><%= number_to_currency(m['Diciembre'], :locale => :mx, :unit => "", :precision => 2) %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <br />
+
+        <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+        <%= javascript_include_tag "/dt_v3" %>
+
+      </div> 
+
+    <% else %>
+
+      Sin Datos.
+
+    <% end %>
+  <% end %>
+
+</div>
+
+<script>
+  $(document).ready(function() {
+
+    $('#idagrupa').change(function() {
+      agrupa_val = $('#idagrupa').val();
+      subagrupa_val = $('#idsubagrupa').val();
+//alert("Cambia SubAgrupa "+agrupa_val+" y "+subagrupa_val);
+      $('#idsubagrupa').val( <%= 0 %> );
+      $('#idagrupasuc').val( <%= 0 %> );
+      if (agrupa_val == '') {
+        $('#idsubagrupa').prop('disabled','disabled');
+        $('#idagrupasuc').prop('disabled','disabled');
+        $('#idniveld_0').prop('disabled',false);
+        $('#idniveld_1').prop('disabled',false);
+        $('#idniveld_2').prop('disabled',false);
+        return;
+      }
+      else
+      {
+        $('#idniveld_0').prop('disabled','disabled');
+        if ($('#idniveld_0:checked').val() == "Región") {
+          $('#idniveld_1').prop('checked','checked');
+        }
+      }
+      $.ajax({
+        url: "/estaventas_ajax_subagrupa?agrupa="+agrupa_val,
+        dataType: 'json',
+        success: function( json ) {
+            $('#idsubagrupa').empty();
+            $('#idsubagrupa').append($('<option>').text('').attr('value', ""));
+            $.each(json, function(i, value) {
+                $('#idsubagrupa').append($('<option>').text(value['Nombre']).attr('value', value['IdSubAgrupa']));
+            });
+        }
+      });
+      $('#idsubagrupa').prop('disabled',false);
+      $('#idagrupasuc').prop('disabled','disabled');
+     });
+
+    $('#idsubagrupa').change(function() {
+      agrupa_val = $('#idagrupa').val();
+      subagrupa_val = $('#idsubagrupa').val();
+//alert("Cambia SubAgrupa "+agrupa_val+" y "+subagrupa_val); 
+      $('#idagrupasuc').val( <%= 0 %> );
+      if (subagrupa_val == '') {
+        $('#idagrupasuc').prop('disabled','disabled');
+        $('#idniveld_1').prop('disabled',false);
+        $('#idniveld_2').prop('disabled',false);
+        return;
+      }
+      else
+      {
+        $('#idniveld_1').prop('disabled','disabled');
+        if ($('#idniveld_1:checked').val() == "Ciudad") {
+          $('#idniveld_2').prop('checked','checked');
+        }
+      }
+      $.ajax({
+        url: "/estaventas_ajax_agrupasuc?agrupa="+agrupa_val+"&subagrupa="+subagrupa_val,
+        dataType: 'json',
+        success: function( json ) {
+            $('#idagrupasuc').find('option').remove().end();
+            $('#idagrupasuc').append($('<option>').text('').attr('value', ""));
+            $.each(json, function(i, value) {
+                $('#idagrupasuc').append($('<option>').text(value['Nombre']).attr('value', value['IdSucursal']));
+            });
+        }
+      });
+      $('#idagrupasuc').prop('disabled',false);
+    });
+
+    $('#idagrupasuc').change(function() {
+      agrupasuc_val = $('#idagrupasuc').val();
+      if (agrupasuc_val == '') {
+        $('#idniveld_2').prop('disabled',false);
+        return;
+      }
+      else
+      {
+        $('#idniveld_2').prop('disabled','disabled');
+        $('#idniveld_3').prop('checked','checked');
+      }
+    });
+
+
+  });
+</script>

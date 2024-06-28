@@ -1,0 +1,42 @@
+<%= form_tag("/tickets_create",  multipart: true, html: { class: 'form-horizontal' }) do %>
+
+  <div class="form-inputs loader-form">
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">&nbsp;</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'tipo', options_for_select(@grupos), autofocus: true, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Mensaje *</label>
+      <div class="col-md-7 text-right">
+        <%= text_area_tag 'texto', nil, size: "50x10", class: "form-control", placeholder: "Mensaje" %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">&nbsp;</label>
+      <div class="col-md-7 text-right">
+        <hr>
+        <%= file_field_tag :file %>
+        <p class="help-block">Sólo imágenes (JPEG, JPG, PNG o GIF) o documentos (PDF, DOC, XLS, PPT)</p>
+        <p class="help-block">Tamaño máximo: 2 MB (Opcional)</p>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-3">
+      <br>
+      <div class="form-actions loader-form text-center">
+        <%= submit_tag "Enviar", class: "btn btn-primary " %>
+      </div>
+      <br><br>
+    </div>
+
+  </div>
+
+<% end %>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script>

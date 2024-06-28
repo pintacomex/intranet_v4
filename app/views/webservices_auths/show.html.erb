@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Sucursal:</strong>
+  <%= @webservices_auth.sucursal %>
+</p>
+
+<p>
+  <strong>Descripcion:</strong>
+  <%= @webservices_auth.descripcion %>
+</p>
+
+<p>
+  <strong>Respuesta:</strong>
+  <%= @webservices_auth.respuesta %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @webservices_auth.status %>
+</p>
+
+<p>
+  <strong>Fechahora:</strong>
+  <%= @webservices_auth.fechaHora %>
+</p>
+
+<%= link_to 'Edit', edit_webservices_auth_path(@webservices_auth) %> |
+<%= link_to 'Back', webservices_auths_path %>

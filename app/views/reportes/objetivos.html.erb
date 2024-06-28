@@ -1,0 +1,152 @@
+<h3>Objetivos de Venta</h3>
+
+<% if !params.has_key?(:ano) %>
+
+  <br>
+  <div class="loader-form">
+    <form class="form" role="form">
+      <div class="form-group">
+
+        <div class="control-group">
+          <label class="control-label col-md-2" for="inputPassword">Año:</label>
+          <div class="controls">
+            <select class="combobox" name="ano" id=idano>
+              <% @anosfindia.each do |a| %>
+                <option value="<%= a['Ano'] %>"><%= a['Ano'] %></option>
+              <% end %>
+            </select>
+            <script>
+              $('#idano').val( <%= DateTime.now.year.to_s %> )
+            </script>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label col-md-2" for="inputPassword">Mes:</label>
+          <div class="controls">
+            <select class="combobox" name="mes" id="idmes">
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+            <script>
+              $('#idmes').val( <%= DateTime.now.month.to_s %> )
+            </script>
+          </div>
+        </div>
+
+        <br>
+        <div class="control-group">
+          <label class="control-label col-md-2" for="inputPassword">Zona:</label>
+          <div class="controls">
+            <select class="combobox" name="zona" id="idzona">
+              <% permisos = Permiso.where("idUsuario = #{current_user.id}").order("Permiso") %>
+              <% @zonas.each do |z| %>
+                <% zonaPermitida = false %>
+                <% permisos.each do |perm| %>
+                  <% if perm.p1.to_i == @sitio[0].idEmpresa.to_i and 
+                       (perm.p2.to_i == 0 or perm.p2.to_i == z['NumZona'] ) %>
+                    <% zonaPermitida = true %>
+                  <% end %>
+                <% end %>
+                <% if zonaPermitida %>
+                  <option value="<%= z['NumZona'] %>"><%= z['NomZona'] %></option>
+                <% end %>
+              <% end %>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-actions">
+        <input class="btn btn-primary go-to-filter" type="button" value="Consultar"
+         onclick="windowOpen()" />
+        <script>
+         function windowOpen() {
+         parametros = "?ano=" + $('#idano').val();
+         parametros += "&mes=" + $('#idmes').val();
+         parametros += "&zona=" + $('#idzona').val();
+         parametros += "&sin_navegador=1";
+              var myWindow = window.open(parametros,'_blank');
+         }
+        </script>
+
+      </div>
+    </form>
+  </div>
+
+<% end %>
+
+
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <h5><%= @nommes + " de " + params[:ano].to_s %></h5>
+    <h5>Zona: <%= @zona + "-" + @nomzona[0]['NomZona'] %></h5>
+    <% if @objventas.count > 0 %>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="example">
+
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Numero de Sucursal">Sucursal</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Nombre de Sucursal">Nombre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Datos procesados al dia">Datos al dia</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Venta Neta Acumulada (s/iva)">Venta Neta Acum</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Objetivo Proporcional Acumulado (s/iva)">Objetivo Prop Acum</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Diferencia Vs Objetivo">Dif Vs Objetivo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Venta Neta Credito (c/iva)">Venta Neta Cred</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Total Cobranza (c/iva)">Total Cobranza</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Stock CxC (c/iva)">Stock CxC</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Stock de Mercancia (c/iva)">Stock de Mercancia</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Dias Habiles Faltantes">Dias Hab Falt</a></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @objventas.each do |m| %>
+            <tr>
+              <td><%= m['ColSucursal'] %></td>
+              <td><%= m['ColNombre'] %></td>
+              <td><%= raw("<span class='label label-info'>") + number_with_delimiter(m['ColDatosAlDia']) + raw("</span>") %></td>
+              <td><%= number_to_currency(m['ColVtaNetaAcum'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColObjPropAcum'], :locale => :mx, :precision => 2) %></td>
+              <td><%= 
+                if m['ColDifVsObjetivo'] < 0
+                  raw("<span class='label label-danger'>") + number_to_percentage(m['ColDifVsObjetivo'], :locale => :mx, :precision => 2) + raw("</span>")
+                else
+                  raw("<span class='label label-success'>") + number_to_percentage(m['ColDifVsObjetivo'], :locale => :mx, :precision => 2) + raw("</span>")
+                end
+              %></td>
+              <td><%= number_to_currency(m['ColVentaNetaCred'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColTotalCobranza'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColStockCxC'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColStockMercancia'], :locale => :mx, :precision => 2) %></td>
+              <td><%= 
+                if m['ColDiasHabFaltantes'] > 0
+                  raw("<span class='label label-warning'>") + number_with_delimiter(m['ColDiasHabFaltantes'])  + raw("</span>")
+                else
+                  number_with_delimiter(m['ColDiasHabFaltantes'])
+                end
+              %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+    <% else %>
+      <br>
+      Sin Datos.
+    <% end %>
+  <% end %>
+
+</div>

@@ -1,0 +1,706 @@
+<h1 class="text-center">Datos del Cliente</h1>
+<% if @antsaldos && @antsaldos.count > 0 %>
+  <p>Zona: <%= @antsaldos[0]['ZonaAsig'] %> - Sucursal: <%= @antsaldos[0]['Sucursal'] %> - <%= @antsaldos[0]['NombreSuc'] %> - Cliente: <%= @antsaldos[0]['Idcliente'] %> - <%= @antsaldos[0]['NombreCli'] %>  <%= "al #{@ultimaAct.to_s}" if @ultimaAct %></p>
+  <p></p>
+<% end %>
+
+<% if @antsaldos && @antsaldos.count > 0 %>
+
+  <div class="container">
+
+    <small><%= link_to "Regresar", "/ant_saldos_cliente?suc=#{@antsaldos[0]['Sucursal']}&idc=#{@antsaldos[0]['Idcliente']}" %></small>
+    <br />
+    <br />
+    <br />
+
+    <% @datos_cliente = @datos_cliente[0] %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Valor</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>
+            Sucursal
+          </td>
+          <td>
+            <%= @datos_cliente['Sucursal'] %> - <%= @datos_cliente['Sucnom'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Id Cliente
+          </td>
+          <td>
+            <%= @datos_cliente['Idcliente'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tipo de Venta
+          </td>
+          <td>
+            <%= @datos_cliente['Tipoventa'] == 2 ? "Crédito" : "Contado" %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Nombre
+          </td>
+          <td>
+            <%= @datos_cliente['Nombre'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Alias
+          </td>
+          <td>
+            <%= @datos_cliente['Alias'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Rfc
+          </td>
+          <td>
+            <%= @datos_cliente['Rfc'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Num Cédula
+          </td>
+          <td>
+            <%= @datos_cliente['Numcedula'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Calle Num
+          </td>
+          <td>
+            <%= @datos_cliente['Callenum'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Num Exterior
+          </td>
+          <td>
+            <%= @datos_cliente['NumExt'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Num Interior
+          </td>
+          <td>
+            <%= @datos_cliente['NumInt'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Colonia
+          </td>
+          <td>
+            <%= @datos_cliente['Colonia'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Delegación o Municipio
+          </td>
+          <td>
+            <%= @datos_cliente['Delemuni'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Estado
+          </td>
+          <td>
+            <%= @datos_cliente['Estado'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            CP
+          </td>
+          <td>
+            <%= @datos_cliente['Cp'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Teléfono
+          </td>
+          <td>
+            <%= @datos_cliente['Tel'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Contacto
+          </td>
+          <td>
+            <%= @datos_cliente['Contacto'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Saldo
+          </td>
+          <td>
+            <%= number_to_currency(@datos_cliente['Saldo'], :locale => :mx, :precision => 2) %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Saldo x Aplicar
+          </td>
+          <td>
+            <%= number_to_currency(@datos_cliente['Saldoxapli'], :locale => :mx, :precision => 2) %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Descuento
+          </td>
+          <td>
+            <%= number_to_currency(@datos_cliente['Descuento'], :locale => :mx, :precision => 2).gsub("$", "") %>%
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Crédito
+          </td>
+          <td>
+            <%= number_to_currency(@datos_cliente['Credito'], :locale => :mx, :precision => 2) %>
+          </td>
+          <td>
+            <% if @puede_editar_fecha_acl %>
+              <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#credito">
+                Editar
+              </button>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Plazo
+          </td>
+          <td>
+            <%= @datos_cliente['Plazo'] %> Días
+          </td>
+          <td>
+            <% if @puede_editar_fecha_acl %>
+              <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#plazo">
+                Editar
+              </button>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Día de Cobrar
+          </td>
+          <td>
+            <%= @datos_cliente['Diacobrar'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Categoría
+          </td>
+          <td>
+            <%= @datos_cliente['Categoria'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tipo de Precio
+          </td>
+          <td>
+            <%= @datos_cliente['Tipoprecio'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Iva Exacto
+          </td>
+          <td>
+            <%= @datos_cliente['Ivaexacto'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Impuesto Factura
+          </td>
+          <td>
+            <%= @datos_cliente['Impfactura'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Descdesg
+          </td>
+          <td>
+            <%= @datos_cliente['Descdesg'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Promoción
+          </td>
+          <td>
+            <%= @datos_cliente['Promocion'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Fecha de alta
+          </td>
+          <td>
+            <%= fix_show_date(@datos_cliente['Fechaalta']) %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Última Operación
+          </td>
+          <td>
+            <%= fix_show_date(@datos_cliente['Ultimaoper']) %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Numpinta
+          </td>
+          <td>
+            <%= @datos_cliente['Numpinta'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Clavebus
+          </td>
+          <td>
+            <%= @datos_cliente['Clavebus'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Comentario
+          </td>
+          <td>
+            <%= @datos_cliente['Comentario'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Rfcd
+          </td>
+          <td>
+            <%= @datos_cliente['Rfcd'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Acta Constitutiva
+          </td>
+          <td>
+            <%= @datos_cliente['Actaconsti'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Comp Domicilio
+          </td>
+          <td>
+            <%= @datos_cliente['Compdomici'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Poderes
+          </td>
+          <td>
+            <%= @datos_cliente['Poderes'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Carta Firma
+          </td>
+          <td>
+            <%= @datos_cliente['Cartafirma'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Id Entrepre
+          </td>
+          <td>
+            <%= @datos_cliente['Identrepre'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Id Entperau
+          </td>
+          <td>
+            <%= @datos_cliente['Identperau'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Pagaré
+          </td>
+          <td>
+            <%= @datos_cliente['Pagare'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Observación de Doctumentos
+          </td>
+          <td>
+            <%= @datos_cliente['Obserdocts'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Revisar
+          </td>
+          <td>
+            <%= @datos_cliente['Revisar'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Email
+          </td>
+          <td>
+            <%= @datos_cliente['Email'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Giro
+          </td>
+          <td>
+            <%= @datos_cliente['Giro'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Subgiro
+          </td>
+          <td>
+            <%= @datos_cliente['Subgiro'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Avisa Encargado
+          </td>
+          <td>
+            <%= @datos_cliente['Avisaencar'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Id Cliente Grupo
+          </td>
+          <td>
+            <%= @datos_cliente['Idcligrupo'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Comsinced
+          </td>
+          <td>
+            <%= @datos_cliente['Comsinced'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Oldnumpint
+          </td>
+          <td>
+            <%= @datos_cliente['Oldnumpint'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Replicado
+          </td>
+          <td>
+            <%= @datos_cliente['Replicado'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Método
+          </td>
+          <td>
+            <%= @datos_cliente['MetodoPago'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Cuenta
+          </td>
+          <td>
+            <%= @datos_cliente['CuentaPago'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tipo
+          </td>
+          <td>
+            <%= @datos_cliente['TipoAdenda'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Info
+          </td>
+          <td>
+            <%= @datos_cliente['InfoAdenda'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Numclipref
+          </td>
+          <td>
+            <%= @datos_cliente['NUMCLIPREF'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Sucursal Origen
+          </td>
+          <td>
+            <%= @datos_cliente['SUCORIGEN'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Cliente Origen
+          </td>
+          <td>
+            <%= @datos_cliente['CLIORIGEN'] %>
+          </td>
+          <td>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+    <br />
+    
+    <% if @puede_editar_fecha_acl %>
+
+      <div class="modal fade" id="credito" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Editar Límite de Crédito</h4>
+            </div>
+
+            <%= form_tag('/ant_saldos_cliente_editar', class: 'form-horizontal' )  do |f| %>
+
+              <div class="modal-body">
+                <div class="ref-group">
+
+                  <%= hidden_field_tag 'suc', @datos_cliente['Sucursal'] %>
+                  <%= hidden_field_tag 'idc', @datos_cliente['Idcliente'] %>
+
+                  <div class="form-group">
+                    <label class="col-sm-4 control-label">Crédito</label>
+                    <div class="col-md-6 col-sm-6">
+                      <%= text_field_tag 'credito', number_to_currency(@datos_cliente['Credito'], :locale => :mx, :precision => 2).gsub("$","").gsub(",",""), label: false, placeholder: "0.00", class: 'form-control' %>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+
+            <% end %>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="plazo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Editar Plazo</h4>
+            </div>
+
+            <%= form_tag('/ant_saldos_cliente_editar', class: 'form-horizontal' )  do |f| %>
+
+              <div class="modal-body">
+                <div class="ref-group">
+
+                  <%= hidden_field_tag 'suc', @datos_cliente['Sucursal'] %>
+                  <%= hidden_field_tag 'idc', @datos_cliente['Idcliente'] %>
+
+                  <div class="form-group">
+                    <label class="col-sm-4 control-label">Plazo</label>
+                    <div class="col-md-6 col-sm-6">
+                      <%= text_field_tag 'plazo', @datos_cliente['Plazo'], label: false, placeholder: "0", class: 'form-control' %>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+              </div>
+
+            <% end %>
+
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+
+  <% else %>
+
+    Sin Datos.
+
+  <% end %>
+
+</div>

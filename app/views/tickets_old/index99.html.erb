@@ -1,0 +1,32 @@
+<div class="fluid-container">
+	<h1 class="text-center">Mis tickets</h1>
+	<div class="col-md-3 float-right">
+
+		<ul class="list-group card">
+			<% @my_tickets.each do |ticket| %>
+				<li class="list-group-item list-group-item-action">
+					<%= link_to ({:controller => "tickets", :action => "show", :id => ticket.id }) do %>
+						<div class="col-md-12 text-right">
+							<h6 class="text-center"><%= ticket.title %></h6>
+							<p><%= ticket.created_at[0..9] %></p>
+							<p><%= ticket.group %></p>
+						</div>
+					<% end %>
+				</li>
+			<% end %>
+		</ul>
+	</div>
+</div>
+<style type="text/css">
+	.list-group{
+
+    margin-bottom: 10px;
+    overflow:scroll;
+    position: fixed;
+    width: 25%;
+    left: 0;
+}
+
+</style>
+
+

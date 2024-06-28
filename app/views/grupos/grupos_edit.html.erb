@@ -1,0 +1,61 @@
+<%= render(partial: '/tickets/navpills') %>
+<div class="container">
+	<div class="card">
+		<h1 class="text-center">Grupo: <%= @grupo[0]['Nombre'] %></h1>
+		<hr>
+		<br>
+		<%= form_tag("/grupos_update", html: { class: 'form-horizontal' }) do %>
+
+	        <%= hidden_field_tag 'id', @grupo[0]['IdGrupo'] %>
+
+		    <div class="row">
+			    <div class="form-group col-md-12">
+			      <label class="control-label col-md-2">Nombre</label>
+			      <div class="col-md-7 text-right">
+			        <%= text_field_tag 'nombre', @grupo[0]['Nombre'], class: 'form-control', placeholder: "Sistemas" %>
+			        <p class="help-block">Edita el Nombre del Grupo</p>
+			      </div>
+			    </div>
+		    </div>
+
+		    <div class="row">
+			    <div class="form-group">
+			      <label class="control-label col-md-2">Integrantes</label>
+			      <div class="col-md-10 text-right ">
+					<%= select_tag "users[]", options_for_select(@users, @grupo_users), { multiple: :multiple, class: "dual_listbox" } %>
+			        <p class="help-block">Edita los Integrantes del Grupo</p>
+			      </div>
+			    </div>
+		    </div>
+
+		    <div class="row">
+			    <div class="col-md-10 col-md-offset-2">
+			      <div class="form-actions loader-form text-center">
+			        <%= submit_tag "Enviar", class: "btn btn-primary" %>
+			      </div>
+			      <br><br>
+			    </div>
+		    </div>
+
+		<% end %>
+		<%= link_to 'Regresar', '/grupos' %>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+		var list = $('.dual_listbox').bootstrapDualListbox({
+		  nonSelectedListLabel: 'Usuarios Disponibles',
+		  selectedListLabel: 'Usuarios en Grupo',
+		  preserveSelectionOnMove: 'moved',
+		  moveOnSelect: false
+		});
+  });
+</script>
+<style>
+	.info-container {
+		display: none;
+	}
+</style>

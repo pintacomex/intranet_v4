@@ -1,0 +1,51 @@
+<%= form_tag(@form_url, html: { class: 'form-horizontal' }) do %>
+
+  <div class="form-inputs loader-form">
+
+    <%= hidden_field_tag 'id', "#{@id}-#{@idcat}" %>
+    <%= hidden_field_tag 'IdChecklist', @id %>
+    <%= hidden_field_tag 'IdCatChecklist', @idcat %>
+
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nombre</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'nombre', @category ? @category[0]['Nombre'] : '', class: 'form-control', placeholder: "Estructura", autofocus: true %>
+        <p class="help-block">Ingresa el Nombre de la Categoría</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Orden</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'orden', @category ? @category[0]['Orden'] : '0', class: 'form-control', placeholder: "0" %>
+        <p class="help-block">Ingresa el Orden de la Categoría</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Frecuencia</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'frecuencia', options_for_select([[7,"Semanal"],[14,"Quincenal"],[30,"Mensual"],[60,"Bimestral"],[180,"Semestral"],[365,"Anual"]].collect{|t| [ t[1], t[0] ]}, @category ? @category[0]['Frecuencia'].to_i : 30), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Ingresa la Frecuencia de la Categoría</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Activa</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'activo', options_for_select([[1,"Activa"],[0,"Inactiva"]].collect{|t| [ t[1], t[0] ]}, @category ? @category[0]['Activo'].to_i : 1), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Selecciona si es una Categoría Activa</p>
+      </div>
+    </div>
+
+    <div class="col-md-7 col-md-offset-3">
+      <div class="form-actions loader-form text-center">
+        <%= submit_tag "Guardar", class: "btn btn-primary " %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>

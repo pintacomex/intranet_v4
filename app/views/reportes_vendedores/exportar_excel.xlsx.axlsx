@@ -1,0 +1,36 @@
+ wb = xlsx_package.workbook 
+  wb.add_worksheet(name: "Todos los vendedores") do |sheet| 
+    sheet.add_row ["IdVendedor", "Nombre", "Sucursal", "UltFechaProcesada", "Dias", "NumIncidencias"]
+    @sellers.each do |seller|
+      sheet.add_row [seller[1][:id_vendedor], seller[1][:nombre], seller[1][:sucursal], "#{seller[1][:ult_fecha][0..3]}-#{seller[1][:ult_fecha][4..5]}-#{seller[1][:ult_fecha][-2..-1]}", seller[1][:dias], seller[1][:num_incidencias]]
+    end
+  end
+
+
+  wb.add_worksheet(name: "Ventas en fechas con excepción") do |sheet| 
+    sheet.add_row ["IdVendedor", "Nombre", "Sucursal", "SucOrigen", "Del", "Al"]
+    @vendedores_ventas.each do |seller|
+      sheet.add_row [seller['IdVendedor'], seller['Nombre'], seller['Sucursal'], seller['SucOrigen'], "#{seller['Del'][0..3]}-#{seller['Del'][4..5]}-#{seller['Del'][6..7]}", "#{seller['Al'][0..3]}-#{seller['Al'][4..5]}-#{seller['Al'][6..7]}"]
+    end
+  end
+
+  wb.add_worksheet(name: "Vendio menos del 20%") do |sheet| 
+    sheet.add_row ["IdVendedor", "Fecha", "Nombre", "Sucursal", "Mes", "Obj.Venta", "Venta Neta", "Porc.Venta"]
+    @vendedores_porcentaje_bajo.each do |seller|
+      sheet.add_row [seller['IdVendedor'] , "#{seller['Fecha'][0..3]}-#{seller['Fecha'][4..5]}-#{seller['Fecha'][-2..-1]}", seller['Nombre'], seller['Sucursal'], seller['Mes'], number_to_currency(seller['objetivoVenta'], :locale => :mx, :precision => 2), number_to_currency(seller['VentaNeta'], :locale => :mx, :precision => 2),"#{seller['porcentajeVenta']} %"]
+    end
+  end
+
+  wb.add_worksheet(name: "Incidencias duplicadas") do |sheet| 
+    sheet.add_row ["IdVendedor", "Nombre", "Sucursal", "Del", "Al", "Nombre"]
+    @excepciones_duplicados.each do |seller|
+      sheet.add_row [seller['Idvendedor'], seller['Nombre'], seller['Sucursal'], "#{seller['Del'][0..3]}-#{seller['Del'][4..5]}-#{seller['Del'][6..7]}", "#{seller['Al'][0..3]}-#{seller['Al'][4..5]}-#{seller['Al'][6..7]}", seller['Nombre']]
+    end
+  end
+  
+  wb.add_worksheet(name: "Días teoricos vs reales") do |sheet| 
+    sheet.add_row ["IdVendedor", "Nombre", "Sucursal", "Mes", "UltFechaProcesada", "Dias Operados", "Dias con incidencias", "Dias Por Transcurrir", "Dias Habiles Suc", "Dias de Diferencia"]
+    @vendedores_diferencias.each do |seller|
+      sheet.add_row [seller['IdVendedor'], seller['Nombre'], seller['Sucursal'], seller['Mes'], "#{seller['ultFechaProcesada'][0..3]}-#{seller['ultFechaProcesada'][4..5]}-#{seller['ultFechaProcesada'][-2..-1]}", seller['Dias'], seller['DiasIncidencias'], seller['DiasPorTranscurrir'], seller['DiasHabilesSuc'], seller['Diferencia']]
+    end
+  end

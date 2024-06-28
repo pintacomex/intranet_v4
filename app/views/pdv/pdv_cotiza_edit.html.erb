@@ -1,0 +1,67 @@
+<div class="row">
+  <% if @sistemawp.to_i == 0 %>
+      <h1 class="text-center">Cotizaciones</h1>
+      <h3 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h3>
+      <h3 class="text-center">Datos Cotización</h3>
+  <% else %>
+      <h1 class="text-center">Cotizaciones</h1>
+      <h3 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h3>
+      <h3 class="text-center">Datos Cotización</h3>
+  <% end %>
+  <br>
+
+  <p>
+    <a class="btn pull-left btn-info btn-sm" href="/pdv_selprod?vendedor=<%=@vendedor%>&tab=2&movnvo=<%=@movnvo%>" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  </p>
+  <div class="clearfix"></div>
+  <br>
+
+  <%= form_tag("/pdv_cotiza_update" ) do %>
+    <br>
+    <div class="form-group">
+      <%= hidden_field_tag 'numcotiza', @cotizamod[0]['NumCotiza'] %>
+      <%= hidden_field_tag 'nummov', @cotizamod[0]['Nummov'] %>
+      <%= hidden_field_tag 'movnvo', @movnvo %>
+      <%= hidden_field_tag 'vendedor', @vendedor %>
+
+      <div id="margen5" class="col-sm-2 col-md-2 col-lg-2"><%= label_tag 'contacto', 'Contacto :' %></div>
+      <div id="margen5" class="col-sm-8 col-md-6 col-lg-6">
+        <%= text_area_tag 'contacto', @cotizamod[0]['Contacto'], rows: 2, class: 'form-control', autofocus: true %>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div id="margen5" class="col-sm-2 col-md-2 col-lg-2"><%= label_tag 'notasup', 'Nota Superior :' %></div>
+      <div id="margen5" class="col-sm-10 col-md-10 col-lg-10">
+        <%= text_area_tag 'notasup', @cotizamod[0]['NotaSup'], rows: 5, class: 'form-control'%>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div id="margen5" class="col-xs-12 col-sm-2 col-md-2 col-lg-2"><%= label_tag 'vigencia', 'Vigencia en Dias :' %></div>
+      <div id="margen5" class="col-xs-4 col-sm-2 col-md-2 col-lg-1">
+        <%= number_field_tag 'vigencia', @cotizamod[0]['Vigencia'], min: 0, max: 90, class: 'form-control' %>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div id="margen5" class="col-sm-2 col-md-2 col-lg-2"><%= label_tag 'notainf', 'Condiciones Comerciales :' %></div>
+      <div id="margen5" class="col-sm-10 col-md-10 col-lg-10">
+        <%= text_area_tag 'notainf', @cotizamod[0]['NotaInf'], rows: 10, class: 'form-control' %>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div id="margen5" class="col-sm-2 col-md-2 col-lg-2"><%= label_tag 'datosvend', 'Inf. Vendedor :' %></div>
+      <div id="margen5" class="col-sm-10 col-md-10 col-lg-10">
+        <%= text_area_tag 'datosvend', @cotizamod[0]['DatosVend'], rows: 5, class: 'form-control' %>
+      </div>
+
+      <div class="col-sm-7 col-md-8 col-lg-8">
+        <div class="form-actions loader-form">
+          <%= submit_tag "Guardar", class: "btn btn-info btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

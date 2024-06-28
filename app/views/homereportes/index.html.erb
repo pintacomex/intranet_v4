@@ -1,0 +1,129 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<div class="col-md-12">
+	<div class="col-md-3">
+		<% if @show_arrow %>
+			<%=  link_to "Tareas", {controller: 'homereportes', action: 'new_task'}, class: 'btn btn-primary text-left'%>
+		<% end %>
+		<% if @show_boss %>
+			<%=  link_to "Empleados", {controller: 'homereportes', action: 'new_employee'}, class: 'btn btn-primary text-left'%>
+			<%=  link_to "Areas", {controller: 'homereportes', action: 'new_area'}, class: 'btn btn-primary text-left'%>
+			<%=  link_to "Log", {controller: 'homereportes', action: 'log_home_office'}, class: 'btn btn-primary text-left'%>
+		<% end %>
+		<br><br>
+		<% if @show_report  %>
+			<%=  link_to "Nuevo Reporte", {controller: 'homereportes', action: 'new'}, class: 'btn btn-primary text-left'%>
+		<% end %>
+		<% if @home_employees.length > 0 %>		
+			<div class="col-md-12 card">
+				<h5 class="text-center">Promedio del mes: <h1 class="text-center"><%= @average %></h1></h5>
+				<div class="stars text-center">
+					<% (1..10).each do |number| %>
+						<% if number <= @average.to_i %>
+							<span class="fa fa-star checked"></span>
+						<% else %>
+							<span class="fa fa-star"></span>			
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+		<br><br><br>
+		<div class="col-md-12 card">
+			<h3 class="text-center">Tareas</h3>
+			<% @taskusers.each do |t| %>
+				<h5>* <%= @tasks.select {|e| e.id == t['id_task'].to_i }.first.descripcion rescue "" %></h5>
+				<p>Fecha Inicio: <%= t['fecha_inicio'] %></p>
+				<p>Fecha Limite: <%= t['fecha_limite'] %></p>
+				<p>% Terminado: <%= t['porc_terminado'] == nil ? 0 : t['porc_terminado'] %>%</p>
+				<p>Ùlt.Fec.Proc: <%= t['fecha_procesado'] %></p>
+				<hr>
+			<% end %>
+		</div>
+	</div>
+	<% if @home_employees.length > 0 %>
+		<div class="col-md-9" id="myDiv">
+			<% if @show_arrow %>
+				<div class="dropdown">
+				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				  	<% u = @employees.select {|m| m['id'] == @home_employees.first['user_id'].to_i }.first %>
+				    <%= @user_selected.name rescue "#{u.id}-#{u.name}"[0..20] %>
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				  	<% @home_employees.each do |e| %>
+					  	<li>
+					  		<% user = @employees.select {|m| m['id'] == e['user_id'].to_i }.first  rescue 0 %>
+						  	<%= link_to  "#{user['id']}-#{user['name']}"[0..20], controller: 'homereportes', action: "index", user_id: e['user_id'].to_i  %>
+						  </li>
+				    <% end %>
+				  </ul>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+	<div class="col-md-9 card text-center">
+		<div class="col-md-12">
+			<% if @home_employees.length > 0 %>	
+				<%= render(partial: 'month') %>	
+			<% else %>
+				<h5 class="text-center">No hay resultados</h5>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<style type="text/css">
+	.carousel {
+	    background: #fff;
+	    margin-top: 5px;
+	    padding: 3px 30px;
+	}
+	.paymentdetails {
+	    border: 1px #434348 solid;
+	    margin-right: 2px;
+	    padding: 5px;
+	}
+	.carousel-control {
+	    width: 0px !important;
+	}
+	.controls {
+	    background-color: #7070db;
+	    padding: 5px;
+	    border-radius: 15px;
+	    font-size: 18px !important;
+	}
+	.card {
+	    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	    transition: 0.3s;
+	    border-radius: 5px;
+	    margin: 30px 0;
+	    padding: 0;
+	}
+  .checked {
+    color: orange;
+	}
+	.stars{
+		margin: 10px 10px;
+	}
+	.desktime{
+		margin: 0 0 0 0;
+	}
+.outer{
+  white-space: nowrap;
+  position: relative;
+  overflow-x:scroll;
+  overflow-y:hidden;
+}
+.outer a{
+  width: 24.5%;
+  background-color: #eee;
+  float: none;
+  height: 90%;
+  margin: 0 0.25%;
+  display: inline-block;
+  zoom: 1;
+}
+</style>
+

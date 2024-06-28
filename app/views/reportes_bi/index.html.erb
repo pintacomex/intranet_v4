@@ -1,0 +1,125 @@
+<div class="pull-right text-right">
+  <small>
+    <% if current_user.has_role? :admin %>
+      <a href="/reportes_bi_reportes/" class="btn btn-primary btn-xs">Administrar Reportes BI</a>
+    <% end %>
+  </small>
+</div>
+
+
+<% if @seccion.nil? %>
+  <div class="col-md-6 col-md-offset-3">
+    <h3 class="text-center">Reportes BI</h3>
+    <br>
+
+    <% if @reportes.count > 0 %>
+      <% last_reporte = '' %>
+      <% @reportes.each do |item| %>
+        <% if last_reporte != item['seccion'] %>
+          <% last_reporte = item['seccion'] %>
+          <a href="/reportes_bi?seccion=<%= item['seccion'] %>" class="btn btn-primary btn-lg btn-block"><%= item['seccion'] %></a>
+        <% end %>
+      <% end %>
+
+    <% else %>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr>
+            <td>Sin Datos</td>
+          </tr>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+
+<% else %>
+
+  <div class="col-md-6 col-md-offset-3">
+    <% if @reportes.count > 0 %>
+      <h3 class="text-center"><%= @seccion %></h3>
+      <br>
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Comentario</th>
+          </tr>
+        </thead>
+        <tbody >
+
+        <% @reportes.each do |item| %>
+          <tr>
+            <td>
+              <strong><%= item['nombre'] %></strong>
+            </td>
+            <td>
+              <%= item['comentario'] %>
+            </td>
+            <td>
+              <a href="<%= item['hipervinculo'] %>" class="btn btn-primary btn-sm" target="_blank">Ver</a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  <% else %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr>
+          <td>Sin Datos</td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>
+
+
+
+<br />
+</div>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+

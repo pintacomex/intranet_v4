@@ -1,0 +1,122 @@
+<br>
+<%= render(partial: '/tableros/navpills') %>
+
+<div class="col-md-6 col-sm-6 center-block inner-top-sm">
+
+  <h3>Nombre: <%= @nombre %></h3>
+  <p>
+    <pre>
+<%= @layout['NombreElemento'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>Titulo Adicional:</strong>
+    <strong><%= @adicional %></strong>
+    <pre>
+<%= @layout['TituloAdicional'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>URL:</strong>
+    <strong><%= @url %></strong>
+    <pre>
+<%= @layout['Url'] %>
+    </pre>
+  </p>
+
+  <p>
+    <strong>IdLayout:</strong>
+    <strong><%= @layout['IdLayout'] %></strong>
+  </p>
+
+  <p>
+    <strong>IdElemento:</strong>
+    <strong><%= @layout['IdElemento'] %></strong>
+  </p>
+
+  <p>
+    <strong>IdMedidor:</strong>
+    <strong><%= @layout['IdMedidor'] %></strong>
+  </p>
+</div>
+
+<div class="col-md-6 col-sm-6 center-block inner-top-sm">
+
+  <p>
+    <strong>X Inicial:</strong>
+    <strong><%= @layout['Xini'] %></strong>
+  </p>
+
+  <p>
+    <strong>Y Inicial:</strong>
+    <strong><%= @layout['Yini'] %></strong>
+  </p>
+
+  <p>
+    <strong>X Final:</strong>
+    <strong><%= @layout['Xfin'] %></strong>
+  </p>
+
+  <p>
+    <strong>Y Final:</strong>
+    <strong><%= @layout['Yfin'] %></strong>
+  </p>
+
+  <pre>
+Layout Elements con el mismo Layout ID:
+<%= @elementos.as_json %>
+
+Medidores del Layout:
+<%= @medidores.as_json %>
+
+CSS Grid del Layout:
+<%= @css_grid.as_json %>
+
+Nombre Query:
+<%= @nombre_query %>
+
+Adicional Query:
+<%= @adicional_query %>
+
+URL Query:
+<%= @url_query %>
+
+  </pre>
+</div>
+
+<div class="col-md-12 col-sm-12 center-block">
+  <h3>Previsualizacion del Layout</h3>
+  <hr>
+  <div class="grid-container">
+    <% @elementos.each_with_index do |layout, i| %>
+      <div class="medidor-<%= layout['IdMedidor'] %>">
+        <a href="<%= layout['url'] %>">
+          <h4 style="text-align:center"><%= layout['nombre'] %></h4>
+          <%= render(partial: 'medidor_v2', locals: { id: layout['IdMedidor'], tipoMedidor: layout['TipoMedidor'] } ) %>
+          <p style="text-align:center"><%= layout['TituloAdicional'] %></p>
+        </a>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<hr>
+
+<style>
+  .gauge-v2 {
+    height: 75%;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas: <%= raw(@css_grid) %>;
+  }
+
+  <% @elementos.each_with_index do |layout, i| %>
+    .medidor-<%= layout['IdMedidor'] %> { grid-area: medidor-<%= layout['IdMedidor'] %>; }
+  <% end %>
+</style>

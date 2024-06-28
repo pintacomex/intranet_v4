@@ -1,0 +1,51 @@
+<%= render(partial: '/tickets/navpills') %>
+
+<div class="col-sm-10 col-sm-offset-1">
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+		<% @grupos.each do |i| %>
+			<thead>
+				<tr>
+					<th>Grupo</th>
+					<th>Integrantes</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><%= i['Nombre'] %></td>
+					<td><%= i['IdUser'].to_i > 0 ? i['GCount'] : "0" %></td>
+					<td>
+						<%= link_to 'Editar', "/grupos_edit?id=#{i['IdGrupo']}", class: "btn btn-xs btn-primary" %>
+						<%= link_to 'Borrar', "/grupos_destroy?id=#{i['IdGrupo']}", method: :delete, data: { confirm: 'Está seguro?' }, class: "btn btn-xs btn-danger" %>
+					</td>
+				</tr>
+				<% @grupos_det.each do |ii| %>
+					<% next if i['IdGrupo'] != ii['IdGrupo'] %>
+						<% url = "/grupos_update_rol?IdGrupo=#{ii['IdGrupo']}&IdUser=#{ii['IdUser']}&RolUser=" %>
+					<tr>
+					<% es_admin = ii['RolUser'] == 0 ? false : true %>
+					<td colspan="2">
+						<%= ii['userName'].to_s.gsub(" - ", " ") %> (<%= ii['userEmail'] %>) 
+						<% if es_admin %>
+							<span class="badge">Admin</span>
+						<% end %>
+					</td>
+					<td>
+						<%= link_to raw('&nbsp;&nbsp;Hacer Admin&nbsp;&nbsp;'), "#{url}1", class: "btn btn-info btn-xs" unless es_admin %>
+						<%= link_to raw('&nbsp;&nbsp;&nbsp;&nbsp;Quitar Rol&nbsp;&nbsp;&nbsp;&nbsp;'), "#{url}0", class: "btn btn-primary btn-xs" if es_admin %>
+					</td>
+				</tr>
+				<% end %>
+			</tbody>
+		<% end %>
+	</table>
+	<br>
+	<%= link_to "Crear Grupo", "/grupos_new", class: "btn btn-primary" %>
+	<br>
+	<br>
+	<div class="well">
+		<p>
+			<b>Nota:</b> El Admin de un Grupo tiene privilegios que un Agente normal no tiene. El Agente, por ejemplo, sólo puede cambiar el Status, el Porcentaje y sólo puede asignarse a sí mismo como Responsable. También recibe todos los emails del grupo al que pertenece. El Admin, en cambio, puede cambiar al Responsable, la Fecha Límite y el Grupo de un ticket, además de los cambios que puede hacer del Agente, y no recibe todos los emails de notificación sino sólo los que han sido creados por él, cuando es Responsable de un ticket o cuando hace alguna modificación.
+		</p>
+	</div>
+</div>

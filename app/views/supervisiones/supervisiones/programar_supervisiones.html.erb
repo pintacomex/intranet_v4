@@ -1,0 +1,88 @@
+<%= render(partial: '/supervisiones/navpills') %>
+<br><br>
+<div class="col-sm-9">
+	<div class="container">
+		<div class="card">
+			<h2 class="text-center">Programar Supervisiones</h2>
+			<hr>
+			<br/>
+			<%= form_for supervisiones_programar_supervisiones_path, html: { class: 'form-horizontal' } do |f| %>
+			  <div class="form-inputs">
+		        <input type="hidden" id="tipo" name="tipo" value="1" />
+		        <input type="hidden" id="categoria" name="categoria" value="0" />  	
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Supervisor</label>
+			      <div class="col-md-6 text-right">
+			        <%= select_tag 'usuario', options_for_select(@supervisores), class: 'form-control', placeholder: "Selecciona Supervisor", data: { placeholder: "Selecciona Supervisor" } %>
+			        <p class="help-block">Selecciona el Auditor o Supervisor Responsable</p>
+			      </div>
+			    </div>
+
+		        <div class="form-group">
+		          <label class="control-label col-md-3">Fecha</label>
+		          <div class="col-md-6 col-sm-6 text-right">
+		          	<div id="datepicker" data-date="<%= (Date.today + 1.day).strftime("%m/%d/%Y") %>" data-date-start-date="<%= (Date.today).strftime("%m/%d/%Y") %>"></div>
+		            <input type="hidden" id="fecha" name="fecha" />
+		            <p class="help-block">Selecciona la Fecha desde la cual Supervisar</p>
+		          </div>	    
+		        </div>
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Checklist</label>
+			      <div class="col-md-6 text-right">
+			        <%= select_tag 'checklist', options_for_select(@checklists, params[:checklist] ? params[:checklist] : @checklists.first.last), class: 'form-control checklist', placeholder: "Selecciona Checklist", data: { placeholder: "Selecciona Checklist" } %>
+			        <p class="help-block">Selecciona el Checklist a Supervisar</p>
+			      </div>
+			    </div>
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Sucursal</label>
+			      <div id="div-sucs" class="col-md-6 text-right">
+			        <%= select_tag 'sucursal', options_for_select(@sucursales, params[:sucursal] ? params[:sucursal] : @sucursales.first.last), class: 'form-control', placeholder: "Selecciona Sucursal", data: { placeholder: "Selecciona Sucursal" } %>
+			        <p class="help-block">Seleccione la Sucursal a Supervisar</p>
+			      </div>
+			    </div>
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Categoría</label>
+			      <div id="div-cats" class="col-md-6 text-right">
+			        <%= select_tag 'categoria', options_for_select(@categorias, params[:categoria] ? params[:categoria] : @categorias.first.last), class: 'form-control', placeholder: "Seleccione Categoría", data: { placeholder: "Seleccione Categoría" } %>
+			        <p class="help-block">Seleccione la Categoría a Supervisar</p>
+			      </div>
+			    </div>
+
+			    <div class="col-md-9 col-md-offset-3">
+			      <div class="form-actions loader-form text-center">
+			        <%= submit_tag "Programar", class: "btn btn-primary " %>
+			      </div>
+			      <br><br>
+			    </div>
+
+			  </div>
+
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+	  $('#datepicker').datepicker({
+	  });
+	  $("#fecha").val(
+	    $("#datepicker").datepicker('getFormattedDate')
+	  );
+	  $("#datepicker").on("changeDate", function(event) {
+	    $("#fecha").val(
+	      $("#datepicker").datepicker('getFormattedDate')
+	    )
+	  });
+	  $('.checklist').change(function(e) {
+	  	var sucs_url = "/supervisiones/load_sucs?idChecklist="+this.value;
+	  	var cats_url = "/supervisiones/load_cats?todas=1&idChecklist="+this.value;
+	  	$.getScript(sucs_url);
+	  	$.getScript(cats_url);
+	  });
+	});
+</script>

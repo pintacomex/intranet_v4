@@ -1,0 +1,50 @@
+
+<%= form_tag('/bajas_mails', class: 'form-horizontal' )  do |f| %>
+
+  <div class="form-inputs loader-form ">
+
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Tipo de Email</label>
+      <div class="col-md-5 text-right">
+        <% @tipos_mail = [ { "id" => 0, "tipo" => "Todas las Notificaciones" }, { "id" => 1, "tipo" => "Fecha Estimada o de Aclaración" }, { "id" => 2, "tipo" => "Comentarios Nuevos" } ] %> 
+        <%= select_tag 'TipoMail', options_for_select(@tipos_mail.collect{|t| [ t['tipo'], t['id'] ]}, @bajasmail ? @bajasmail['TipoMail'] : nil), label: false, placeholder: "Tipo de Email", autofocus: true, class: 'form-control'  %>
+        <p class="help-block">Ingrese el Tipo de Email de la Notificación</p>
+      </div>
+    </div>
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Email</label>
+      <div class="col-md-5 text-right">
+        <%= text_field_tag 'Email', @bajasmail ? @bajasmail['Email'] : nil, label: false, placeholder: "nombre@pintacomex.mx", class: 'form-control' %>
+        <p class="help-block">Ingrese el Email que Recibirá la Notificación</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Zona</label>
+      <div class="col-md-5 text-right">
+        <% @zonas = @dbComun.connection.select_all("SELECT * FROM zonas ORDER BY NumZona") %> 
+        <% @zonas2 = @dbComun.connection.select_all("SELECT * FROM zonas ORDER BY NumZona") %> 
+        <%= select_tag 'Zona', options_for_select(@zonas.collect{|t| [ t['NomZona'], t['NumZona'] ]}.unshift(["Todas",-1]), @bajasmail ? @bajasmail['Zona'] : nil), label: false, placeholder: "Zona", class: 'form-control'  %>
+        <p class="help-block">Ingrese la Zona de la que Recibirá las Notificaciones</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Sucursal</label>
+      <div class="col-md-5 text-right">
+        <% @sucursales = @dbComun.connection.select_all("SELECT * FROM sucursal ORDER BY Num_suc") %> 
+        <%= select_tag 'Sucursal', options_for_select(@sucursales.collect{|t| [ t['Nombre'], t['Num_suc'] ]}.unshift(["Todas",-1]), @bajasmail ? @bajasmail['Sucursal'] : nil), label: false, placeholder: "Sucursal", class: 'form-control' %>        
+        <p class="help-block">Ingrese la Sucursal de la que Recibirá las Notificaciones</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="form-actions loader-form text-center">
+    <%= submit_tag "Enviar", class: "btn btn-primary" %>
+  </div>
+<% end %>

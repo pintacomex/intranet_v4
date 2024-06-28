@@ -1,0 +1,111 @@
+<% if @tiene_tableros %>
+  <div class="grid-container">
+    <% @elementos.each_with_index do |layout, i| %>
+			<div class="medidor-<%= layout['IdMedidor'] %>">
+				<a href="<%= layout['url'] %>">
+					<h4 style="text-align:center"><%= layout['nombre'] %></h4>
+					<%= render(partial: 'tableros/layouts/medidor_v2', locals: { id: layout['IdMedidor'], tipoMedidor: layout['TipoMedidor'] } ) %>
+					<p style="text-align:center"><%= layout['adicional'] %></p>
+				</a>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+	<% if @bloques.length > 1 %>
+		<div class="container">
+			<div class="float-right pull-right mt-3">
+				<small>
+					<a href="/personalizar_menu">Personalizar</a>
+				</small>
+			</div>
+		</div>
+	<% end %>
+<% end %>
+
+<link rel="stylesheet" href="/assets/css/bootstrap/mdb.min.css">
+<link rel="stylesheet" href="/assets/plugins/custom-scrollbar/jquery.mCustomScrollbar.min.css">
+<link rel="stylesheet" href="/assets/css/bootstrap/bootstrap-rtl.min.css">
+<link rel="stylesheet" href="/assets/css/quillpro/quillpro.css">
+
+<div class="container">
+	<br><br>
+
+	<% if @bloques.length == 1 %>
+		<% @modulos.each_with_index do |m,index| %>
+			<a href="<%= get_url(m[:url]) %>" class="btn btn-primary btn-lg btn-block"><%= m[:nombre] %></a>
+		<% end %>
+	<% end %>
+
+	<% if @bloques.length > 1 %>
+		<% moduls = @modulos.group_by {|i| i[:bloque] } %>
+		<% moduls.each do |modulo| %>
+			<div class="col-md-12 mb-5 card">
+				<div class="card-title">
+					<br>
+					<h1 class="text-center"><%= modulo[0] %></h1>
+					<hr>
+				</div>
+				<div class="card-body row pt-0">
+					<% modulo[1].each do |app| %>
+						<div class="col-md-4 app">
+							<a href="<%= get_url(app[:url]) %>" class="btn btn-block card-app d-flex">
+								<div class="my-auto mx-auto text-center">
+									<i class= "fas <%= @icons[app[:nombre]] != nil ? @icons[app[:nombre]] : 'fa-exclamation-circle' %> fa-5x pb-2"></i>
+									<h4><%= app[:nombre] %></h4>
+								</div>
+							</a>
+						</div>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+	<% end %>
+
+	<% if @modulos.length == 0 %>
+		<p>Favor de solicitar acceso a los diferentes modulos en <a href="mailto:pintacomex@pintacomex.mx?subject=AccesosModulos">pintacomex@pintacomex.mx</a></p>
+	<% end %>
+
+</div>
+
+<style type="text/css">
+	.card-app {
+		height: 148px;
+	}
+	.app{
+		margin: 20px 0;
+	}
+	.app > a{
+		background-color: #4fc3f7;
+	}
+	.app > a > div > h4 {
+		color: white;
+	}
+</style>
+
+<% if @tiene_tableros %>
+  <% if @bloques.length > 1 %>
+	<div class="container">
+		<div class="float-right pull-right mt-3">
+			<small>
+				<a href="/personalizar_menu">Personalizar</a>
+			</small>
+		</div>
+	</div>
+  <% end %>
+  <style>
+	.gauge-v2 {
+		height: 75%;
+	}
+
+	.grid-container {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+		grid-template-areas: <%= raw(@css_grid) %>;
+	}
+
+	<% @elementos.each_with_index do |layout, i| %>
+		.medidor-<%= layout['IdMedidor'] %> { grid-area: medidor-<%= layout['IdMedidor'] %>; }
+	<% end %>
+	</style>
+<% end %>

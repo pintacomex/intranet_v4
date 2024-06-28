@@ -1,0 +1,69 @@
+<% if @sistemawp.to_i == 0 %>
+    <h1 class="text-center">Cotizaciones</h1>
+    <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+    <h2 class="text-center"><%= @titulomov %></p>
+<% else %>
+    <h1 class="text-center">Cotizaciones</h1>
+    <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+    <h2 class="text-center"><%= @titulomov %></h2>
+<% end %>
+<br>
+
+<p>
+  <% if @movnvo == "IE" || @movnvo == "IS" %>
+    <a class="btn pull-left btn-info btn-sm" href="/pdv" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  <% else %>
+    <a class="btn btn-info btn-sm" href="/pdv_selprod?vendedor=<%=@vendedor%>&movnvo=<%=@movnvo%>&tab=2" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  <% end %>
+</p>
+<div class="clearfix"></div>
+<br>
+
+<div class="row">
+  <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <a class="btn pull-right btn-info btn-xs" href="/pdv_selsuc?vendedor=<%=@vendedor%>&movnvo=<%=@movnvo%>&todas=1" role="button"><span class="glyphicon glyphicon-ok-circle"></span> Mostrar Todas</a>
+        <h3 class="panel-title">Seleccionar Sucursal</h3>
+      </div>
+      <div class="panel-body fixed-panel">
+        <% if @sucursales && @sucursales.count > 0 %>
+
+          <div class="row">
+            <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th><a href="#" data-toggle="tooltip" title="Sucursal">Num_suc</a></th>
+                  <th><a href="#" data-toggle="tooltip" title="Nombre">Nombre</a></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @sucursales.each do |m| %>
+                  <tr>
+                    <% if @movnvo == "IE" || @movnvo == "IS" %>
+                      <td><a href="/pdv_selprod?vendedor=<%=@vendedor%>&numsuc=<%= m['Num_suc'] %>&movnvo=<%=@movnvo%>"><%= m['Num_suc'] %></a></td>
+                    <% else %>
+                      <td><a href="/pdv_selprod?vendedor=<%=@vendedor%>&numsuc=<%= m['Num_suc'] %>&movnvo=<%=@movnvo%>&tab=2"><%= m['Num_suc'] %></a></td>
+                    <% end %>
+                    <td><%= m['Nombre'] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+
+            <script type="text/javascript" language="javascript" src="/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" language="javascript" src="/dataTables.bootstrap.js"></script>
+            <%= javascript_include_tag "/dt_v3" %>
+
+          </div>
+        <% else %>
+          <p align=center class="titulo2">Sin Sucursales</p>
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

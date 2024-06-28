@@ -1,0 +1,71 @@
+<div class="col-md-9 col-sm-offset-1 col-md-offset-2">
+  <% if @sistemawp.to_i == 0 %>
+      <h1 align=center class="text-center">Cotizaciones</h1>
+      <h2 align=center class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+      <h2 align=center class="text-center">Descuento Global</h2>
+  <% else %>
+      <h1 align=center class="text-center">Cotizaciones</h1>
+      <h2 align=center class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+      <h2 align=center class="text-center">Descuento Global</h2>
+  <% end %>
+  <br>
+
+  <p>
+    <a class="btn pull-left btn-info btn-sm" href="/pdv_selprod?vendedor=<%=@vendedor%>&movnvo=<%=@movnvo%>&tab='2'" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  </p>
+  <div class="clearfix"></div>
+  <br>
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title titulo3">La Cotización ya tiene descuentos por Producto</h3>
+    </div>
+
+    <div class="panel-body">
+      <% if @prodsindesc.to_i > 0 %>
+        <p align=center class="titulo2">Indique si el descuento cancela y sustituye los descuentos parciales o si se aplica solo a los productos sin descuento</p>
+      <% else %>
+        <p align=center class="titulo2">Indique si el descuento cancela y sustituye los descuentos parciales</p>
+      <% end %>
+
+      <%= form_tag("/pdv_desc_global_update" ) do %>
+        <div class="form-group">
+          <%= hidden_field_tag 'vendedor', @vendedor %>
+          <%= hidden_field_tag 'cliente', @cliente %>
+          <%= hidden_field_tag 'nummov', @nummov %>
+          <%= hidden_field_tag 'movnvo', @movnvo %>
+          <%= hidden_field_tag 'descuento', @descuento %>
+          <%= hidden_field_tag 'descuentopesos', @descuentopesos %>
+          <%= hidden_field_tag 'prodcondesc', @prodcondesc %>
+          <%= hidden_field_tag 'prodsindesc', @prodsindesc %>
+          <%= hidden_field_tag 'seltipodesc', @seltipodesc %>
+
+          <div class="well well-md">
+            <div class="radio-inline">
+              <label>
+                <input type="radio" name="descglobal" id="opciones_1" value="1" checked>
+                Cancelar Parciales
+              </label>
+            </div>
+            <% if @prodsindesc.to_i > 0 %>
+              <div class="radio-inline">
+                <label>
+                  <input type="radio" name="descglobal" id="opciones_2" value="2">
+                  Aplicar a Productos sin Descuento
+                </label>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="clearfix"></div>
+          <div class="col-sm-7 col-md-8 col-lg-8">
+            <div class="form-actions loader-form">
+              <%= submit_tag "Aceptar", class: "btn btn-info btn-sm" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>

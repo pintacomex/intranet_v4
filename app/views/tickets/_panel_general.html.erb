@@ -1,0 +1,109 @@
+<div role="tabpanel" class="tab-pane active card" id="general">
+	<%= form_tag(@puede_editar ? "/tickets_update" : "") do %>
+		<%= hidden_field_tag 'id', @todo[0]['IdHTodo'] %>
+
+    <button type="submit" class="hidden"></button>
+
+		<h3><%= @todo[0]['Asunto'] %></h3>
+
+		<p><small>Creado: <%= @todo[0]['FechaCreacion'].to_s[0..19] %> &nbsp; Actualizado: <%= @todo[0]['FechaActualizacion'].to_s[0..19] %></small></p>
+
+		<div class="row">
+			<div class="col-sm-3">
+        <p>Responsable</p>
+        <p><%= select_tag 'responsable', options_for_select(@resp_users.unshift(["Ninguno",0]), @todo[0]['Responsable'] ), class: 'form-control submitable', disabled: !@admin_de_grupo %></p>
+	    </div>
+			<div class="col-sm-2">
+				<p>Fecha Límite</p>
+				<p><%= select_tag 'fecha_limite', options_for_select(@fechas_limite, @fecha_limite), class: 'form-control submitable', disabled: !(@admin_de_grupo && @tiene_responsable) %></p>
+			</div>
+			<div class="col-sm-3">
+        <p>Grupo</p>
+        <p><%= select_tag 'tipo', options_for_select(@grupos, @todo[0]['Tipo'] ), class: 'form-control submitable', disabled: !@admin_de_grupo %></p>
+			</div>
+			<div class="col-sm-2">
+        <p>Porcentaje</p>
+        <p><%= select_tag 'porcentaje', options_for_select(@porcentajes, @todo[0]['Porcentaje'] ), class: 'form-control submitable', disabled: !((@admin_de_grupo && @tiene_responsable) || @es_responsable) %></p>
+	    </div>
+			<div class="col-sm-2">
+        <p>Status</p>
+        <p><%= select_tag 'status', options_for_select(@status, @todo[0]['Status'] ), class: 'form-control submitable', disabled: !((@admin_de_grupo && @tiene_responsable) || @es_responsable) %></p>
+	    </div>
+		</div>
+		<% if @puede_editar && @todo[0]['Status'].to_i < 5 %>
+		  <small>
+			  <%= link_to "Asignarme a mí mismo", "/tickets_assign_myself?id=#{@todo[0]['IdHTodo']}&responsable=#{current_user.id}" %>
+			  <br>
+			  <br>
+		  </small>
+		<% end %>
+	<% end %>
+
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <div id="message-history">
+        <% @todo.each do |respuesta| %>
+          <div class="message">
+            <a href="mailto:<%= getEmail(respuesta['Usuario']) %>" class="message_username"><%= getUser(respuesta['Usuario']) %></a>
+            <span class="message_timestamp"><%= respuesta['RFechaCreacion'].to_s[0..19] %></span>
+            <span class="message_content">
+	          	<p>
+		            <% if respuesta['File'].to_i > 0 %>
+		              <% file = TodosRespuestasFile.find(respuesta['File'].to_i) rescue nil %>
+		              <% if file && file.file.content_type.include?("image") %>
+		                <%= link_to image_tag(file.file.url(:medium)), file.file.url, target: "_blank" %>
+		      	      <% elsif file %>
+		      	      	<a href="<%= file.file.url %>" class="btn" target="_blank">
+			      	        <button type="button" class="btn btn-default btn-lg" style="padding-right: 100px; padding-bottom: 0px;">
+			      	          <img src="file_icon.png" style="float: left; margin: 0px 15px 15px 0px;">
+											  <strong style="line-height: 28px;"><%= file.file.original_filename %></strong><br>
+			              	  <span class="text-muted small"><%= number_to_human_size(file.file.size) %> - Haga click para abrir original</span>
+											</button>
+										</a>
+		      	      <% else %>
+		                Archivo no encontrado
+		          	  <% end %>
+		      	    <% else %>
+		          	  <%= simple_format(respuesta['Texto']) %>
+		      	    <% end %>
+	          	</p>
+	          </span>
+		      </div>
+		    <% end %>
+		  </div>
+
+			<%= form_tag("/tickets_respuesta_create") do %>
+				<%= hidden_field_tag 'id', @todo[0]['IdHTodo'] %>
+				<div class="">
+	        <div class="form-group">
+	          <div class="col-md-12 col-sm-12">
+	            <br>
+	            <%= text_area_tag 'texto', nil, size: "50x3", class: "form-control col-sm-12", placeholder: "Nueva Respuesta" %>
+	          </div>
+	        </div>
+	        <div class="form-group">
+	          <div class="col-md-12 col-sm-12 sm-offset-1">
+	          	<div class="">
+	              <button type="submit" class="btn btn-primary btn-block">Enviar Respuesta</button><br>
+					    </div>
+	          	<div class="">
+				        <button type="button" class="btn btn-default btn-xs btn-block" data-toggle="modal" data-target="#agregarFiles">Subir Archivo</button>
+					    </div>
+				      </div>
+	        </div>
+	      </div>
+	    <% end %>
+	  </div>
+	</div>
+</div>
+
+<% if @puede_editar %>
+	<script>
+		$(document).ready(function() {
+		  $('.submitable').on('change', function() {
+		    var $form = $(this).closest('form');
+		    $form.find('button[type=submit]').click();
+		  });
+		});
+	</script>
+<% end %>

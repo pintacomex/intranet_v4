@@ -1,0 +1,18 @@
+FORMULARIO AQUI
+
+<div class="form-inputs loader-form">
+<br>
+<div class="col-md-2 col-md-offset-10">
+  <div class="form-actions loader-form text-right">
+    <%= link_to "Regresar", medidores_path, class: "btn btn-default" %>
+    <%= submit_tag "Guardar", class: "btn btn-primary" %>
+  </div>
+</div>
+
+<br>
+<div class="col-md-6 well">
+  <p>
+    <b>Nota:</b> Los campos que aceptan queries se ejecutan sobre la base de datos de estadistica y cualquier resultado se espera que sea numérico, y es pasado a un número. Por ejemplo, un query válido es `SELECT 100`. También se pueden agregar las variables `p2` y `p3`, que vienen de la tabla de permisos para los usuarios, y se insertan con la sintaxis `__p2__` o `__p3__`. El campo P2 tiene las zonas de un usuario, y el P3 tiene las sucursales de un usuario, separadas por comas. Por default viene como `0`. También se pueden agregar las variables `me` que contiene el mes en formato `aaaamm`, por ejemplo: `201905` y `fe` que contiene la fecha en formato `aaaammdd`, por ejemplo: `20190530`.
+  </p>
+</div>
+</div>

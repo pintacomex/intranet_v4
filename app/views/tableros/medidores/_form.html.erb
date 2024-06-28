@@ -1,0 +1,205 @@
+
+<%= form_tag('/tableros/medidores', class: 'form-horizontal' )  do |f| %>
+  <div class="form-inputs loader-form ">
+    <%= hidden_field_tag 'new', @new %>
+
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">Id Medidor</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'idmedidor', @medidor['IdMedidor'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este Id es la Llave del Medidor</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Tipo Medidor</label>
+      <div class="col-md-4 text-right">
+        <p><%= select_tag 'tipomedidor', options_for_select(@tipos, @medidor['TipoMedidor']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Tipo de Medidor a Desplegar</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Título</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'titulo', @medidor['Titulo'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este campo se despliega arriba del medidor y puede ser un query</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Etiqueta</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'etiqueta', @medidor['Etiqueta'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este campo se despliega abajo del medidor y puede ser un query</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Comentario</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'comentario', @medidor['Comentario'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es un Comentario del Medidor, para uso interno e informativo</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Símbolo/Unidades</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'simbolounidades', @medidor['SimboloUnidades'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este campo es el Simbolo o la Inicial de la Unidad del valor mostrado</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Valor Actual</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'valoractual', @medidor['ValorActual'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es la Tabla de Datos (en los tipos no Gauge) o el Numero (en los tipo Gauge) a Desplegar en el Medidor</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Index Label</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'indexlabel', @medidor['IndexLabel'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el valor a desplegar en cada barra (en los tipos no Gauge). Por ejemplo, `{label} {y}` despliega el nombre de la barra y el valor.</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Valores Min/Max</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'valormin', @medidor['ValorMin'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'valormax', @medidor['ValorMax'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Valor Minimo y Maximo (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Poner Aguja</label>
+      <% no_si = [['No', 0], ['Si', 1]]%>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'poneraguja', options_for_select(no_si, @medidor['PonerAguja']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es si se va a poner aguja en el Medidor (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Color 1/Low/Hi</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'color1', @medidor['Color1'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'lo1', @medidor['lo1'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'hi1', @medidor['hi1'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es el Color 1 a poner en el Medidor (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Color 2/Low/Hi</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'color2', @medidor['Color2'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'lo2', @medidor['lo2'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'hi2', @medidor['hi2'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es el Color 2 a poner en el Medidor (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Color 3/Low/Hi</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'color3', @medidor['Color3'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'lo3', @medidor['lo3'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'hi3', @medidor['hi3'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es el Color 3 a poner en el Medidor (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Color 4/Low/Hi</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'color4', @medidor['Color4'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'lo4', @medidor['lo4'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'hi4', @medidor['hi4'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es el Color 4 a poner en el Medidor (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Color 5/Low/Hi</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'color5', @medidor['Color5'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'lo5', @medidor['lo5'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'hi5', @medidor['hi5'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es el Color 5 a poner en el Medidor (solo usado en el tipo Gauge)</p>
+      </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", tableros_medidores_path, class: "btn btn-default" %>
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+<% end %>
+
+<div class="col-md-6 col-md-offset-3 well">
+  <%= render(partial: 'tableros/nota') %>
+</div>

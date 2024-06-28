@@ -1,0 +1,64 @@
+<div role="tabpanel" class="tab-pane" id="responder">
+
+	<%= form_tag("/todos_respuesta_create") do %>
+		<%= hidden_field_tag 'id', @todo[0]['IdHTodo'] %>
+
+		<div class="row">
+			<div class="col-sm-12 todo-view-toolbar pt20">
+				<button type="submit" class="btn btn-success btn-xs">
+				    <span class="glyphicon glyphicon-send" aria-hidden="true"></span> Enviar
+				</button>			        
+		    </div>
+	    </div>
+
+		<div class="panel panel-default">
+		  <div class="panel-body">
+			<div class="row">
+				<div class="col-sm-2">
+			        <p>Remitente</p>
+			    </div>
+				<div class="col-sm-4">
+			        <p><%= select_tag 'remitente', options_for_select(@users.select { |item|  item[1] == "#{current_user.id}" }), class: 'form-control' %></p>
+			    </div>
+		    </div>
+			<div class="row">
+				<div class="col-sm-2">
+			        <p>Involucrado</p>
+			    </div>
+				<div class="col-sm-10">
+			        <p><%= getUser(@todo[0]['Usuario']) %> &lt;<%= getEmail(@todo[0]['Usuario']) %>&gt;</p>
+			    </div>
+		    </div>
+			<div class="row">
+				<div class="col-sm-3">
+			        <p>Responsable</p>
+			        <p><%= select_tag 'responsable', options_for_select(@resp_users.unshift(["Ninguno",0]), @todo[0]['Responsable'] ), class: 'form-control' %></p>
+			    </div>
+				<div class="col-sm-2">
+			        <p>Tipo</p>
+			        <p><%= select_tag 'tipo', options_for_select(@tipos, @todo[0]['Tipo'] ), class: 'form-control' %></p>
+			    </div>
+				<div class="col-sm-2">
+			        <p>Status</p>
+			        <p><%= select_tag 'status', options_for_select(@status, @todo[0]['Status'] ), class: 'form-control' %></p>
+			    </div>
+				<div class="col-sm-2">
+			        <p>Prioridad</p>
+			        <p><%= select_tag 'prioridad', options_for_select(@prioridades, @todo[0]['Prioridad'] ), class: 'form-control' %></p>
+			    </div>
+			</div>
+		  </div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-10">
+				<h6>Contenido de la Respuesta</h6>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+		        <%= text_area_tag 'texto', nil, size: "40x10", class: "form-control", placeholder: "" %>
+			</div>
+		</div>
+    <% end %>
+</div>

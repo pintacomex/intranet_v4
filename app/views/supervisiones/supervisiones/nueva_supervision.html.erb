@@ -1,0 +1,64 @@
+<br><br>
+<%= render(partial: '/supervisiones/navpills') %>
+
+<div class="col-sm-9">
+	<div class="container">
+		<div class="card">
+			<h2 class="text-center">Nueva Supervisión</h2>
+			<hr>
+			<br/>
+			<%= form_for supervisiones_nueva_supervision_path, html: { class: 'form-horizontal' } do |f| %>
+			  <div class="form-inputs">
+		        <input type="hidden" id="tipo" name="tipo" value="1" />
+		        <input type="hidden" id="categoria" name="categoria" value="0" />
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Checklist</label>
+			      <div class="col-md-6 text-right">
+			        <%= select_tag 'checklist', options_for_select(@checklists), class: 'form-control checklist', placeholder: "Selecciona Checklist", data: { placeholder: "Selecciona Checklist" } %>
+			        <p class="help-block">Seleccione el Checklist a Supervisar</p>
+			      </div>
+			    </div>
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Sucursal</label>
+			      <div id="div-sucs" class="col-md-6 text-right">
+			        <%= select_tag 'sucursal', options_for_select(@sucursales), class: 'form-control', placeholder: "Selecciona Sucursal", data: { placeholder: "Selecciona Sucursal" } %>
+			        <p class="help-block">Seleccione la Sucursal a Supervisar</p>
+			      </div>
+			    </div>
+
+			    <div class="form-group">
+			      <label class="control-label col-md-3">Categoría</label>
+			      <div id="div-cats" class="col-md-6 text-right">
+			        <%= select_tag 'categoria', options_for_select(@categorias), class: 'form-control', placeholder: "Seleccione Categoría", data: { placeholder: "Seleccione Categoría" } %>
+			        <p class="help-block">Seleccione la Categoría a Supervisar</p>
+			      </div>
+			    </div>
+
+			    <div class="col-md-9 col-md-offset-3">
+			      <div class="form-actions loader-form text-center">
+			        <%= submit_tag "Generar", class: "btn btn-primary " %>
+			      </div>
+			      <br><br><br>
+			    </div>
+
+			  </div>
+
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function() {
+	  $('.checklist').change(function(e) {
+	  	var sucs_url = "/supervisiones/load_sucs?idChecklist="+this.value;
+	  	var cats_url = "/supervisiones/load_cats?idChecklist="+this.value;
+	  	$.getScript(sucs_url);
+	  	$.getScript(cats_url);
+	  });
+	});
+
+</script>

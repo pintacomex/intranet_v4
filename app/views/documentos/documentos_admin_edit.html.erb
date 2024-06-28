@@ -1,0 +1,43 @@
+<div class="col-md-9 col-sm-offset-1 col-md-offset-2">
+  <div class="cabecera">
+    <p align=center class="titulo1">Editar Carpeta ó Documento</p>
+    <% @tituloArm = ""
+      arma_Titulo(params[:cveant]) %>
+    <p class="titulo2"><%= @tituloArm if params.has_key?(:cveant) %></p>
+  </div>
+  <br>
+  <p>
+    <a class="btn pull-left btn-primary btn-xs" href="/documentos_admin?cveant=<%=params[:cveant]%>" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  </p> 
+
+  <%= form_tag("/documentos_admin_update" ) do %>
+    <br>
+    <%= hidden_field_tag 'cveant', @doctos[0]['CveAnt'] %>
+    <%= hidden_field_tag 'clave', @doctos[0]['Clave'] %>
+    <div class="form-group">
+      <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'nombre', 'Título' %></div>
+      <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+        <%= text_field_tag 'nombre', @doctos[0]['Nombre'], class: 'form-control' %>
+      </div>
+      <%= hidden_field_tag 'imagen', @doctos[0]['Imagen'] %>
+      <%= hidden_field_tag 'archivo', @doctos[0]['Ubicacion'] %>
+      <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'nota', 'Nota' %></div>
+      <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+        <%= text_area_tag 'nota', @doctos[0]['Nota'], class: 'form-control' %>
+      </div>
+      <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'fecha', 'Fecha' %></div>
+      <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+        <%= date_field_tag 'fecha', @doctos[0]['Fecha'], class: 'form-control' %>
+      </div>
+      <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'numord', 'Orden' %></div>
+      <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+        <%= number_field_tag 'numord', @doctos[0]['NumOrd'], class: 'form-control' %>
+      </div>
+      <div class="col-sm-7 col-md-8 col-lg-8">
+        <div class="form-actions loader-form">
+          <%= submit_tag "Guardar", class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

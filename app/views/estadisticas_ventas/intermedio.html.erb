@@ -1,0 +1,1205 @@
+<head>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <!-- <link rel="stylesheet" href="/assets/css/quillpro/quillpro.css"> -->
+</head>
+
+
+<% m_name = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"] %>
+<div class="col-md-12">
+		<div>
+			<h1 class="text-center"><%= "#{@nombre_intermedio}"%></h1>
+<!-- 			<%= params %> -->
+		</div>
+		<div class="col-md-12">
+			<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+				<div class="btn-toolbar pull-right" role="toolbar">
+					<div class="btn-group dropdown">
+						<!-- <button class="btn btn-info dropdown-toggle col-md-12" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							
+						</button> -->
+						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <%= if @anio_selected == DateTime.now.prev_month(11).strftime('%Y%m') then "Ult.12 Meses" else @anio_selected[0..3] end %>
+					    <span class="caret"></span>
+					  </button>
+						<div class="dropdown-menu">
+							<% @anios.each do |item| %>
+								<li><%= link_to "#{item}", {:controller => "estadisticas_ventas", :action => "intermedio", :nombre_intermedio => @nombre_intermedio, :id => @id_superior, :nombre_superior => @nombre_superior, :id_superior => @id_superior, :id_intermedio => @id_intermedio, :anio => "#{item}"}, class: "dropdown-item text-left" %></li>
+							<% end %>
+								<li><%= link_to "Últ.12 Meses", {:controller => "estadisticas_ventas", :action => "intermedio", :nombre_intermedio => @nombre_intermedio, :id => @id_superior, :nombre_superior => @nombre_superior, :id_superior => @id_superior, :id_intermedio => @id_intermedio, :anio => "#{DateTime.now.prev_month(11).strftime('%Y%m')}"}, class: "dropdown-item text-left" %></li>
+						</div>
+					</div>
+				</div>
+			<% end %>
+			<div class="btn-toolbar" role="toolbar">
+				<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+					<div class="btn-group dropdown">
+						<!-- <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							
+						</button> -->
+						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <%= @nombre_superior %>
+					    <span class="caret"></span>
+					  </button>
+						<div class="dropdown-menu">
+								<li><%= link_to "Superior", {:controller => "estadisticas_ventas", :action => "index"}, class: "dropdown-item" %></li>
+							<% @superior.each do |item| %>
+								<li><%= link_to "#{item['Nombre']}", {:controller => "estadisticas_ventas", :action => "superior", :id => item['IdAgrupa'], :nombre_superior => item['Nombre'], :anio => @anio_selected}, class: "dropdown-item" %></li>
+							<% end %>
+						</div>
+					</div>
+					<% if !@subagrupa.nil? %>
+						<div class="btn-group dropdown">
+							<!-- <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								
+							</button> -->
+							<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						    <%= @nombre_intermedio %>
+						    <span class="caret"></span>
+						  </button>
+							<div class="dropdown-menu">
+								<% @subagrupa.each do |item| %>
+									<li><%= link_to "#{item['Nombre']}", {:controller => "estadisticas_ventas", :action => "intermedio", :nombre_intermedio => item['Nombre'], :id => item['IdSubAgrupa'], :nombre_superior => @nombre_superior, :id_superior => @id_superior, :id_intermedio => @id_intermedio, :anio => @anio_selected}, class: "dropdown-item"%></li>
+								<% end %>
+							</div>
+						</div>
+					<% end %>
+				<% end %>
+				<% if !@grupo_sucursales.nil? %>
+					<div class="btn-group dropdown">
+						<!-- <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							
+						</button> -->
+						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <%= @nombre_sucursal %>
+					    <span class="caret"></span>
+					  </button>
+						<div class="dropdown-menu">
+							<% @grupo_sucursales.each do |item| %>
+								<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+								<li><%= link_to "#{item['Nombre']}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => item['Nombre'], :id => item['IdSucursal'], :nombre_superior => @nombre_superior, :nombre_intermedio => @nombre_intermedio, :id_intermedio => @id_intermedio, :id_superior => @id_superior, :anio => @anio_selected}, class: "dropdown-item"%></li>
+								<% else %>
+									<li><%= link_to "#{item['Nombre']}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => item['Nombre'], :id => item['Num_suc'], :id_intermedio => @id_intermedio, :anio => @anio_selected, :anio => @anio_selected}, class: "dropdown-item"%></li>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+</div>
+<br><br><br>
+<%= link_to "Exportar Excel", {controller: "estadisticas_ventas", action:'export_excel', id_intermedio: @id_intermedio, id_superior: @id_superior, anio: @anio_selected, format: "xlsx"}, class: "btn btn-default btn-sm pull-right" %>
+<div class="container-fluid">
+	
+	<br>
+	<div class="">
+		<div class="card">
+			<h1 class="text-center">Objetivo de Venta</h1>
+				<div class="" id="chart-objetivos">
+				</div>
+		</div>
+		<div class="">
+			<div class="col-md-12  offset-md-1 table-responsive card" id="footwear">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>Mes</th>
+							<th>Objetivo</th>
+							<th>Real</th>
+							<th>Status</th>
+							<th>Progreso</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% (0..@ventas.length-2).each do |i| %>
+   						<tr>
+								<td><%= m_name[@month_name[i]] %></td>
+								<td><%= number_to_currency(@obj_ventas[i], :locale => :mx, :precision => 2) %></td>
+								<td><%= number_to_currency(@ventas[i], :locale => :mx, :precision => 2) %></td>
+								<% o_ventas = @obj_ventas[i]%>
+								<% o_ventas = 0 if o_ventas.nil?%>
+								<% r_ventas = @ventas[i]%>
+								<% r_ventas = 0 if r_ventas.nil?%>
+								<% porcentaje = (100.0 / o_ventas) * r_ventas.to_f %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<% if @ventas[i] == @ventas[-2] %>
+									<td></td>
+								<% else %>
+									<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<% end %>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+						<% if @ventas.length-1 %>
+							<tr>
+								<td><%= "#{m_name[@month_name[-1]]}-Tendencia" %></td>
+								<td><%= number_to_currency(@obj_ventas[-1], :locale => :mx, :precision => 2) %></td>
+								<% proyectada = @opa_current_mes['NetasProyectadas'] rescue 0 %>
+								<td><%= number_to_currency(proyectada, :locale => :mx, :precision => 2) %></td>
+								<% porcentaje = ((100.0 / @obj_ventas[-1].to_f) * @opa_current_mes['NetasProyectadas'].to_f)  rescue 0 %>								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<br><br>
+		</div>
+		<br><br><br>
+		<!-- Aqui va el objetivo de ventas en porcentaje -->
+
+	</div>
+	<div class="text-center">
+
+		<br><br>
+		<div class="col-md-12  offset-md-1 table-responsive card" id="footwear">
+			<h4>Objetivo de Venta por Sucursal</h4>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Nombre Sucursal</th>
+						<% @month_name.each do |i| %>
+							<th><%= m_name[i] %></th>
+						<% end %>
+					</tr>
+				</thead>
+				<tbody>
+					<% @estadisticas_sucursales.each_with_index do |meses, index| %>
+							<tr>
+								<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i > 0 && @permiso[:p3].to_i == 0  %>
+									<% suc_name = @grupo_sucursales.detect {|suc| suc['Num_suc'] == meses[0]}['Nombre'] %>
+								<% else %>		
+									<% suc_name = @grupo_sucursales.detect {|suc| suc['IdSucursal'] == meses[0]}['Nombre'] %>
+								<% end %>
+								<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+								<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :nombre_superior => @nombre_superior, :nombre_intermedio => @nombre_intermedio, :id_intermedio => @id_intermedio, :id_superior => @id_superior, :anio => @anio_selected} %></td>
+								<% else %>
+									<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :id_intermedio => @id_intermedio, :anio => @anio_selected}%></td>
+								<% end %>
+								<% (0..11).each do |month| %>
+									<% label = "" %>
+                  <% dato = @netas_array[index].select {|m| m.keys.first == @mm[month]}.first rescue 0 %>
+									<% valor = if dato.nil? then 0 else dato.values.first.to_f end %>
+									<% if valor < 80 then label = 'danger' elsif valor < 100 then label = 'warning' else label = 'success' end %>
+									<td><span class="label label-<%= label %>"><%= valor %> %</span></td>
+								<% end %>
+							</tr>
+					<% end %>
+ 				</tbody>
+			</table>
+		</div>
+		<br><br>
+	</div>
+		<br><br><br>
+
+	<div class="row col-md-12">
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Cumplimiento Objetivo de Venta(%)
+				</div>
+				<div class="card-body">
+					<div id="chart-objetivos-porcentaje">
+					</div>
+				</div>
+				<br><br>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Comportamiento de Ventas VS Objetivo
+				</div>
+				<div class="card-body">
+					<div id="chart-ventas-objetivo">
+					</div>
+				</div>
+				<br><br>
+			</div>
+		</div>
+	</div>
+</div>
+
+<br><br><br><br><br>
+
+
+<div class="container-fluid">
+	<br>
+	<div class="col-md-12">
+		<div class="text-center">
+			<div class="card">
+				<h1 class="text-center">Ticket Promedio</h1>
+				<div class="" id="chart-obj-ticket-prom">
+				</div>
+			</div>
+			<br><br>
+			<div class="col-md-12  offset-md-1 table-responsive card">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Mes</th>
+							<th>Objetivo</th>
+							<th>Real</th>
+							<th>Status</th>
+							<th>Progreso</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% (0..@tp.length-2).each do |i| %>
+   						<tr>
+								<td><%= m_name[@month_name[i]] %></td>
+								<td><%= number_to_currency(@obj_tp[i], :locale => :mx, :precision => 2) %></td>
+								<td><%= number_to_currency(@tp[i], :locale => :mx, :precision => 2) %></td>
+								<% o_tp = @obj_tp[i]%>
+								<% o_tp = 0 if o_tp.nil?%>
+								<% r_tp = @tp[i]%>
+								<% r_tp = 0 if r_tp.nil?%>
+								<% porcentaje = (100.0 / o_tp) * r_tp.to_f %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<% if @tp[i] == @tp[-2] %>
+									<td></td>
+								<% else %>
+									<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<% end %>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+						<% if @tp.length-1 %>
+							<tr>
+								<td><%= "#{m_name[@month_name[-1]]}-Tendencia" %></td>
+								<td><%= number_to_currency(@obj_tp[-1], :locale => :mx, :precision => 2) %></td>
+								<% proyectada = (@obj_tp[-1] / 100) * @opa_current_mes['OpaTP']  rescue 0 %>
+								<td><%= number_to_currency(proyectada, :locale => :mx, :precision => 2) %></td>
+								<% porcentaje = @opa_current_mes['OpaTP'].to_f  rescue 0 %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<br><br>
+		</div>
+		<br><br><br>
+	</div>
+	<div class="row col-md-12">
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Cumplimiento Ticket Promedio
+				</div>
+				<div class="card-body table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Nombre Sucursal</th>
+								<% @month_name.each do |i| %>
+									<th><%= m_name[i] %></th>
+								<% end %>
+							</tr>
+						</thead>
+						<tbody>
+							<% @estadisticas_sucursales.each_with_index do |meses, index| %>
+									<tr>
+										<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i > 0 && @permiso[:p3].to_i == 0  %>
+											<% suc_name = @grupo_sucursales.detect {|suc| suc['Num_suc'] == meses[0]}['Nombre'] %>
+										<% else %>		
+											<% suc_name = @grupo_sucursales.detect {|suc| suc['IdSucursal'] == meses[0]}['Nombre'] %>
+										<% end %>
+										<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+										<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :nombre_superior => @nombre_superior, :nombre_intermedio => @nombre_intermedio, :id_intermedio => @id_intermedio, :id_superior => @id_superior, :anio => @anio_selected} %></td>
+										<% else %>
+											<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :id_intermedio => @id_intermedio, :anio => @anio_selected}%></td>
+										<% end %>
+										<% (0..11).each do |month| %>
+											<%label = "" %>
+	                    <% dato = @tp_array[index].select {|m| m.keys.first == @mm[month]}.first rescue 0 %>
+											<% valor = if dato.nil? then 0 else dato.values.first.to_f end %>
+											<% if valor < 80 then label = 'danger' elsif valor < 100 then label = 'warning' else label = 'success' end %>
+											<td><span class="label label-<%= label %>"><%= valor %> %</span></td>
+										<% end %>
+									</tr>
+							<% end %>
+		 				</tbody>
+					</table>
+				</div>
+				<br><br>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Comportamiento Ticket Promedio
+				</div>
+				<div class="card-body">
+					<div id="chart-comp-ticket-promedio">
+					</div>
+				</div>
+				<br><br>
+			</div>
+		</div>
+	</div>
+</div>
+ 
+
+<br><br><br><br><br>
+
+
+
+<div class="container-fluid">
+	<div class="col-md-12">
+		<div class=" text-center">
+			<div class="card">
+				<h1 class="text-center">Transacciones</h1>
+				<div class="" id="chart-obj-transacciones">
+				</div>
+			</div>
+			<br><br>
+			<div class="col-md-12  offset-md-1 table-responsive card">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Mes</th>
+							<th>Objetivo</th>
+							<th>Real</th>
+							<th>Status</th>
+							<th>Progreso</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% (0..@nt.length-2).each do |i| %>
+   						<tr>
+								<td><%= m_name[@month_name[i]] %></td>
+								<td><%= @obj_nt[i] %></td>
+								<td><%= @nt[i] %></td>
+								<% o_nt = @obj_nt[i]%>
+								<% o_nt = 0 if o_nt.nil?%>
+								<% r_nt = @nt[i]%>
+								<% r_nt = 0 if r_nt.nil?%>
+								<% porcentaje = (100.0 / o_nt) * r_nt.to_f %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<% if @nt[i] == @nt[-2] %>
+									<td></td>
+								<% else %>
+									<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<% end %>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+						<% if @nt.length-1 ==  %>
+							<tr>
+								<td><%= "#{m_name[@month_name[-1]]}-Tendencia" %></td>
+								<td><%= @obj_nt[-1].to_f.round(2) %></td>
+								<% proyectada = (@obj_nt[-1] / 100) * @opa_current_mes['OpaNT']  rescue 0 %>
+								<td><%= proyectada.to_f.round(2) %></td>
+								<% porcentaje = @opa_current_mes['OpaNT'].to_f  rescue 0 %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<br><br>
+		</div>
+		<br><br><br>
+	</div>
+	<div class="row col-md-12">
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Cumplimiento Transacciones
+				</div>
+				<div class="card-body table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Nombre Sucursal</th>
+								<% @month_name.each do |i| %>
+									<th><%= m_name[i] %></th>
+								<% end %>
+							</tr>
+						</thead>
+						<tbody>
+							<% @estadisticas_sucursales.each_with_index do |meses, index| %>
+									<tr>
+										<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i > 0 && @permiso[:p3].to_i == 0  %>
+											<% suc_name = @grupo_sucursales.detect {|suc| suc['Num_suc'] == meses[0]}['Nombre'] %>
+										<% else %>		
+											<% suc_name = @grupo_sucursales.detect {|suc| suc['IdSucursal'] == meses[0]}['Nombre'] %>
+										<% end %>
+										<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+										<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :nombre_superior => @nombre_superior, :nombre_intermedio => @nombre_intermedio, :id_intermedio => @id_intermedio, :id_superior => @id_superior, :anio => @anio_selected} %></td>
+										<% else %>
+											<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :id_intermedio => @id_intermedio, :anio => @anio_selected}%></td>
+										<% end %>
+										<% (0..11).each do |month| %>
+											<%label = "" %>
+	                    <% dato = @nt_array[index].select {|m| m.keys.first == @mm[month]}.first rescue 0 %>
+											<% valor = if dato.nil? then 0 else dato.values.first.to_f end %>
+											<% if valor < 80 then label = 'danger' elsif valor < 100 then label = 'warning' else label = 'success' end %>
+											<td><span class="label label-<%= label %>"><%= valor %> %</span></td>
+										<% end %>
+									</tr>
+							<% end %>
+		 				</tbody>
+					</table>
+				</div>
+				<br><br>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Comportamiento Transacciones
+				</div>
+				<div class="card-body">
+					<div id="chart-transaciones-objetivo">
+					</div>
+				</div>
+				<br><br>
+			</div>
+		</div>
+	</div>
+</div>
+ 
+
+
+
+<br><br><br><br><br>
+
+
+<div class="container-fluid">
+	
+	<div class="col-md-12">
+		<div class="text-center">
+			<div class="card">
+				<h1 class="text-center">Artículos por Ticket</h1>
+				<div class="" id="chart-axt">
+				</div>
+			</div>
+			<br><br>
+			<div class="col-md-12  offset-md-1 table-responsive card">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Mes</th>
+							<th>Objetivo</th>
+							<th>Real</th>
+							<th>Status</th>
+							<th>Progreso</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% (0..@axt.length-2).each do |i| %>
+   						<tr>
+								<td><%= m_name[@month_name[i]] %></td>
+								<td><%= @obj_axt[i] %></td>
+								<td><%= @axt[i] %></td>
+								<% o_axt = @obj_axt[i]%>
+								<% o_axt = 0 if o_axt.nil?%>
+								<% r_axt = @axt[i]%>
+								<% r_axt = 0 if r_axt.nil?%>
+								<% porcentaje = (100.0 / o_axt) * r_axt.to_f %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<% if @axt[i] == @axt[-2] %>
+									<td></td>
+								<% else %>
+									<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<% end %>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+						<% if @axt.length-1 ==  %>
+							<tr>
+								<td><%= "#{m_name[@month_name[-1]]}-Tendencia" %></td>
+								<td><%= @obj_axt[-1].to_f.round(2) %></td>
+								<% proyectada = (@obj_axt[-1]/ 100) * @opa_current_mes['OpaAxT']  rescue 0 %>
+								<td><%= proyectada.to_f.round(2) %></td>
+								<% porcentaje = @opa_current_mes['OpaAxT'].to_f  rescue 0 %>
+								<%label = [] %>
+								<% if porcentaje < 80 then label << ['danger', 'Mal'] elsif porcentaje < 100 then label << ['warning', 'Regular'] else label << ['success', 'Bien'] end %>
+								<td><span class="label label-<%= label[0][0] %>"><%= label[0][1] %></span></td>
+								<td>
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: <%= porcentaje %>%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" title="<%= porcentaje.round(2) %>%" data-placement="top"><b><%= porcentaje.round(2) %>%</b></div>
+									</div>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<br><br>
+		</div>
+		<br><br><br>
+	</div>
+	<div class="row col-md-12">
+		<div class="col-md-6">
+			<div class="text-center">
+
+				<div class="table-responsive card">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Nombre Sucursal</th>
+								<% @month_name.each do |i| %>
+									<th><%= m_name[i] %></th>
+								<% end %>
+							</tr>
+						</thead>
+						<tbody>
+							<% @estadisticas_sucursales.each_with_index do |meses, index| %>
+									<tr>
+										<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i > 0 && @permiso[:p3].to_i == 0  %>
+											<% suc_name = @grupo_sucursales.detect {|suc| suc['Num_suc'] == meses[0]}['Nombre'] %>
+										<% else %>		
+											<% suc_name = @grupo_sucursales.detect {|suc| suc['IdSucursal'] == meses[0]}['Nombre'] %>
+										<% end %>
+										<% if @permiso[:p1].to_i > 0 && @permiso[:p2].to_i == 0 && @permiso[:p3].to_i == 0 && @permiso[:p4].to_i == 0 %>
+										<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :nombre_superior => @nombre_superior, :nombre_intermedio => @nombre_intermedio, :id_intermedio => @id_intermedio, :id_superior => @id_superior, :anio => @anio_selected} %></td>
+										<% else %>
+											<td class="text-right"><%= link_to "#{suc_name} - #{meses[0]}", {:controller => "estadisticas_ventas", :action => "sucursal", :nombre_sucursal => suc_name, :id => meses[0], :id_intermedio => @id_intermedio, :anio => @anio_selected}%></td>
+										<% end %>
+										<% (0..11).each do |month| %>
+											<%label = "" %>
+	                    <% dato = @axt_array[index].select {|m| m.keys.first == @mm[month]}.first rescue 0 %>
+											<% valor = if dato.nil? then 0 else dato.values.first.to_f end %>
+											<% if valor < 80 then label = 'danger' elsif valor < 100 then label = 'warning' else label = 'success' end %>
+											<td><span class="label label-<%= label %>"><%= valor %> %</span></td>
+										<% end %>									
+									</tr>
+							<% end %>
+		 				</tbody>
+					</table>
+				</div>
+				<br><br>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card text-center">
+				<div class="card-header">
+					Comportamiento Artículos por ticket
+				</div>
+				<div class="card-body">
+					<div id="chart-comp-axt">
+					</div>
+				</div>
+				<br><br>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<style type="text/css">
+		.card {
+	    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	    transition: 0.3s;
+	    border-radius: 5px;
+	    margin: 50px 0px;
+	}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
+});
+
+
+var d = <%= @anio_selected %>
+var str = String(d);
+var anio = str.substring(0,4);
+var mes = str.substring(4,6);
+var month_year = new Date(anio, mes, 1);
+var flag = false
+var meses = []
+var meses_venta = []
+var porcentajes = []
+var name_meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+var cont = 0
+for(var i = 0 ; i <= 11 ; i++){
+	console.log(name_meses[month_year.getMonth() + (i-1)]);
+	if (flag === 11) {
+		meses.push(name_meses[month_year.getMonth() + i] + "-Tendencia")
+	}else{
+	  if(flag === true){
+		  meses.push(name_meses[cont] + "-" + (parseInt(anio)+1))
+			cont += 1
+		}else{
+			meses.push(name_meses[month_year.getMonth() + (i-1)] + "-" + anio)
+		}
+		
+	}
+	if (name_meses[month_year.getMonth() + (i-1)] == 'Diciembre'){
+		// meses.push(name_meses[month_year.getMonth() - 2] + "-" + (parseInt(anio)+1))
+		flag = true
+	}
+	meses_venta.push(name_meses[month_year.getMonth() + i] + "-" + anio)
+	porcentajes.push(100);
+}
+//Objetivos $$$$$$$$$$$	
+
+
+Highcharts.chart('chart-objetivos', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: meses,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Pesos'
+        }
+    },
+    tooltip: {
+        valueDecimals: 2,
+        valuePrefix: '$',
+        valueSuffix: ' MXN',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Objetivo Venta',
+        color: '#64dd17',
+        data: <%= @obj_ventas[0..11] %>
+
+    }, {
+        name: 'Venta Neta',
+        color: '#00b0ff',
+        data: <%= @ventas[0..-2] %>
+
+    }],
+    exporting: { enabled: false }
+});
+
+
+
+///Porcentaje Objetivos
+
+
+Highcharts.chart('chart-objetivos-porcentaje', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        categories: meses
+    },
+    yAxis: [{
+        min: 0,
+        max: 120,
+        title: {
+            text: 'Porcentaje'
+        }
+    }, {
+        title: {
+            text: ''
+        },
+        opposite: true
+    }],
+    legend: {
+        shadow: false
+    },
+    tooltip: {
+        valueDecimals: 2,
+        valueSuffix: ' %',
+        shared: true
+    },
+    plotOptions: {
+        column: {
+            grouping: false,
+            shadow: false,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Objetivo Venta',
+        color: '#64dd17',
+        data: porcentajes,
+        pointPadding: 0.3,
+        pointPlacement: 0
+    }, {
+        name: 'Venta Neta',
+        color: '#00b0ff',
+        data: <%= @porc_ventas %>,
+        pointPadding: 0.4,
+        pointPlacement: 0
+    }],
+    exporting: { enabled: false }
+});
+
+<% @ventas[-2] = @ventas[-1] %>
+//Comportamiento de ventas vs objetivo
+
+Highcharts.chart('chart-ventas-objetivo', {
+
+    title: {
+        text: ''
+    },
+
+    yAxis: {
+        title: {
+            text: 'Pesos'
+        }
+    },
+    xAxis:{
+    	 categories: meses
+    },
+    tooltip: {
+        valueDecimals: 2,
+        valuePrefix: '$',
+        valueSuffix: ' MXN',
+        shared: true,
+        useHTML: true
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            }
+        }
+    },
+
+    series: [{
+        name: 'Objetivo Venta',
+        data: <%= @obj_ventas[0..11] %>,
+        color: '#64dd17'
+    }, {
+        name: 'Venta Real',
+        data: <%= @ventas[0..-2] %>,
+        color: '#00b0ff'
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    },
+    exporting: { enabled: false }
+
+});
+
+
+//////////Ticket promedio
+
+//Objetivo ticket promedio
+
+Highcharts.chart('chart-obj-ticket-prom', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: meses,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Ticket'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.2f} Ticket</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Objetivo Ticket Promedio',
+        color: '#64dd17',
+        data: <%= @obj_tp[0..11] %>
+
+    }, {
+        name: 'Ticket Promedio',
+        color: '#00b0ff',
+        data: <%= @tp[0..-2] %>
+
+    }],
+    exporting: { enabled: false }
+});
+
+//Comportamiento de ticket promedio
+<% @tp[-2] = (@obj_tp[-1] / 100) * @tp[-1] %>
+
+Highcharts.chart('chart-comp-ticket-promedio', {
+
+    title: {
+        text: ''
+    },
+
+    yAxis: {
+        title: {
+            text: 'Ticket'
+        }
+    },
+    xAxis:{
+    	 categories: meses
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            }
+        }
+    },
+
+    series: [{
+        name: 'Objetivo Ticket Promedio',
+        data: <%= @obj_tp[0..11] %>,
+        color: '#64dd17'
+    }, {
+        name: 'Ticket Promedio',
+        data: <%= @tp[0..-2] %>,
+        color: '#00b0ff'
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    },
+    exporting: { enabled: false }
+
+});
+
+
+
+
+/////Objetivo transacciones
+
+
+
+//Objetivo transacciones
+
+Highcharts.chart('chart-obj-transacciones', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: meses,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Transacciones'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.2f} Transacciones</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Objetivo Transacciones',
+        color: '#64dd17',
+        data: <%= @obj_nt[0..11] %>
+
+    }, {
+        name: 'Transacciones',
+        color: '#00b0ff',
+        data: <%= @nt[0..-2] %>
+
+    }],
+    exporting: { enabled: false }
+});
+
+<% @nt[-2] = (@obj_nt[-1] / 100) * @nt[-1] %>
+//Comportamiento de ventas vs objetivo
+
+Highcharts.chart('chart-transaciones-objetivo', {
+
+    title: {
+        text: ''
+    },
+
+    yAxis: {
+        title: {
+            text: 'Transacciones'
+        }
+    },
+    xAxis:{
+    	 categories: meses
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            }
+        }
+    },
+
+    series: [{
+        name: 'Objetivo Transacciones',
+        data: <%= @obj_nt[0..11] %>,
+        color: '#64dd17'
+    }, {
+        name: 'Transacciones',
+        data: <%= @nt[0..-2] %>,
+        color: '#00b0ff'
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    },
+    exporting: { enabled: false }
+
+});
+
+
+
+
+
+
+
+////Articulos por ticket
+
+
+
+
+
+//Objetivos $$$$$$$$$$$	
+
+Highcharts.chart('chart-axt', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: meses,
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Artículos por Ticket'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.2f} Axt</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Objetivo Axt',
+        color: '#64dd17',
+        data: <%= @obj_axt[0..11] %>
+
+    }, {
+        name: 'Axt',
+        color: '#00b0ff',
+        data: <%= @axt[0..-2] %>
+
+    }],
+    exporting: { enabled: false }
+});
+
+<% @axt[-2] = (@obj_axt[-1] / 100) * @axt[-1] %>
+//Comportamiento de ventas vs objetivo
+
+Highcharts.chart('chart-comp-axt', {
+
+    title: {
+        text: ''
+    },
+
+    yAxis: {
+        title: {
+            text: 'Artículos por Ticket'
+        }
+    },
+    xAxis:{
+    	 categories: meses
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            }
+        }
+    },
+
+    series: [{
+        name: 'Objetivo Axt',
+        data: <%= @obj_axt[0..11] %>,
+        color: '#64dd17'
+    }, {
+        name: 'Axt',
+        data: <%= @axt[0..-2] %>,
+        color: '#00b0ff'
+    }],
+
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    },
+    exporting: { enabled: false }
+
+});
+
+</script>

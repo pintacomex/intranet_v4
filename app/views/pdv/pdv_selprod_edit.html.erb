@@ -1,0 +1,83 @@
+<div class="col-md-9 col-sm-offset-1 col-md-offset-2">
+  <% if @sistemawp.to_i == 0 %>
+      <h1 class="text-center">Cotizaciones</h1>
+      <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+      <h2 class="text-center">Editar Producto ( <%= @descrip %> )</h2>
+  <% else %>
+      <h1 class="text-center">Cotizaciones</h1>
+      <h2 class="text-center">Sucursal : <%= @sucursal %> <%= @nomsuc %></h2>
+      <h2 class="text-center">Editar Producto ( <%= @descrip %> )</h2>
+  <% end %>
+  <br>
+
+  <p>
+    <a class="btn pull-left btn-info btn-sm" href="/pdv_selprod?vendedor=<%=@vendedor%>&tab=2&movnvo=<%=@movnvo%>" role="button"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+  </p>
+  <div class="clearfix"></div>
+  <br>
+
+  <%= form_tag("/pdv_selprod_update" ) do %>
+    <br>
+    <div class="form-group">
+      <%= hidden_field_tag 'vendedor', params[:vendedor] %>
+      <%= hidden_field_tag 'nummov', @prodmod[0]['Nummov'] %>
+      <%= hidden_field_tag 'clave', @prodmod[0]['Clave'] %>
+      <%= hidden_field_tag 'movnvo', @movnvo %>
+      <%= hidden_field_tag 'idrenglon', @prodmod[0]['Idrenglon'] %>
+
+      <% if @prodmod[0]['Cveasoc'] == "MANO" or @prodmod[0]['TipoClave'].to_i == 5 %>
+        <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'descrip', 'Descripción' %></div>
+        <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+          <%= text_area_tag 'descrip', @prodmod[0]['Descrip'], rows: 3, class: 'form-control', autofocus: true %>
+        </div>
+        <% if @prodmod[0]['TipoClave'].to_i == 5 %>
+          <%= hidden_field_tag 'umedida', @prodmod[0]['UMedida'] %>
+        <% end %>
+        <% if @prodmod[0]['Cveasoc'] == "MANO" %>
+          <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'umedida', 'Unidad de Medida' %></div>
+          <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+            <%= select_tag 'umedida', options_for_select([["No Aplica","NA"],["Pieza","Pieza"],["Sevicios","Sevicios"],["Litro","Litro"],["Kilo","Kilo"]], @prodmod ? @prodmod[0]['UMedida'].to_s : ''), label: false, include_blank: false, class: 'form-control'  %>
+            <p class="help-block">Seleccionar Unidad de Medida</p>
+          </div>
+        <% end %>
+      <% else %>
+        <%= hidden_field_tag 'descrip', @prodmod[0]['Descrip'] %>
+        <%= hidden_field_tag 'umedida', @prodmod[0]['UMedida'] %>
+      <% end %>
+
+      <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'cantidad', 'Cantidad' %></div>
+      <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+        <% if @prodmod[0]['Cveasoc'] == "MANO" %>
+          <%= text_field_tag 'cantidad', @prodmod[0]['Cantidad'], class: 'form-control' %>
+        <% else %>
+          <%= text_field_tag 'cantidad', @prodmod[0]['Cantidad'], class: 'form-control', autofocus: true %>
+        <% end %>
+      </div>
+
+      <% if @prodmod[0]['Cveasoc'] == "MANO" %>
+        <div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'preunifac', 'Precio Unit.' %></div>
+        <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+          <% if @cliente.to_i == 0 %>
+            <%= text_field_tag 'preunifac', @prodmod[0]['Preunifac'], class: 'form-control' %>
+          <% else %>
+            <%= text_field_tag 'preunifac', (@prodmod[0]['Preunifac'] * @iva).round(2), class: 'form-control' %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= hidden_field_tag 'preunifac', @prodmod[0]['Preunifac'] %>
+      <% end %>
+
+      <!--<div id="margen5" class="col-sm-4 col-md-3 col-lg-3"><%= label_tag 'pordesfac', '% Desc.' %></div>
+      <div id="margen5" class="col-sm-7 col-md-9 col-lg-8">
+        <%= text_field_tag 'pordesfac', @prodmod[0]['Pordesfac'], class: 'form-control' %>
+      </div>-->
+      <%= hidden_field_tag 'pordesfac', @prodmod[0]['Pordesfac'] %>
+
+      <div class="col-sm-7 col-md-8 col-lg-8">
+        <div class="form-actions loader-form">
+          <%= submit_tag "Guardar", class: "btn btn-info btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

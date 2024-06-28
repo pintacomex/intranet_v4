@@ -1,0 +1,22 @@
+<div class="col-sm-3 card">
+
+      <nav class="nav flex-column nav-pills text-right">
+	    <li <%= raw "class='active'" if controller.action_name == 'programadas' %>><a href="/supervisiones/programadas">Supervisiones Programadas</a></li>
+	    <li <%= raw "class='active'" if controller.action_name == 'terminadas' || controller.action_name == 'supervision_terminada' %>><a href="/supervisiones/terminadas">Supervisiones Terminadas</a></li>
+		<% if get_current_user_app_nivel >= 3 %>
+		    <li <%= raw "class='active'" if controller.action_name == 'nueva_supervision' %>><a href="/supervisiones/nueva_supervision">Nueva Supervisión</a></li><br>
+		<% end %>
+		<% if get_current_user_app_nivel >= 3 %>
+		    <li <%= raw "class='active'" if controller.action_name == 'supervision_en_curso' || controller.action_name == 'supervision_en_curso_aci' || controller.action_name == 'supervisiones_en_curso' %>><a href="/supervisiones/supervisiones_en_curso">Supervisiones en Curso</a></li>
+		<% end %>
+	    <li <%= raw "class='active'" if controller.action_name == 'supervisiones_por_aprobar' || controller.action_name == 'supervision_por_aprobar' %>><a href="/supervisiones/supervisiones_por_aprobar">Supervisiones por Aprobar</a></li>
+		<% if get_current_user_app_nivel >= 3 %>
+		    <li <%= raw "class='active'" if controller.action_name == 'programar_supervisiones' %>><a href="/supervisiones/programar_supervisiones">Programar Supervisiones</a></li>
+		    <li <%= raw "class='active'" if controller.action_name == 'supervisiones_por_programar' %>><a href="/supervisiones/supervisiones_por_programar">Supervisiones por Programar</a></li>
+        <% end %>
+		<% if current_user.has_role? :admin || get_current_user_app_nivel == 5 %>
+		  <li <%= raw "class='active'" if controller.controller_name == 'checklists' || controller.controller_name == 'categories' || controller.controller_name == 'campos' %>><a href="/supervisiones/checklists">Administrar Checklists</a></li>
+        <% end %>
+      </nav>
+
+</div>

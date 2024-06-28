@@ -1,0 +1,136 @@
+<% if @calificacion %>
+	<div class=" text-right">
+		<h2>Calificación</h2>
+		<% (1..10).each do |number| %>
+			<% if number <= @calificacion.rating.to_i %>
+				<span class="fa fa-star checked"></span>
+			<% else %>
+				<span class="fa fa-star"></span>			
+			<% end %>
+		<% end %>
+	</div>
+<% else%>
+	<div class="">
+		<% if @show_arrow %>
+			<%= form_tag  :action => 'create', html: { class: 'form-horizontal ' } do |f| %>
+				<%= hidden_field_tag 'rating', 0 %>
+				<div class="rating float-left">
+				    <input type="radio" id="star10" name="rating" value="10" /><label for="star10" data-toggle="tooltip" data-placement="top" title="Eceel">5 stars</label>
+				    <input type="radio" id="star9" name="rating" value="9" /><label for="star9">4 stars</label>
+				    <input type="radio" id="star8" name="rating" value="8" /><label for="star8">3 stars</label>
+				    <input type="radio" id="star7" name="rating" value="7" /><label for="star7">2 stars</label>
+				    <input type="radio" id="star6" name="rating" value="6" /><label for="star6">1 star</label>
+				    <input type="radio" id="star5" name="rating" value="5" /><label for="star5">5 stars</label>
+				    <input type="radio" id="star4" name="rating" value="4" /><label for="star4">4 stars</label>
+				    <input type="radio" id="star3" name="rating" value="3" /><label for="star3">3 stars</label>
+				    <input type="radio" id="star2" name="rating" value="2" /><label for="star2">2 stars</label>
+				    <input type="radio" id="star1" name="rating" value="1" /><label for="star1">1 star</label>
+				  </div>
+				  <%= hidden_field_tag 'fecha', @fecha %>
+				  <%= hidden_field_tag 'user_id', @user %>
+			  	<%= button_tag(type: "submit", class: "btn btn-primary pull-right") do %>
+			  		<h5><i class="fas fa-save"></i>  Guardar</h5>
+			  	<% end %>
+				</div>  
+			<% end %>
+		<% end %>
+<% end %>
+<% fecha = Date.parse("#{@fecha}").strftime("%A, %d/%m/%Y").split(",") %>
+<% dias = {"Lunes" => "Monday", "Martes" => "Tuesday", "Miercoles" => "Wednesday", "Jueves" => "Thursday", "Viernes" => "Friday", "Sábado" => "Saturday", "Domingo" => "Sunday"} %>
+<h2 class="text-center"><%= dias.index(fecha[0]) + fecha[1] %></h2>
+<hr>
+<div class="col-md-12">
+	<%= link_to raw("<i class='fas fa-chevron-circle-left fa-2x'></i>"), {controller: 'homereportes', action: 'new', view: 'day', day: @fecha.gsub("-", "").to_i-1, user_id: @user} ,class: 'btn btn-primary float-right' %>
+	<%= link_to raw("<i class='fas fa-chevron-circle-right fa-2x'></i>"), {controller: 'homereportes', action: 'new', view: 'day', day: @fecha.gsub("-", "").to_i+1, user_id: @user},class: 'btn btn-primary float-right' %>
+	<div class="pull-right">
+		<%= link_to "Día", {controller: 'homereportes', action: 'new', view: 'day', day: "#{DateTime.now.strftime("%Y%m%d")}", user_id: @user} ,class: 'btn btn-primary float-left' %>
+		<%= link_to "Semana", {controller: 'homereportes', action: 'new', view: 'week', week: "#{Date.today}", user_id: @user } ,class: 'btn btn-primary float-left' %>
+		<%= link_to "Mes", {controller: 'homereportes', action: 'new', view: 'month', month: "#{Date.today}", user_id: @user} ,class: 'btn btn-primary float-left' %>
+	</div>
+	<br><br><br><br>
+	<div class="col-md-12">
+		<table class="table table-hover table-bordered text-right">
+			<thead>
+				<tr>
+					<th >Hora</th>
+					<th class="col-md-9">Actividad</th>	
+				</tr>
+			</thead>
+			<tbody>
+				<% (7..22).each do |hora|%>
+					<tr>
+						<td class="text-center"><%= hora %>:00</td>
+						<% reportes_new = "" %>
+						<% reportes_new = @reportes.where("start <=  #{hora}  and finish > #{hora} ") %>
+						
+						<td>
+							<ol>
+								<% reportes_new.each do |reporte| %>
+									<!-- <%= link_to controller: 'homereportes', action: 'new', view: 'day', day: "#{@fecha}", user_id: @user, class: '' do %> -->
+										<!-- <i class="fas fa-edit"></i> -->
+									<!-- <% end %> -->
+									<h6 class="text-left"><li> <%= reporte.descripcion %></li></h6>
+									<p><small><%= reporte.created_at.to_s[0..18] %></small></p>
+
+								<% end %>
+							</ol>
+						</td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+
+
+<style type="text/css">
+		h5{
+			color: white;
+		}
+    .rating:not(:checked) > input {
+        position:absolute;
+        top:-9999px;
+        clip:rect(0,0,0,0);
+    }
+    .rating:not(:checked) > label {
+        float:right;
+        width:1em;
+        /* padding:0 .1em; */
+        overflow:hidden;
+        white-space:nowrap;
+        cursor:pointer;
+        font-size:300%;
+        /* line-height:1.2; */
+        color:#ddd;
+    }
+    .rating:not(:checked) > label:before {
+        content: '★ ';
+    }
+    .rating > input:checked ~ label {
+        color: dodgerblue;
+        
+    }
+    .rating:not(:checked) > label:hover,
+    .rating:not(:checked) > label:hover ~ label {
+        color: dodgerblue;
+        
+    }
+    .rating > input:checked + label:hover,
+    .rating > input:checked + label:hover ~ label,
+    .rating > input:checked ~ label:hover,
+    .rating > input:checked ~ label:hover ~ label,
+    .rating > label:hover ~ input:checked ~ label {
+        color: dodgerblue;
+        
+    }
+    .rating > label:active {
+        position:relative;
+        top:2px;
+        left:2px;
+    }
+    .checked {
+    color: orange;
+}
+</style>

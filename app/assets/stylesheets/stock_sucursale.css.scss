@@ -1,0 +1,59 @@
+// Place all the styles related to the stock_sucursales controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.cabecera {
+	padding: 10px;
+	border: 1px solid #999999;
+	background: -webkit-radial-gradient(center center, circle, black, #1162ac);
+	background: -moz-radial-gradient(center center, circle, black, #1162ac);
+	border-radius: 6px;
+	box-shadow: rgb(150,150,150) 5px 5px 10px;
+}
+
+.titulo1 {
+	font: bold 29px verdana, sans-serif;
+	color: #1995dc;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo2 {
+	font: bold 22px verdana, sans-serif;
+	color: #1995dc;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+.titulo3 {
+	font: bold 16px verdana, sans-serif;
+	color: #F8F8FF;
+	text-shadow: rgb(0,0,10) 1px 1px 1px;
+}
+
+#margen5 {
+	margin: 0px 0px 5px 0px;
+}
+
+.btn-ttc {
+  margin: 10px 0px 0px 0px;
+  color: white;
+  height: 55px;
+  width: 80px;
+  background-color: #1995dc;
+}
+
+.container-fluid {
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.fixed-panel {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.fixed-prod {
+  max-height: 181px;
+  overflow-y: scroll;
+}

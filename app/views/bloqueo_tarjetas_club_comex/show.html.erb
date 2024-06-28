@@ -1,0 +1,96 @@
+<h1 class="text-center">Detalle de Tarjeta Club Comex</h1>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <small>
+    <%= link_to "Regresar", "/bloqueo_tarjetas_club_comex" %>
+  </small>
+  <br />
+  <br />
+
+  <h2 class="text-center">Tarjeta: <%= @id %></h2>
+  <h3 class="text-center">Status: <%= @item['StatusBloqueo'].to_i > 0 ? "Bloqueada" : "Desbloqueada" %></h2>
+  <h4 class="text-center">Fecha de Actualización: <%= @item['FechaActualizacion'].to_s[0..10] %></h4>
+  <h4 class="text-center">Observaciones: <%= @item['Observaciones'].to_s.present? ? @item['Observaciones'].to_s : "Sin observaciones" %></h4>
+
+	<div class="container well">
+		<div class="card">
+      <%= form_tag('/bloqueo_tarjetas_club_comex_update', class: 'form-horizontal' )  do |f| %>
+        <div class="form-inputs loader-form ">
+          <br>
+          <div class="form-group">
+            <label class="control-label col-md-12">Status</label>
+            <div class="col-md-6 col-md-offset-1 text-right">
+              <% @tipos_status = [ { "id" => 0, "tipo" => "Desbloqueada" }, { "id" => 1, "tipo" => "Bloqueada" } ] %>
+              <%= select_tag 'status', options_for_select(@tipos_status.collect{|t| [ t['tipo'], t['id'] ]}, @item ? @item['StatusBloqueo'] : nil), label: false, autofocus: true, class: 'form-control input-lg'  %>
+              <p class="help-block">Ingrese el Status</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-md-12">Observaciones</label>
+            <div class="col-md-8 col-md-offset-2 text-right">
+              <%= text_field_tag 'observaciones', nil, label: false, placeholder: "Observaciones de actualizacion", class: 'form-control' %>
+              <p class="help-block">Ingrese las Observaciones de Actualización</p>
+            </div>
+          </div>
+          <%= hidden_field_tag 'id', @id %>
+          <br>
+          <div class="form-actions loader-form text-center">
+            <%= submit_tag "Enviar", class: "btn btn-primary btn-lg" %>
+          </div>
+        </div>
+
+
+        <br><br>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>

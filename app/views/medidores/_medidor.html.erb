@@ -1,0 +1,55 @@
+<div class="wrapper">
+  <div class="box">
+    <div id="g<%= @id.to_s.gsub("-", "") %>" class="gauge"></div>
+  </div>
+</div>
+
+<style>
+.wrapper {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  margin: 50px auto 0 auto;
+  padding-bottom: 30px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  clear: both;
+}
+
+.box {
+  float: left;
+  width: 50%;
+  height: 50%;
+  box-sizing: border-box;
+}
+
+.gauges-container {
+  width: 450px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.gauge {
+  width: 320px;
+  height: 240px;
+}
+
+button {
+  margin: 30px 5px 0 2px;
+  padding: 16px 40px;
+  border-radius: 5px;
+  font-size: 18px;
+  border: none;
+  background: #34aadc;
+  color: white;
+  cursor: pointer;
+}
+</style>
+
+<script src="/js/raphael-2.1.4.min.js"></script>
+<script src="/js/justgage.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    $.getScript('/medidores_display_medidor?id=<%= @id %>');
+  });
+</script>

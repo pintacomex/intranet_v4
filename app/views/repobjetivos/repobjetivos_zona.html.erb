@@ -1,0 +1,173 @@
+<h3 class="text-center">Objetivos de Venta  globales por Zona</h3>
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+  <% if @continua > 0 %>
+
+    <h5><%= @nommes + " de " + params[:periodo].to_s.first(4) %></h5>
+    <% if @objventaszona.count > 0 %>
+
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+        <thead>
+          <tr>
+            <th><a href="#" data-toggle="tooltip" title="Numero de Zona">Zona</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Nombre de Zona">Nombre</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Objetivo de Zona">Objetivo</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Venta Neta Acumulada (s/iva)">Venta Neta Acum</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Avance Proporcional">Avance Propor</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Venta Neta Credito (c/iva)">Venta Neta Cred</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Total Cobranza (c/iva)">Total Cobranza</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Stock CxC 0-60 dias (c/iva)">Stock CxC (0-60 Dias)</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Stock CxC 60+ dias (c/iva)">Stock CxC (60+ Dias)</a></th>
+            <th><a href="#" data-toggle="tooltip" title="Stock de Mercancia (c/iva)">Stock de Mercancia</a></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @objventaszona.each do |m| %>
+            <tr>
+              <td><%= m['ColZona'] %></td>
+              <% if @solosucsconobj %>
+                <td><%= link_to m['ColNombre'], "/repobjetivos_suc?zona=#{m['ColZona']}&periodo=#{@anomes}&solosucsconobj=#{@solosucsconobj}" %></td>
+              <% else %>
+                <td><%= link_to m['ColNombre'], "/repobjetivos_suc?zona=#{m['ColZona']}&periodo=#{@anomes}" %></td>
+              <% end %>
+              <td><%= number_to_currency(m['ColObjetivo'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColVtaNetaAcum'], :locale => :mx, :precision => 2) %></td>
+              <td><%= 
+                if m['ColAvancePropor'] < 0
+                  raw("<span class='label label-danger'>") + number_to_percentage(m['ColAvancePropor'], :locale => :mx, :precision => 2) + raw("</span>")
+                else
+                  raw("<span class='label label-success'>") + number_to_percentage(m['ColAvancePropor'], :locale => :mx, :precision => 2) + raw("</span>")
+                end
+              %></td>
+              <td><%= number_to_currency(m['ColVentaNetaCred'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColTotalCobranza'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColStockCxC0_60Dias'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColStockCxC61_Dias'], :locale => :mx, :precision => 2) %></td>
+              <td><%= number_to_currency(m['ColStockMercancia'], :locale => :mx, :precision => 2) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br>
+      <%= link_to "Descargar para Excel", repobjetivos_zona_path(periodo: @anomes, solosucsconobj: @solosucsconobj, format: "csv") %>
+
+
+    <% else %>
+      <br>
+      Sin Datos.
+    <% end %>
+  <% end %>
+</div>
+
+
+<div class="loader-form">
+  <form class="form" role="form">
+    <div class="form-group">
+
+      <% numanoact = DateTime.now.year %>
+      <% nummesact = DateTime.now.month %>
+      <% nommesact = '' %>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div class="panel panel-primary">
+        <div class="panel-heading text-center">Seleccione</div>
+        <div class="panel-body">
+
+          <div class="control-group">
+            <label class="control-label col-md-2" for="inputPassword">Periodo:</label>
+            <div class="controls">
+              <select class="custom-select col-md-6" name="periodo" id="idperiodo">
+                <% 60.times do |i| %>
+                  <% nommesact = case nummesact %>
+                    <% when  1 then 'Enero' %>
+                    <% when  2 then 'Febrero' %>
+                    <% when  3 then 'Marzo' %>
+                    <% when  4 then 'Abril' %>
+                    <% when  5 then 'Mayo' %>
+                    <% when  6 then 'Junio' %>
+                    <% when  7 then 'Julio' %>
+                    <% when  8 then 'Agosto' %>
+                    <% when  9 then 'Septiembre' %>
+                    <% when 10 then 'Octubre' %>
+                    <% when 11 then 'Noviembre' %>
+                    <% when 12 then 'Diciembre' %>
+                  <% end %>
+                  <option value="<%= numanoact*100 + nummesact %>"><%= nommesact + ' ' + numanoact.to_s %></option>
+                  <% nummesact = nummesact -1 %>
+                  <% if nummesact == 0 %>
+                    <% nummesact = 12 %>
+                    <% numanoact = numanoact -1 %>
+                  <% end %>
+                <% end %>
+              </select>
+              <script>
+                $('#idperiodo').val( <%= params[:periodo].to_s %> )
+              </script>
+            </div>
+          </div>
+
+          <label class="checkbox col-md-4">
+            <input type="checkbox" name="solosucsconobj" id="idsolosucsconobj" value="1" checked> Solo Sucursales con Objetivo
+          </label>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary go-to-filter">Consultar</button>
+    </div>
+  </form>
+</div>
+
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

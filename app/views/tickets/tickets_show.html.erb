@@ -1,0 +1,126 @@
+<%= render(partial: 'navpills') %>
+<div class="col-sm-12">
+
+  <%= render(partial: 'panel_general') %>
+
+  <% if current_user.has_role? :admin %>
+    <a class="btn btn-default" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Ver Log
+    </a>
+    <br>
+    <div class="collapse" id="collapseExample">
+      <%= render(partial: 'panel_log') %>
+    </div>
+  <% end %>
+
+</div>
+
+<div class="modal fade" id="agregarFiles" tabindex="-1" role="dialog" aria-labelledby="agregarFilesLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Subir Archivo</h4>
+      </div>
+      <div class="modal-body">
+
+	    <div class="panel panel-primary">
+	        <div class="panel-body">
+
+			<%= form_for @todosRespuestasFile, url: tickets_respuestas_files_path, html: { multipart: true } do |form| %>
+				<%= hidden_field_tag 'IdHTodo', @todo[0]['IdHTodo'] %>
+				<%= hidden_field_tag 'IdRespuesta', Time.now.to_i %>
+				<%= hidden_field_tag 'Usuario', current_user.id %>
+
+			  	<%= form.file_field :file %>
+				 <p class="help-block">Sólo imágenes (JPEG, JPG, PNG o GIF) o documentos (PDF, DOC, XLS, PPT)</p>
+				 <p class="help-block">Tamaño máximo: 2 MB</p>
+
+		      </div>
+		    </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+	        <%= submit_tag "Subir", class: "btn btn-primary " %>
+		<% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+	.chosen-container {
+		width: 100% !important;
+	}
+	.tab-content {
+	    border-left: 1px solid #ddd;
+	    border-right: 1px solid #ddd;
+	    border-bottom: 1px solid #ddd;
+	    padding: 10px;
+	}
+	.nav-tabs {
+	    margin-bottom: 0;
+	}
+
+	.respuestas_container {
+		background-color: #ECEDEF;
+		padding: 5px;
+		margin: 10px 0px;
+	    border: 1px solid #ddd;
+	}
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+  .message_content img {
+    margin: 0 0;
+  }
+  .message_content span.small {
+    font-size: 12px;
+  }
+  .message_content span.glyphicon {
+    font-size: 2em;
+  }
+</style>

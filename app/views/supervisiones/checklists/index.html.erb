@@ -1,0 +1,84 @@
+<br><br>
+<%= render(partial: '/supervisiones/navpills') %>
+
+<div class="col-sm-9">
+	<h1 class="text-center">Checklists</h1>
+	<br><br>
+
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+	  <thead>
+	    <tr>
+	      <th>Checklist</th>
+	      <th>SubTipoSuc</th>
+	      <th>Categorías</th>
+	      <th></th>
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	    <% @checklists.each do |i| %>
+	      <tr>
+	        <td><strong><%= i['Nombre'] %></strong></td>
+	        <td><%= getSubTipoSuc(i['SubTipoSuc']) %></td>
+	        <td><%= i['IdCatChecklist'].to_i > 0 ? i['CatCount'] : "0" %></td>
+	        <td>
+	        	<%= link_to 'Editar', "/supervisiones/categories?id=#{i['IdChecklist']}", class: "btn btn-xs btn-primary" %>
+	        	<%= link_to 'Borrar', "/supervisiones/checklist_destroy?id=#{i['IdChecklist']}", method: :delete, data: { confirm: 'Está seguro?' }, class: "btn btn-xs btn-danger" %>
+	        </td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+	</table>
+
+	<br>
+	<%= link_to "Crear Checklist", "/supervisiones/checklist_new", class: "btn btn-primary" %></td>
+
+</div>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

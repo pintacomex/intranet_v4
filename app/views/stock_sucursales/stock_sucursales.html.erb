@@ -1,0 +1,117 @@
+<div class="cabecera">
+  <p align=center class="titulo1">Stock en Sucursales</p>
+  <p align=center class="titulo2"><%= @nomZona %></p>
+</div>
+<br>
+
+<p>
+	<a class="btn pull-left btn-primary btn-xs" href="/" role="button"><span class="glyphicon glyphicon-backward"></span> Volver</a>
+</p>
+<br>
+<div class="row">
+	<div class="col-xs-10 col-sm-6 col-md-6 col-lg-6">
+
+		<% if @productos && @productos.count > 0 %>
+			<div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title titulo3">Productos Encontrados</h3>
+					<br>
+				  <a class="btn pull-right btn-info btn-xs"  id="btn-procesar" href="/stock_sucursales?q=<%=params[:q]%>&procesar=1" role="button"><span class="glyphicon glyphicon-hdd"></span> Procesar</a>
+			    <h3 class="panel-title">Stock Actualizado hasta Fecha : <%= @horaTxt %> hrs.</h3>
+			  </div>
+				<div class="panel-body fixed-panel">
+
+					<div class="row">
+            <table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="example">
+							<thead>
+								<tr>
+									<th><a href="#" data-toggle="tooltip" title="Clave del Producto">Clave</a></th>
+									<th><a href="#" data-toggle="tooltip" title="Descripción del Producto">Descripción</a></th>
+								</tr>
+							</thead>
+							<tbody>
+								<% @productos.each do |s| %>
+									<tr>
+										<td><a href="/stock_sucursales_existencias?clave=<%=s['Clave']%>&descrip=<%=s['DescripLar']%>&zona=<%=@zona%>&nomZona=<%=@nomZona%>&q=<%=params[:q]%>"><%= s['CveAsoc'] %></a></td>
+										<td><%= s['DescripLar'] %></td>
+									</tr>
+								<% end %>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<% end %>
+
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+				<% if @cveant_r != "***" %>
+				  <% if params.has_key?(:regreso) && params[:regreso] == "1" %>
+				    <a class="btn pull-right btn-info btn-xs" href="/stock_sucursales?cveant=<%=@regreso[0]['CveAnt']%>&regreso=1" role="button"><span class="glyphicon glyphicon-backward"></span> Regresar</a>
+				  <% else %>
+				  	<% if params.has_key?(:cveant) && params[:cveant] != "***" %>
+					    <a class="btn pull-right btn-info btn-xs" href="/stock_sucursales?cveant=<%=params[:cveant]%>&regreso=1" role="button"><span class="glyphicon glyphicon-backward"></span> Regresar</a>
+					  <% end %>
+				  <% end %>
+				<% end %>
+		    <h3 class="panel-title titulo3">Seleccionar Producto</h3>
+		  </div>
+			<div class="panel-body fixed-panel">
+				<div class="row">
+					<% @prodtree.each do |m| %>
+					  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+					    <a class="btn btn-ttc" href="/stock_sucursales?cveant=<%=m['Clave']%>" role="button"><%=m['Descp1']%><br><%=m['Descp2']%></a>
+					  </div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-10 col-sm-6 col-md-6 col-lg-6">
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+		    <h3 class="panel-title titulo3">Buscar Producto</h3>
+		  </div>
+			<div class="panel-body" data-spy="scroll">
+				<div class="row">
+					<div class="loader-form">
+						<form class="form" role="form">
+							<div class="form-group">
+								<div class="control-group">
+									<label class="control-label" for="inputPassword">Nombre ó Clave del Producto</label>
+									<div class="controls">
+										<input id="q" name="q" type="text" class"input col-md-7" maxlength="50" value="<%= params[:q] if params.has_key?(:q) %>" placeholder="Vinimex Blanco ó 0200700">
+									</div>
+								</div>
+							</div>
+							<br>
+							<div class="form-actions">
+								<button class="btn btn-primary btn-xs go-to-filter"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="waiting span8" style="display: none">
+  <center>
+	  <p class="titulo1">Actualizando Stock</p>
+	  <p class="titulo2">Favor de no recargar o cerrar la página. Esto puede tardar varios segundos...</p>
+    <br />
+    <%= image_tag "/waiting.gif" %>
+  </center>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#btn-procesar').click(function() {
+      $('.panel-primary').hide(400);
+      setTimeout(function() { $('.waiting').show(1000) }, 500);
+    });
+    $('.waiting').hide();
+  });
+</script>

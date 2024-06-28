@@ -1,0 +1,187 @@
+
+<h3 class="text-center"><%= @reporte['titulo'] %></h3>
+
+<div class="pull-right text-right">
+  <small>
+    <% if current_user.has_role? :admin %>
+      <a href="/consultas_reportes/" class="btn btn-primary btn-xs">Administrar Reportes</a>
+    <% end %>
+  </small>
+</div>
+
+<div class="col-sm-12">
+	<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group dropdown text-right bm-4">
+      <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <%= "#{@reporte['seccion']} - #{@reporte['subseccion']} - #{@reporte['titulo']}" %>
+          <span class="caret"></span>
+        </button>
+      <div class="dropdown-menu">
+        <% @reportes.select{|r| r['publicado'] == 1}.each do |r| %>
+          <li><%= link_to "#{r['seccion']} - #{r['subseccion']} - #{r['titulo']}", "/consultas?r=#{r['id']}", class: "dropdown-item" %></li>
+        <% end %>
+      </div>
+    </div>
+    <% (1..9).each do |index| %>
+      <% break if @titulo_filtros[index].nil? %>
+      <div class="btn-group dropdown text-right bm-3">
+        <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <%= "#{@titulo_filtros[index]} #{@titulo_seleccion_filtros[index]}" %>
+            <span class="caret"></span>
+          </button>
+        <div class="dropdown-menu">
+          <% @filtros[index].each do |r| %>
+            <li><%= link_to "#{r['dato']}", "/consultas?#{request.original_fullpath.split("?")[1].split("&f1=")[0] rescue ""}#{gen_filtros(index, r)}", class: "dropdown-item" %></li>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <% if @consulta.count > 0 %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <% campos = [] %>
+          <% @consulta.first.keys.each do |k| %>
+            <% campos.push(k) %>
+            <th><%= k.underscore.titleize %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody >
+
+        <% @consulta.each do |m| %>
+          <% link = false %>
+          <% if @reporte['Hipervinculo'].to_s.length > 1 %>
+            <% link = @reporte['Hipervinculo'] %>
+            <% has_old_links = false %>
+            <% (1..9).each do |index| %>
+              <% if link&.include?("&p#{index}=__c") %>
+                <% has_old_links = true %>
+                <% link_dup = link %>
+                <% to_replace = link_dup.split("&p#{index}=__c")[1][0] %>
+                <% campo = campos[to_replace.to_i - 1] || "NO_ENCONTRADO" %>
+                <% with_replace = m[campo].to_s || "NO_ENCONTRADO" %>
+                <% to_replace = "__c#{to_replace}__" %>
+                <% link = link.gsub(to_replace, with_replace) %>
+              <% else %>
+                <% break %>
+              <% end %>
+            <% end %>
+            <% unless has_old_links %>
+              <% (1..9).each do |index| %>
+                <% if link&.include?("__c#{index}__") %>
+                  <% link_dup = link %>
+                  <% campo = campos[index - 1] || "NO_ENCONTRADO" %>
+                  <% with_replace = m[campo].to_s || "NO_ENCONTRADO" %>
+                  <% to_replace = "__c#{index}__" %>
+                  <% link = link.gsub(to_replace, with_replace) %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+          <tr>
+            <% m.keys.each do |k| %>
+              <% if k.include?("fecha") %>
+                <% val = fix_show_date_int(m[k]) %>
+              <% elsif k.downcase.include?("mes") %>
+                <% val = fix_show_date_mes(m[k]) %>
+              <% elsif k.downcase.include?("valua") ||
+                       k.downcase.include?("venta") ||
+                       k.downcase.include?("costo") ||
+                       k.downcase.include?("importe") %>
+                <% val = fix_num_to_money(m[k]) %>
+              <% else %>
+                <% val = m[k] %>
+              <% end %>
+              <% if @reporte['Hipervinculo'].to_s.length > 1 %>
+                <td><%= link_to(val, link) %></td>
+              <% else %>
+                <td><%= val %></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= link_to "Descargar para Excel", "/consultas.csv?#{request.original_fullpath.split("?")[1]}" %>
+
+  <% else %>
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr>
+          <td>Sin Datos</td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
+
+
+
+<br />
+</div>
+
+<style>
+  .glyphicon-ok {
+    color: green;
+  }
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({
+    "order": [],
+    "pageLength": 100
+     });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>

@@ -1,0 +1,64 @@
+
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="objcd">
+  <thead>
+    <tr>
+      <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Defl. Año Ant. Mes Sig.">Venta Defl. <%= messig + "-" %><% if mes == "Dic" %><%= ano %><% else %><%= anoant %><% end %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Defl. Año Ant. Mes Ant.">Venta Defl. <%= mesant + "-" %><% if mes == "Ene" %><%= anoant %><% else %><%= ano %><% end %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Defl. Año Act. Mes Sel.">Venta Defl. <%= mes + "-" + ano %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="% de Participación">% de Partic.</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Calculado Año Act. Mes Sig.">Obj. Calc. <%= messig + "-" %><% if mes == "Dic" %><%= anosig %><% else %><%= ano %><% end %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Crec. Esp. s/vta-Año Ant.">Crec. Esp. s/vta.<%= anoant %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Dirección">Obj. Dirección</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Obj. Calculado Vs Obj. Dirección">Obj Vs Obj.</a></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% datoscd.each do |m| %>
+      <tr>
+        <td><%= m['Ciudad'] %></td>
+        <td><P align=right><%= number_to_currency(m['VtaAMAnt'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['VtaAAntMSig'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['VtaAMAct'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['PorcePart'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['ObjCalMSig'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['CrecEsp'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['ObjDir'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['ObjVsObj'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="objcd">
+  <thead>
+    <tr>
+      <th><a href="#" data-toggle="tooltip" title="Total Región">Total</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Defl. Año Ant. Mes Sig.">Venta Defl. <%= messig + "-" %><% if mes == "Dic" %><%= ano %><% else %><%= anoant %><% end %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Defl. Año Ant. Mes Ant.">Venta Defl. <%= mesant + "-" %><% if mes == "Ene" %><%= anoant %><% else %><%= ano %><% end %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Defl. Año Act. Mes Sel.">Venta Defl. <%= mes + "-" + ano %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="% de Participación">% de Partic.</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Calculado Año Act. Mes Sig.">Obj. Calc. <%= messig + "-" %><% if mes == "Dic" %><%= anosig %><% else %><%= ano %><% end %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Crec. Esp. s/vta-Año Ant.">Crec. Esp. s/vta.<%= anoant %></a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Dirección">Obj. Dirección</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Obj. Calculado Vs Obj. Dirección">Obj Vs Obj.</a></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% datostotcd.each do |m| %>
+      <tr>
+        <td><%= m['Nombre'] %></td>
+        <td><P align=right><%= number_to_currency(m['VtaAMAnt'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['VtaAAntMSig'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['VtaAMAct'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['PorcePart'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['ObjCalMSig'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['CrecEsp'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+        <td><P align=right><%= number_to_currency(m['ObjDir'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['ObjVsObj'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

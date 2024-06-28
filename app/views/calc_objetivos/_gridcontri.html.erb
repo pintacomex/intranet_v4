@@ -1,0 +1,46 @@
+<table cellpadding="0" cellspacing="0" border="0" class="table-condensed table-hover table-bordered table-striped" id="contri">
+  <thead>
+    <tr>
+      <% if entidad == "Region" %>
+        <th><a href="#" data-toggle="tooltip" title="Región">Región</a></th>
+      <% else %>
+        <% if entidad == "Ciudad" %>
+          <th><a href="#" data-toggle="tooltip" title="Ciudad">Ciudad</a></th>
+        <% else %>
+          <th><a href="#" data-toggle="tooltip" title="Sucursal">Sucursal</a></th>
+        <% end %>
+      <% end %>
+      <th><a href="#" data-toggle="tooltip" title="Venta Neta">Venta Neta</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo">Objetivo</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock de Mercancía">Stock de Mercancía</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Stock CXC">Stock de Cxc</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Cobranza">Cobranza</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Venta Neta Total">Venta Total</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Objetivo Total">Objetivo Total</a></th>
+      <th><a href="#" data-toggle="tooltip" title="Contribución en Ventas">Contribución Venta</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% datos.each do |m| %>
+      <tr>
+        <% if entidad == "Region" %>
+          <td><%= m['Region'] %></td>
+        <% else %>
+          <% if entidad == "Ciudad" %>
+            <td><%= m['Ciudad'] %></td>
+          <% else %>
+            <td><%= m['Sucursal'] %></td>
+          <% end %>
+        <% end %>
+        <td><P align=right><%= number_to_currency(m['VentaNeta'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['Objetivo'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['StockMercancia'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['StockCxc'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['Cobranza'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['VentaTotal'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['ObjTotal'], :locale => :mx, :unit => "", :precision => 2) %></td>
+        <td><P align=right><%= number_to_currency(m['Contribucion'], :locale => :mx, :unit => "%", format: "%n %u") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

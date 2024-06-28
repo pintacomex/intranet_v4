@@ -1,0 +1,65 @@
+<%= simple_form_for(@reporte_de_problema, html: { class: 'form-horizontal' }) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs loader-form">
+
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nombre</label>
+      <div class="col-md-6">
+        <%= f.input :nombre, label: false, placeholder: "Nombre", autofocus: true, input_html: { class: 'form-control' } %>
+        <p class="help-block">Ingrese su Nombre</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Email o Telefono</label>
+      <div class="col-md-6">
+        <%= f.input :email, label: false, placeholder: "nombre@dominio.com o 55 55555555",input_html: { class: 'form-control' } %>
+        <p class="help-block">Ingrese su Email o Telefono donde lo podemos contactar</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Ciudad</label>
+      <div class="col-md-6">
+        <%= f.input :ciudad, label: false, placeholder: "Ciudad",input_html: { class: 'form-control' } %>
+        <p class="help-block">Ingrese la Ciudad donde se encuentra</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Descripcion*</label>
+      <div class="col-md-6">
+        <%= f.input :descripcion, :as => :text, :label => false, :input_html => { :class => "form-control",  :size => "50x3" }, placeholder: "Descripción del problema..." %>
+        <p class="help-block">Describa el problema con el detalle que necesite, especificando el mensaje de error si es que lo tiene</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="form-actions loader-form">
+    <%= f.button :submit, "Enviar", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<div class="waiting span8" style="display: none">
+  <center>
+    <h4>Enviando Reporte</h4>
+    <h4>Favor de no recargar o cerrar la página. Esto puede tardar varios segundos...</h4>
+    <br />
+    <%= image_tag "/waiting.gif" %>
+  </center>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('.btn').click(function() {
+      $('.loader-form').hide(400);
+      setTimeout(function() { $('.waiting').show(1000) }, 500);
+    });
+    $('.waiting').hide();
+  });
+</script>
+

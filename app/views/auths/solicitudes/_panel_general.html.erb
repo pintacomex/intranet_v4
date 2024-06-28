@@ -1,0 +1,83 @@
+<div role="tabpanel" class="tab-pane active card" id="general">
+
+  <h3><%= get_tipo_solicitud(@solicitud[0]['IdTipoSolicitud']) %> - Nivel Actual: <%= get_nivel(@solicitud[0]['NivelActual']) %></h3>
+
+  <p><small>Creado: <%= @solicitud[0]['FechaCreacion'].to_s[0..19] %> &nbsp; Actualizado: <%= @solicitud[0]['FechaActualizacion'].to_s[0..19] %></small></p>
+
+  <% if @puede_editar %>
+    <small>
+      <%= link_to "Autorizar", "/auths/solicitudes_update?id=#{@id}&autorizar=1", class: "btn btn-primary btn-mini" %>
+      <%= link_to "Rechazar", "/auths/solicitudes_update?id=#{@id}&autorizar=0", class: "btn btn-danger", data: { confirm: '¿Está seguro que desea rechazar la solicitud?' } %>
+      <br>
+      <br>
+    </small>
+  <% end %>
+
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <div id="message-history">
+        <% @solicitud.each do |respuesta| %>
+          <div class="message">
+            <a href="mailto:<%= getEmail(respuesta['Usuario']) %>" class="message_username"><%= get_usuario(respuesta['Usuario']) %></a>
+            <span class="message_timestamp"><%= respuesta['RFechaCreacion'].to_s[0..19] %></span>
+            <span class="message_content">
+	          	<p>
+		            <% if respuesta['File'].to_i > 0 %>
+		              <% file = AuthsRespuestasFile.find(respuesta['File'].to_i) rescue nil %>
+		              <% if file && file.file.content_type.include?("image") %>
+		                <%= link_to image_tag(file.file.url(:medium)), file.file.url, target: "_blank" %>
+		      	      <% elsif file %>
+		      	      	<a href="<%= file.file.url %>" class="btn" target="_blank">
+			      	        <button type="button" class="btn btn-default btn-lg" style="padding-right: 100px; padding-bottom: 0px;">
+			      	          <img src="/file_icon.png" style="float: left; margin: 0px 15px 15px 0px;">
+											  <strong style="line-height: 28px;"><%= file.file.original_filename %></strong><br>
+			              	  <span class="text-muted small"><%= number_to_human_size(file.file.size) %> - Haga click para abrir original</span>
+											</button>
+										</a>
+		      	      <% else %>
+		                Archivo no encontrado
+		          	  <% end %>
+		      	    <% else %>
+		          	  <%= simple_format(respuesta['Texto']) %>
+		      	    <% end %>
+	          	</p>
+	          </span>
+		      </div>
+		    <% end %>
+		  </div>
+
+			<%= form_tag("/auths/solicitudes_respuesta_create") do %>
+				<%= hidden_field_tag 'id', @id %>
+				<div class="">
+	        <div class="form-group">
+	          <div class="col-md-12 col-sm-12">
+	            <br>
+	            <%= text_area_tag 'texto', nil, size: "50x3", class: "form-control col-sm-12", placeholder: "Nueva Respuesta" %>
+	          </div>
+	        </div>
+	        <div class="form-group">
+	          <div class="col-md-12 col-sm-12 sm-offset-1">
+	          	<div class="">
+	              <button type="submit" class="btn btn-primary btn-block">Enviar Respuesta</button><br>
+					    </div>
+	          	<div class="">
+				        <button type="button" class="btn btn-default btn-xs btn-block" data-toggle="modal" data-target="#agregarFiles">Subir Archivo</button>
+					    </div>
+				      </div>
+	        </div>
+	      </div>
+	    <% end %>
+	  </div>
+	</div>
+</div>
+
+<% if @puede_editar %>
+	<script>
+		$(document).ready(function() {
+		  $('.submitable').on('change', function() {
+		    var $form = $(this).closest('form');
+		    $form.find('button[type=submit]').click();
+		  });
+		});
+	</script>
+<% end %>

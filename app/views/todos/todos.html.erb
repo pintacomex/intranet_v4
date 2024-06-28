@@ -1,0 +1,99 @@
+<br><br>
+<%= render(partial: 'navpills') %>
+<br><br>
+<div class="col-sm-2">
+
+
+    <%= render(partial: 'filtros') %>
+
+</div>
+
+<div class="col-sm-10">
+
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+	  <thead>
+	    <tr>
+	      <th><a href="#" data-toggle="tooltip" title="Asunto del To-Do">Asunto</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Identificador Único del To-Do">ID</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Autor de la Última Respuesta en el To-Do">Última Respuesta</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Número de Respuestas que tiene el To-Do">Respuestas</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Prioridad del To-Do">Prioridad</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Status del To-Do">Status</a></th>
+	      <th><a href="#" data-toggle="tooltip" title="Días Pasados desde la Creación del To-Do y Días desde la Última Actualización">Actividad</a></th>
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	    <% @todos.each do |todo| %>
+	      <tr>
+	        <td><%= link_to todo['Asunto'].to_s.truncate(40), "/todos_show?id=#{todo['IdHTodo']}" %></td>
+	        <td>
+	        	<%= link_to todo['IdHTodo'], "/todos_show?id=#{todo['IdHTodo']}" %>
+	        </td>
+	        <td><%= getUser(todo['UltimaRespuesta']) %></td>
+	        <td><%= todo['RCount'] - 1 %></td>
+	        <td><%= getPrioridad(todo['Prioridad']) %></td>
+	        <td><%= getStatus(todo['Status']) %></td>
+	        <td><%= (Date.today - Date.parse(todo['FechaCreacion'].to_s[0..10]) ).to_i rescue "Varios" %> (<%= (Date.today - Date.parse(todo['FechaActualizacion'].to_s[0..10]) ).to_i rescue "Varios" %>) Días</td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+	</table>
+
+</div>
+
+<style>
+.panel-filtros a {
+    /*text-decoration: none;*/
+    /*color: #555555;*/
+}
+</style>
+
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap4.min.js"></script>
+
+
+<style type="text/css">
+label{
+  display: none;
+}
+.dataTables_filter.md-form {
+    margin-top: .55rem;
+}
+.dataTables_filter.md-form input{
+    font-weight: 300;
+}
+.dataTables_wrapper .row {
+    margin-bottom: 1.5rem;
+}
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    padding-bottom: 1rem;
+}
+.dataTables_paginate {
+    float: right;
+}
+.dataTables_filter {
+    float: right;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#example').DataTable({"pageLength": 100 });
+  $('.dataTables_wrapper').find('label').each(function() {
+    $(this).parent().append($(this).children());
+  });
+  $('.dataTables_filter').find('input').each(function() {
+    $('input').attr("placeholder", "Buscar");
+    $('input').removeClass('form-control-sm');
+  });
+  $('.dataTables_length').addClass('d-flex flex-row');
+  $('.dataTables_filter').addClass('md-form');
+  $('select').addClass('mdb-select');
+  $('.mdb-select').removeClass('form-control form-control-sm');
+  $('.dataTables_filter').find('label').remove();
+});
+</script>
+

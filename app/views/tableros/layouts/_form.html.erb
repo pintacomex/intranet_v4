@@ -1,0 +1,97 @@
+<%= form_tag('/tableros/layouts', class: 'form-horizontal' )  do |f| %>
+  <div class="form-inputs loader-form ">
+    <%= hidden_field_tag 'new', @new %>
+
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">Id Layout/Elemento</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'idlayout', @layout['IdLayout'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'idelemento', options_for_select((1..16).to_a, @layout['IdElemento']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este Id es la Llave del Elemento</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nombre</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'nombreelemento', @layout['NombreElemento'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este campo se despliega arriba del medidor y puede ser un query</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Título Adicional</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'tituloadicional', @layout['TituloAdicional'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este campo se despliega abajo del medidor y puede ser un query</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Url</label>
+      <div class="col-md-8 text-right">
+        <p><%= text_field_tag 'url', @layout['Url'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este campo es el enlace cuando se hace click y puede ser un query</p>
+      </div>
+    </div>
+
+   <div class="form-group">
+      <label class="control-label col-md-3">Id Medidor</label>
+      <div class="col-md-8 text-right">
+        <p><%= select_tag 'idmedidor', options_for_select(@medidores, @layout['IdMedidor']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Medidor a Desplegar en el Elemento</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">X/Y Inicial</label>
+      <% grids = [1, 2, 3, 4]%>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'xini', options_for_select(grids, @layout['Xini']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'yini', options_for_select(grids, @layout['Yini']), class: 'form-control' %></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">X/Y Final</label>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'xfin', options_for_select(grids, @layout['Xfin']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-2 text-right">
+        <p><%= select_tag 'yfin', options_for_select(grids, @layout['Yfin']), class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Esta es la posición en el grid 4 x 4</p>
+      </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", tableros_layouts_path, class: "btn btn-default" %>
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+<% end %>
+
+<div class="col-md-6 col-md-offset-3 well">
+  <%= render(partial: 'tableros/nota') %>
+</div>

@@ -1,0 +1,29 @@
+<%= render(partial: 'navpills') %>
+
+<div class="col-sm-12">
+
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
+
+		<thead>
+			<tr>
+				<th><a href="#" data-toggle="tooltip" title="Fecha o Día del Mes Programado para Generar el Ticket">Fecha</a></th>
+				<th><a href="#" data-toggle="tooltip" title="Tipo del Ticket">Tipo</a></th>
+				<th><a href="#" data-toggle="tooltip" title="Asunto del Ticket">Asunto</a></th>
+				<th><a href="#" data-toggle="tooltip" title="Días para la Fecha Límite">Fecha Límite</a></th>
+				<th><a href="#" data-toggle="tooltip" title="Status Inicial del Ticket">Status</a></th>
+				<th></th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<% @tickets_programados_dia.each do |ticket| %>
+				<%= render 'tickets_programados_ticket', ticket: ticket %>
+			<% end %>
+			<% @tickets_programados_fecha.each do |ticket| %>
+				<%= render 'tickets_programados_ticket', ticket: ticket %>
+			<% end %>
+		</tbody>
+	</table>
+	<br>
+	<%= link_to "Programar Ticket", "/tickets_programados_new", class: "btn btn-primary" %>
+</div>

@@ -1,0 +1,217 @@
+<h1 class="text-center">Movimientos Asociados a la Obra</h1>
+
+<% if @obra && @obra.count > 0 %>
+  <p>
+    <b>Sucursal:</b> <%= @obra['Sucursal'] %> - <%= @obra['sNombre'] %>, <b>Obra:</b> <%= @obra['IdObra'] %> - <%= @obra['Nombre'] %><br>
+    <b>Total Vendido:</b> <%= number_to_currency(@GTotalVendido, :locale => :mx, :precision => 2) %>, <b>Total Valuado:</b> <%= number_to_currency(@GTotalValuado, :locale => :mx, :precision => 2) %>, <b>Descuento Equivalente:</b> <%= number_to_currency(@GDescuentoEquivalente, :locale => :mx, :precision => 2).gsub("$","") %>%
+  </p>  
+<% end %>
+
+
+<div class="col-md-12 col-sm-12 center-block inner-top-sm">
+
+  <small>
+    <%= link_to "Regresar", "/obras" %>
+  </small>
+  <br />
+  <br />
+
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="">
+    <thead>
+      <tr>
+        <th><a href="#" data-toggle="tooltip" title="Fecha de la Factura">Fecha</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Número de Movimiento">Nummov</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Control de la Factura">Control</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Tipo Subtipo">Tipo</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Nombre del Cliente">Cliente</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Identificador del Vendedor">Vdor</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Importe Total">Total</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Importe Total Vendido">Vendido</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Importe Total Valuado">Valuado</a></th>
+        <th><a href="#" data-toggle="tooltip" title="Lleva Mano">Mano</a></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @movs.each do |m| %>
+        <tr>
+          <% url = "/obra_detalle?sucursal=#{@sucursal}&idobra=#{@idobra}&fecha=#{m['Fecha']}&nummov=#{m['Nummov']}" %>
+          <td><%= link_to fix_show_date(m['Fecha']), url %></td>
+          <td><%= link_to m['Nummov'], url %></td>
+          <td><%= link_to m['Controlfac'], url %></td>
+          <td><%= m['Tipo_subt'] %> - <%= m['NomTipoSubTipo'] %></td>
+          <td><%= m['cNombre'] %></td>
+          <td><%= m['Idvendedor'] %></td>
+          <td><%= number_to_currency(m['Total'], :locale => :mx, :precision => 2) %></td>
+          <td><%= m['TotalVendido'] != 0 ? number_to_currency(m['TotalVendido'], :locale => :mx, :precision => 2) : "" %></td>
+          <td><%= m['TotalValuado'] != 0 ? number_to_currency(m['TotalValuado'], :locale => :mx, :precision => 2) : "" %></td>
+          <td><%= m['Mano'] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <br />
+
+  <div class="col-md-6 col-sm-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title text-center">Comentarios</h3>
+      </div>
+      <div class="panel-body text-right">
+        <div id="message-history">
+          <% @chat_comments.each do |comment| %>
+            <div class="message">
+                <% if !comment['userName'].nil? %>
+                  <a href="mailto:<%= comment['userEmail'] %>" class="message_username"><%= comment['userName'].to_s.gsub(" - ", " ") %></a>
+                <% end %>
+                <span class="message_timestamp"><%= comment['FechaHora'].to_s(:db)[0..19] %></span>
+                <span class="message_content"><%= comment['Comentario'] %></span>
+            </div>                
+          <% end %>
+        </div>
+        <%= form_tag(obra_new_comment_path, class: 'form-horizontal' )  do |f| %>
+          <%= hidden_field_tag 'sucursal', @sucursal %>
+          <%= hidden_field_tag 'idobra', @idobra %>
+
+          <div class="form-group">
+            <div class="col-md-6 col-sm-6">
+              <br>
+              <%= text_area_tag 'nuevo_comentario', nil, size: "50x3", class: "form-control", placeholder: "Nuevo Comentario" %>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-info">Agregar Comentario</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-sm-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title text-center">Descuento Negociado y Status</h3>
+      </div>
+      <div class="panel-body">
+        <center>
+
+          <% if @obra %>
+            <h4>Porcentaje de Descuento Negociado: <%= number_to_currency(@obra['PorcDescNegociado'], :locale => :mx, :precision => 2).gsub("$","") %>%</h4>
+            <h4>Status Obra Abierta o Cerrada: <%= @obra['Cerrada'].to_i > 0 ? "Cerrada" : "Abierta" %></h4>
+            <br>
+            <% if @puede_editar %>
+              <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                Editar
+              </button>
+            <% end %>
+          <% else %>
+            <h4>Sin Datos</h4>
+          <% end %>
+
+        </center>
+      </div>
+    </div>                
+  </div>
+
+  <% if @puede_editar %>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Descuento Negociado y Status Propuestos</h4>
+          </div>
+
+          <%= form_tag(obra_edit_status_path, class: 'form-horizontal' )  do |f| %>
+
+            <div class="modal-body">
+              <div class="ref-group">
+
+                <%= hidden_field_tag 'sucursal', @sucursal %>
+                <%= hidden_field_tag 'idobra', @idobra %>
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Descuento Negociado</label>
+                  <div class="col-md-6 col-sm-6">
+                    <%= text_field_tag 'descuento_negociado', number_to_currency(@GDescuentoEquivalente, :locale => :mx, :precision => 2).gsub("$",""), class: "form-control", placeholder: "0.00%" %>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Status de la Obra</label>
+                  <div class="col-md-6 col-sm-6">
+                    <% @statuses = [ { "id" => 0, "status" => "Abierta" }, { "id" => 1, "status" => "Cerrada" } ] %> 
+                    <%= select_tag 'status', options_for_select(@statuses.collect{|t| [ t['status'], t['id'] ]}, 1), label: false, placeholder: "Status Abierta o Cerrada", class: 'form-control' %>                    
+                  </div>
+                </div>
+
+              </div>
+            </div>
+  
+            <div class="modal-footer">
+              <button type="button" class="btn btn-info" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+
+  <% end %>
+
+</div>
+
+<style>
+
+  .glyphicon-ok {
+    color: green;
+  }
+
+  .message-history {
+    margin-left: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0 18px 1rem 1.5rem;
+  }
+
+  .message {
+    position: relative;
+    margin-top: .7rem;
+    padding: .25rem 2rem .1rem 3rem;
+    min-height: 36px;
+  }
+
+  .message_username {
+    font-weight: 900;
+    padding-right: .25rem;
+    color: #3d3c40 !important;
+    margin-left: 0;
+    font-style: normal;
+    text-decoration: none;
+  }
+
+  .message_timestamp {
+    text-align: left;
+    display: inline;
+    position: relative;
+    top: 0;
+    left: 0;
+    color: #babbbf;
+    font-size: 12px;
+    line-height: 1.2rem;
+    width: 36px;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .message_content {
+    /*color: #8b898f;*/
+    /*font-style: italic;*/
+    display: block;
+    font-size: 16px;
+    min-height: 1rem;
+  }
+
+</style>

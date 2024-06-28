@@ -1,0 +1,35 @@
+<%= form_tag(@form_url, html: { class: 'form-horizontal' }) do %>
+
+  <div class="form-inputs loader-form">
+
+    <%= hidden_field_tag 'id', "#{@id}" %>
+    <%= hidden_field_tag 'IdChecklist', @id %>
+
+    <br>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nombre</label>
+      <div class="col-md-7 text-right">
+        <%= text_field_tag 'nombre', @checklist ? @checklist[0]['Nombre'] : '', class: 'form-control', placeholder: "Revisión de Sucursales", autofocus: true %>
+        <p class="help-block">Ingresa el Nombre del Checklist</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">SubTipoSuc</label>
+      <div class="col-md-7 text-right">
+        <%= select_tag 'subtiposuc', options_for_select(@subtiposucs, @checklist ? @checklist[0]['SubTipoSuc'] : 'S'), label: false, include_blank: false, class: 'form-control'  %>
+        <p class="help-block">Selecciona el SubTipoSuc de las Sucursales a Desplegar para este Checklist</p>
+      </div>
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-3 text-center">
+      <div class="form-actions loader-form">
+        <%= submit_tag "Guardar", class: "btn btn-primary " %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>

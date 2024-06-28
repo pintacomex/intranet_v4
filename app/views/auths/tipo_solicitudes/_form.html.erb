@@ -1,0 +1,36 @@
+<%= form_tag('/auths/tipo_solicitudes', class: 'form-horizontal' ) do |f| %>
+  <div class="form-inputs loader-form ">
+    <%= hidden_field_tag 'new', @new %>
+
+    <br>
+    <div class="form-group">
+      <label class="control-label col-md-3">Id Tipo de Solicitud</label>
+      <div class="col-md-2 text-right">
+        <p><%= text_field_tag 'idsolicitud', @solicitud['IdTipoSolicitud'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Id del Tipo de Solicitud</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nombre</label>
+      <div class="col-md-6 text-right">
+        <p><%= text_field_tag 'nombre', @solicitud['Nombre'], class: 'form-control' %></p>
+      </div>
+      <div class="col-md-9 col-md-offset-3">
+        <p class="help-block">Este es el Nombre que tiene el Tipo de Solicitud</p>
+      </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-10">
+      <div class="form-actions loader-form text-right">
+        <%= link_to "Regresar", auths_tipo_solicitudes_path, class: "btn btn-default" %>
+        <%= submit_tag "Guardar", class: "btn btn-primary" %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+<% end %>

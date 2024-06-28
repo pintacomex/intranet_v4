@@ -1,0 +1,21 @@
+<br><br>
+<div class="col-md-6 col-md-offset-3 card">
+
+	<h1 class="text-center">Claves Pdv</h1>
+	<hr>
+	<br/>
+	<%= form_for claves_pdv_path, method: :get, html: { class: 'form-inline' } do |f| %>
+	  <div class="form-inputs text-center">
+		  <div class="form-group">
+		    <label>Clave (ej: 434-566)</label>
+	        <%= text_field_tag :clave, params[:clave], class: 'form-control'  %>
+		  </div>
+		  <br><br>
+		  <button type="submit" class="btn btn-primary">Enviar</button>
+	  </div>
+	<% end %>
+	<br/>
+	<% if @res %>
+		<h4><%= "Resultado: #{@res}" %></h4>
+	<% end %>
+</div>
