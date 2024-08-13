@@ -32,3 +32,5 @@
 
 teamviewer_linux.*
 /shared
+
+/.ruby-version
