@@ -36,20 +36,23 @@ class ApplicationController < ActionController::Base
       @dbPdv = PdvadrahcaDatabase  if @sitio[0].basePdv == "pdvadrahca"
       @dbPdv = PdvsalvadorDatabase if @sitio[0].basePdv == "pdvsalvador"
       @dbPdv = PdvbeliceDatabase   if @sitio[0].basePdv == "pdvbelice"
-      @dbPdv = PdvhondurasDatabase   if @sitio[0].basePdv == "pdvhonduras"
+      @dbPdv = PdvhondurasDatabase if @sitio[0].basePdv == "pdvhonduras"
+      @dbPdv = PdvgallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @dbNomina = NominapintaDatabase    if @sitio[0].basePdv == "pdv"
       @dbNomina = NominaspiDatabase      if @sitio[0].baseFacEle == "facelespi"
       @dbNomina = NominasalvadorDatabase if @sitio[0].basePdv == "pdvsalvador"
       @dbNomina = NominabeliceDatabase   if @sitio[0].basePdv == "pdvbelice"
-      @dbNomina = NominahondurasDatabase   if @sitio[0].basePdv == "pdvhonduras"
+      @dbNomina = NominahondurasDatabase if @sitio[0].basePdv == "pdvhonduras"
+      @dbNomina = NominagallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @dbComun = ComunDatabase         if @sitio[0].basePdv == "pdv"
       @dbComun = ComunpaintDatabase    if @sitio[0].basePdv == "pdvpaint"
       @dbComun = ComunadrahcaDatabase  if @sitio[0].basePdv == "pdvadrahca"
       @dbComun = ComunsalvadorDatabase if @sitio[0].basePdv == "pdvsalvador"
       @dbComun = ComunbeliceDatabase   if @sitio[0].basePdv == "pdvbelice"
-      @dbComun = ComunhondurasDatabase   if @sitio[0].basePdv == "pdvhonduras"
+      @dbComun = ComunhondurasDatabase if @sitio[0].basePdv == "pdvhonduras"
+      @dbComun = ComungallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @dbFacEle = FacelepintaDatabase    if @sitio[0].baseFacEle == "facelepinta"
       @dbFacEle = FacelepaintDatabase    if @sitio[0].baseFacEle == "facelepaint"
@@ -57,7 +60,8 @@ class ApplicationController < ActionController::Base
       @dbFacEle = FaceleadrahcaDatabase  if @sitio[0].baseFacEle == "facelespi"
       @dbFacEle = FacelesalvadorDatabase if @sitio[0].baseFacEle == "facelesalvador"
       @dbFacEle = FacelebeliceDatabase   if @sitio[0].baseFacEle == "facelebelice"
-      @dbFacEle = FacelehondurasDatabase   if @sitio[0].baseFacEle == "facelehonduras"
+      @dbFacEle = FacelehondurasDatabase if @sitio[0].baseFacEle == "facelehonduras"
+      @dbFacEle = FacelegallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @dbTrab = TrabpintaDatabase    if @sitio[0].basePdv == "pdv"
       @dbTrab = TrabpaintDatabase    if @sitio[0].basePdv == "pdvpaint"
@@ -65,6 +69,7 @@ class ApplicationController < ActionController::Base
       @dbTrab = TrabsalvadorDatabase if @sitio[0].basePdv == "pdvsalvador"
       @dbTrab = TrabbeliceDatabase   if @sitio[0].basePdv == "pdvbelice"
       @dbTrab = TrabhondurasDatabase if @sitio[0].basePdv == "pdvhonduras"
+      @dbTrab = TrabgallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @dbEsta = EstapintaDatabase    if @sitio[0].basePdv == "pdv"
       @dbEsta = EstapaintDatabase    if @sitio[0].basePdv == "pdvpaint"
@@ -72,11 +77,13 @@ class ApplicationController < ActionController::Base
       @dbEsta = EstasalvadorDatabase if @sitio[0].basePdv == "pdvsalvador"
       @dbEsta = EstabeliceDatabase   if @sitio[0].basePdv == "pdvbelice"
       @dbEsta = EstahondurasDatabase if @sitio[0].basePdv == "pdvhonduras"
+      @dbEsta = EstagallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @dbVentasonline = VentasonlinepintaDatabase
       @dbVentasonline = VentasonlinesalvadorDatabase if @sitio[0].basePdv == "pdvsalvador"
-      @dbVentasonline = VentasonlinebeliceDatabase if @sitio[0].basePdv == "pdvbelice"
+      @dbVentasonline = VentasonlinebeliceDatabase   if @sitio[0].basePdv == "pdvbelice"
       @dbVentasonline = VentasonlinehondurasDatabase if @sitio[0].basePdv == "pdvhonduras"
+      @dbVentasonline = VentasonlinegallcoDatabase   if @sitio[0].basePdv == "pdvgallco"
 
       @nomDbPdv = "pdv."        if @sitio[0].basePdv == "pdv"
       @nomDbPdv = "pdvpaint."   if @sitio[0].basePdv == "pdvpaint"
@@ -84,6 +91,7 @@ class ApplicationController < ActionController::Base
       @nomDbPdv = "pdvsalvador." if @sitio[0].basePdv == "pdvsalvador"
       @nomDbPdv = "pdvbelice." if @sitio[0].basePdv == "pdvbelice"
       @nomDbPdv = "pdvhonduras." if @sitio[0].basePdv == "pdvhonduras"
+      @nomDbPdv = "pdvgallco." if @sitio[0].basePdv == "pdvgallco"
 
       @nomDbComun = "comun."        if @sitio[0].basePdv == "pdv"
       @nomDbComun = "comunpaint."   if @sitio[0].basePdv == "pdvpaint"
@@ -91,6 +99,7 @@ class ApplicationController < ActionController::Base
       @nomDbComun = "comunsalvador." if @sitio[0].basePdv == "pdvsalvador"
       @nomDbComun = "comunbelice." if @sitio[0].basePdv == "pdvbelice"
       @nomDbComun = "comunhonduras." if @sitio[0].basePdv == "pdvhonduras"
+      @nomDbComun = "comungallco." if @sitio[0].basePdv == "pdvgallco"
 
       @nomDbFacEle = "facelepinta."   if @sitio[0].baseFacEle == "facelepinta"
       @nomDbFacEle = "facelepaint."   if @sitio[0].baseFacEle == "facelepaint"
@@ -98,6 +107,7 @@ class ApplicationController < ActionController::Base
       @nomDbFacEle = "facelesalvador." if @sitio[0].baseFacEle == "facelesalvador"
       @nomDbFacEle = "facelebelice." if @sitio[0].baseFacEle == "facelebelice"
       @nomDbFacEle = "facelehonduras." if @sitio[0].baseFacEle == "facelehonduras"
+      @nomDbFacEle = "facelegallco." if @sitio[0].baseFacEle == "facelegallco"
 
       @nomDbTrab = "trabpinta."   if @sitio[0].basePdv == "pdv"
       @nomDbTrab = "trabpaint."   if @sitio[0].basePdv == "pdvpaint"
@@ -105,6 +115,7 @@ class ApplicationController < ActionController::Base
       @nomDbTrab = "trabsalvador." if @sitio[0].basePdv == "pdvsalvador"
       @nomDbTrab = "trabbelice." if @sitio[0].basePdv == "pdvbelice"
       @nomDbTrab = "trabhonduras." if @sitio[0].basePdv == "pdvhonduras"
+      @nomDbTrab = "trabgallco." if @sitio[0].basePdv == "pdvgallco"
 
       @nomDbEsta = "estapinta."   if @sitio[0].basePdv == "pdv"
       @nomDbEsta = "estapaint."   if @sitio[0].basePdv == "pdvpaint"
@@ -112,6 +123,7 @@ class ApplicationController < ActionController::Base
       @nomDbEsta = "estasalvador." if @sitio[0].basePdv == "pdvsalvador"
       @nomDbEsta = "estabelice." if @sitio[0].basePdv == "pdvbelice"
       @nomDbEsta = "estahonduras." if @sitio[0].basePdv == "pdvhonduras"
+      @nomDbEsta = "estagallco." if @sitio[0].basePdv == "pdvgallco"
 
       @nomDbPub = "pubpinta."   if @sitio[0].basePdv == "pdv"
       @nomDbPub = "pubpaint."   if @sitio[0].basePdv == "pdvpaint"
@@ -119,6 +131,7 @@ class ApplicationController < ActionController::Base
       @nomDbPub = "pubsalvador." if @sitio[0].basePdv == "pdvsalvador"
       @nomDbPub = "pubbelice." if @sitio[0].basePdv == "pdvbelice"
       @nomDbPub = "pubhonduras." if @sitio[0].basePdv == "pdvhonduras"
+      @nomDbPub = "pubgallco." if @sitio[0].basePdv == "pdvgallco"
 
       @nomDbShared = "sharedpinta."   if @sitio[0].basePdv == "pdv"
       @nomDbShared = "sharedpaint."   if @sitio[0].basePdv == "pdvpaint"
@@ -126,6 +139,7 @@ class ApplicationController < ActionController::Base
       @nomDbShared = "sharedsalvador." if @sitio[0].basePdv == "pdvsalvador"
       @nomDbShared = "sharedbelice." if @sitio[0].basePdv == "pdvbelice"
       @nomDbShared = "sharedhonduras." if @sitio[0].basePdv == "pdvhonduras"
+      @nomDbShared = "sharedgallco." if @sitio[0].basePdv == "pdvgallco"
 
       @nomCia = "Pintacomex, S.A. de C.V."             if @sitio[0].basePdv == "pdv"
       @nomCia = "Baja Paint, S.A. de C.V."             if @sitio[0].basePdv == "pdvpaint"
@@ -133,6 +147,7 @@ class ApplicationController < ActionController::Base
       @nomCia = "El Salvador, S.A. de C.V."            if @sitio[0].basePdv == "pdvsalvador"
       @nomCia = "Comex Belize"                         if @sitio[0].basePdv == "pdvbelice"
       @nomCia = "Comex Honduras"                       if @sitio[0].basePdv == "pdvhonduras"
+      @nomCia = "Administradora Gallco S.A.P.I de C.V." if @sitio[0].basePdv == "pdvgallco"
     end
   end
 

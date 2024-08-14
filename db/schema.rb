@@ -13,6 +13,16 @@
 
 ActiveRecord::Schema.define(version: 20190415224741) do
 
+  create_table "Homereportes", force: :cascade do |t|
+    t.integer  "user_id",     limit: 4
+    t.string   "fecha",       limit: 10,  default: "", null: false
+    t.string   "start",       limit: 5,   default: "", null: false
+    t.string   "finish",      limit: 5,   default: "", null: false
+    t.string   "descripcion", limit: 255, default: "", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
     t.text     "body",          limit: 65535
@@ -98,10 +108,22 @@ ActiveRecord::Schema.define(version: 20190415224741) do
 
   add_index "auth_logs", ["numAuth"], name: "index_auth_logs_on_numAuth", unique: true, using: :btree
 
-  create_table "calificacionreportes", id: false, force: :cascade do |t|
-    t.string "fecha",   limit: 10
-    t.string "user_id", limit: 10
-    t.string "rating",  limit: 2
+  create_table "auths_respuestas_files", force: :cascade do |t|
+    t.integer  "IdSolicitud",       limit: 4
+    t.integer  "IdRespuesta",       limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "file_file_name",    limit: 255
+    t.string   "file_content_type", limit: 255
+    t.integer  "file_file_size",    limit: 4
+    t.datetime "file_updated_at"
+    t.integer  "Usuario",           limit: 4
+  end
+
+  create_table "calificacionreportes", force: :cascade do |t|
+    t.string  "fecha",   limit: 10, default: "", null: false
+    t.integer "user_id", limit: 4
+    t.string  "rating",  limit: 2,  default: "", null: false
   end
 
   create_table "cat_roles", force: :cascade do |t|
@@ -161,15 +183,6 @@ ActiveRecord::Schema.define(version: 20190415224741) do
     t.string   "email",      limit: 50,    default: "", null: false
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-  end
-
-  create_table "homereportes", id: false, force: :cascade do |t|
-    t.string   "user_id",     limit: 10,    null: false
-    t.string   "fecha",       limit: 10,    null: false
-    t.string   "start",       limit: 5,     null: false
-    t.string   "finish",      limit: 5,     null: false
-    t.text     "descripcion", limit: 65535
-    t.datetime "created_at"
   end
 
   create_table "int_params", force: :cascade do |t|
@@ -235,10 +248,12 @@ ActiveRecord::Schema.define(version: 20190415224741) do
   end
 
   create_table "push_tokens", force: :cascade do |t|
-    t.integer "user_id",    limit: 4
-    t.string  "push_token", limit: 255
-    t.string  "deviceId",   limit: 255
-    t.string  "deviceName", limit: 255
+    t.integer  "user_id",    limit: 4
+    t.string   "push_token", limit: 255
+    t.string   "deviceId",   limit: 255
+    t.string   "deviceName", limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "reporte_de_problemas", force: :cascade do |t|
@@ -323,10 +338,12 @@ ActiveRecord::Schema.define(version: 20190415224741) do
     t.integer  "Usuario",           limit: 4
   end
 
-  create_table "userhomes", id: false, force: :cascade do |t|
-    t.integer "user_id",     limit: 4
-    t.string  "id_token",    limit: 255
-    t.string  "fecha_start", limit: 10
+  create_table "userhomes", force: :cascade do |t|
+    t.string   "user_id",     limit: 255
+    t.string   "id_token",    limit: 255
+    t.string   "fecha_start", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "users", force: :cascade do |t|
