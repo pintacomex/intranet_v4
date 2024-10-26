@@ -11,7 +11,13 @@
 
   <div class="col-md-10 col-md-offset-1 well">
       <h3><center>Nota</center></h3>
-      <p>Para editar abrir con MySql Workbench la tabla ReportesIntranet en la BD EstaPinta o la de la empresa del servidor 14. El campo "Restringido a Roles" todavia no se usa. Cualquier error en el query deberia mostrarse como una consulta sin datos.</p>
+      <p>Para editar abrir con MySql Workbench la tabla ReportesIntranet en la BD EstaPinta o la de la empresa del servidor 14. El campo "Restringido a Roles" puede estar vacio o puede tener los roles como "0,10,5" o "60" para q solo lo vean los vendedores o "40,50" para solo promotores y encargados. Cualquier error en el query deberia mostrarse como una consulta sin datos. Filtros actuales: __c1__ a __c9__ Para enviar: contenido de la columna x en el renglon seleccionado;
+    __f1__ a __f4__	Para query Reporte: id del contenido del combos 1 al 4;
+    __p1__ a __p5__	Para query Reporte: Parametros enviados del Reporte anterior;
+				__zo__	-	Num Zona: Nota: el usuario podria tener varias zonas ahora toma solo la primera;
+				__su__	-	Num sucursal: Nota: el usuario podria tener varias sucursales, ahora toma solo la primera;
+				__ve__	-	Num Vendedor
+</p>
   </div>
   <% if @reportes.count > 0 %>
     <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped text-center" id="example">
