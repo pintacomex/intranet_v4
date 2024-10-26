@@ -10,8 +10,30 @@ class ConsultasController < ApplicationController
   def index
     # get_filtros_from_user
     sql = "SELECT * from ReportesIntranet order by seccion, subseccion, orden"
-    @reportes = @dbEsta.connection.select_all(sql)
+    @reportes_sin_filtro = @dbEsta.connection.select_all(sql)
+    @reportes = []
+
+    @reportes_sin_filtro.each do |r|
+      if r['restringidoARoles'].to_s != ""
+        niveles_autorizados = r['restringidoARoles'].to_s.split(",").map{ |rol| rol.to_i }
+        next unless niveles_autorizados.include?(@user_permisos[:nivel])
+      end
+      @reportes << r
+    end
+
     @reporte = @reportes.first
+
+    @reportes.each do |r|
+      titulo = r['titulo'].to_s
+      if titulo.downcase.strip.start_with?("select ")
+        titulos = @dbEsta.connection.select_all(titulo) rescue []
+        if titulos.count > 0
+          r['titulo'] = titulos.first.keys.first.underscore.titleize rescue "Sin titulo"
+        else
+          r['titulo'] = "Sin titulo"
+        end
+      end
+    end
 
     reporte_seleccionado = params[:r].to_i if params.has_key?(:r)
     unless reporte_seleccionado.nil?
@@ -55,39 +77,55 @@ class ConsultasController < ApplicationController
       end
     end
 
+    @permiso = Permiso.joins("LEFT JOIN cat_roles ON permisos.permiso = cat_roles.nomPermiso").where("idUsuario = #{current_user.id} AND p1 = #{@sitio[0].idEmpresa.to_i}").order("cat_roles.nivel").limit(1)
+    if @permiso && @permiso.count == 1
+      if @permiso[0].p2 != "" && @permiso[0].p2 != "0"
+        @zonas = @permiso[0].p2.to_s.split(',').map{|i| i.to_i}.sort
+        sql = sql.gsub("__zo__", @zonas.first) if @zonas.count > 0
+      end
+      if @permiso[0].p3 != "" && @permiso[0].p3 != "0"
+        @sucursales = @permiso[0].p3.to_s.split(',').map{|i| i.to_i}.sort
+        sql = sql.gsub("__su__", @sucursales.first) if @sucursales.count > 0
+      end
+      if @permiso[0].p4 != "" && @permiso[0].p4 != "0"
+        @num_vendedor = @permiso[0].p4.to_s.split(',').map{|i| i.to_i}.sort
+        sql = sql.gsub("__ve__", @num_vendedor.first) if @num_vendedor.count > 0
+      end
+    end
+
     @consulta = @dbEsta.connection.select_all(sql) rescue []
 
     respond_to do |format|
       format.html
       format.csv do
-          out_arr = []
+        out_arr = []
+        line = []
+        @consulta.first.keys.each do |k|
+          line.push(k.underscore.titleize)
+        end
+        out_arr.push(line.join(","))
+        @consulta.each do |m|
           line = []
-          @consulta.first.keys.each do |k|
-            line.push(k.underscore.titleize)
+          m.keys.each do |k|
+            if k.include?("fecha")
+              line.push(fix_show_date_int(m[k]))
+            elsif k.downcase.include?("mes")
+              line.push(fix_show_date_mes(m[k]).to_s)
+            elsif k.downcase.include?("valua") ||
+                  k.downcase.include?("venta") ||
+                  k.downcase.include?("costo") ||
+                  k.downcase.include?("importe")
+              line.push(fix_num_to_money(m[k]).to_s.gsub(",", "").gsub("$",""))
+            else
+              line.push(m[k])
+            end
           end
           out_arr.push(line.join(","))
-          @consulta.each do |m|
-            line = []
-            m.keys.each do |k|
-              if k.include?("fecha")
-                line.push(fix_show_date_int(m[k]))
-              elsif k.downcase.include?("mes")
-                line.push(fix_show_date_mes(m[k]).to_s)
-              elsif k.downcase.include?("valua") ||
-                    k.downcase.include?("venta") ||
-                    k.downcase.include?("costo") ||
-                    k.downcase.include?("importe")
-                line.push(fix_num_to_money(m[k]).to_s.gsub(",", "").gsub("$",""))
-              else
-                line.push(m[k])
-              end
-            end
-            out_arr.push(line.join(","))
-          end
-          csv_file = "/tmp/#{@reporte['titulo'].to_s.gsub(" ", "_")}_#{DateTime.now.to_i}.csv"
-          dump_to_file(csv_file,out_arr.join("\n"))
-          send_file csv_file
-          return
+        end
+        csv_file = "/tmp/#{@reporte['titulo'].to_s.gsub(" ", "_")}_#{DateTime.now.to_i}.csv"
+        dump_to_file(csv_file,out_arr.join("\n"))
+        send_file csv_file
+        return
       end
     end
   end
